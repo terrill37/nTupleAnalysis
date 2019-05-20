@@ -1,6 +1,6 @@
 #include "TChain.h"
 
-#include "nTupleAnalysis/package/interface/trigData.h"
+#include "nTupleAnalysis/baseClasses/interface/trigData.h"
 
 using namespace nTupleAnalysis;
 

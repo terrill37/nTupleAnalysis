@@ -1,4 +1,4 @@
-#include "nTupleAnalysis/package/interface/fourVectorHists.h"
+#include "nTupleAnalysis/baseClasses/interface/fourVectorHists.h"
 
 using namespace nTupleAnalysis;
 

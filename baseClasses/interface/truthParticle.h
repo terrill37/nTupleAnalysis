@@ -4,7 +4,7 @@
 #define truthParticle_H
 #include <TChain.h>
 #include <TLorentzVector.h>
-#include "nTupleAnalysis/package/interface/initBranch.h"
+#include "nTupleAnalysis/baseClasses/interface/initBranch.h"
 
 namespace nTupleAnalysis {
   //forward declaration for use in particle constructor from tree
@@ -45,7 +45,7 @@ namespace nTupleAnalysis {
     Int_t pdgId[300];
 
     truthParticle(std::string, TChain*); 
-    std::vector<std::shared_ptr<particle>> getParticles(Int_t absPDG = -1, Int_t absMomPDG = -1);
+    std::vector< std::shared_ptr<particle> > getParticles(Int_t absPDG = -1, Int_t absMomPDG = -1);
     ~truthParticle(); 
 
     //void dump();

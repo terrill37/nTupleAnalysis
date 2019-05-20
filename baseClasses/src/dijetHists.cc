@@ -1,4 +1,4 @@
-#include "nTupleAnalysis/package/interface/dijetHists.h"
+#include "nTupleAnalysis/baseClasses/interface/dijetHists.h"
 
 using namespace nTupleAnalysis;
 

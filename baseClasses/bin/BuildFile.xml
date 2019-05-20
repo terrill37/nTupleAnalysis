@@ -8,7 +8,7 @@
 <use   name="PhysicsTools/FWLite"/>	      
 <use   name="PhysicsTools/Utilities"/>    
 <use   name="PhysicsTools/SelectorUtils"/>
-<use   name="nTupleAnalysis/package"/>
+<use   name="nTupleAnalysis/baseClasses"/>
 <!-- <environment> -->
 <!--   <bin   file="procNtupleTest.cc"></bin> -->
 <!-- </environment> -->

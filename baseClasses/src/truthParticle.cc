@@ -1,6 +1,6 @@
 #include "TChain.h"
 
-#include "nTupleAnalysis/package/interface/truthParticle.h"
+#include "nTupleAnalysis/baseClasses/interface/truthParticle.h"
 
 using namespace nTupleAnalysis;
 
@@ -40,7 +40,7 @@ truthParticle::truthParticle(std::string name, TChain* tree){
 
 }
 
-std::vector<std::shared_ptr<particle>> truthParticle::getParticles(Int_t absPDG, Int_t absMomPDG){
+std::vector< std::shared_ptr<particle> > truthParticle::getParticles(Int_t absPDG, Int_t absMomPDG){
   
   std::vector< std::shared_ptr<particle> > outputParticles;
 

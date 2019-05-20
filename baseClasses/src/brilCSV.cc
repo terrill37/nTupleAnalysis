@@ -1,4 +1,4 @@
-#include "nTupleAnalysis/package/interface/brilCSV.h"
+#include "nTupleAnalysis/baseClasses/interface/brilCSV.h"
 
 /*
  * Parses through csv file line by line and returns the data

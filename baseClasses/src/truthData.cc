@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "nTupleAnalysis/package/interface/truthData.h"
+#include "nTupleAnalysis/baseClasses/interface/truthData.h"
 
 using namespace nTupleAnalysis;
 

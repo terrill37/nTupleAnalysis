@@ -1,6 +1,6 @@
 #include "TChain.h"
 
-#include "nTupleAnalysis/package/interface/jetData.h"
+#include "nTupleAnalysis/baseClasses/interface/jetData.h"
 
 using namespace nTupleAnalysis;
 

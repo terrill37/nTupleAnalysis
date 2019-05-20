@@ -5,8 +5,8 @@
 #include <iostream>
 #include <TH1F.h>
 #include "PhysicsTools/FWLite/interface/TFileService.h"
-#include "nTupleAnalysis/package/interface/dijet.h"
-#include "nTupleAnalysis/package/interface/fourVectorHists.h"
+#include "nTupleAnalysis/baseClasses/interface/dijet.h"
+#include "nTupleAnalysis/baseClasses/interface/fourVectorHists.h"
 
 //using namespace nTupleAnalysis;
 
