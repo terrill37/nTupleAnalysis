@@ -1,4 +1,4 @@
-#include "nTupleAnalysis/interface/muonHists.h"
+#include "nTupleAnalysis/package/interface/muonHists.h"
 
 using namespace nTupleAnalysis;
 

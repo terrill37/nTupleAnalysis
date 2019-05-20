@@ -1,6 +1,6 @@
 #include "TChain.h"
 
-#include "nTupleAnalysis/interface/truthParticle.h"
+#include "nTupleAnalysis/package/interface/truthParticle.h"
 
 using namespace nTupleAnalysis;
 

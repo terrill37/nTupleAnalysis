@@ -4,7 +4,7 @@
 #define dijet_H
 #include <iostream>
 #include <TLorentzVector.h>
-#include <nTupleAnalysis/interface/jetData.h>
+#include "nTupleAnalysis/package/interface/jetData.h"
 
 namespace nTupleAnalysis {
   const float mH = 125.0;

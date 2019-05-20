@@ -4,9 +4,9 @@
 #define trigData_H
 #include <TChain.h>
 #include <TLorentzVector.h>
-#include "nTupleAnalysis/interface/initBranch.h"
+#include "nTupleAnalysis/package/interface/initBranch.h"
 
-namespace nTupleAnalysisy {
+namespace nTupleAnalysis {
   //forward declaration for use in trig constructor from tree
   class trigData;
   //trig object

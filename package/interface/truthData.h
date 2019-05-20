@@ -5,8 +5,8 @@
 
 #include <TChain.h>
 #include <TLorentzVector.h>
-#include "nTupleAnalysis/interface/initBranch.h"
-#include "nTupleAnalysis/interface/truthParticle.h"
+#include "nTupleAnalysis/package/interface/initBranch.h"
+#include "nTupleAnalysis/package/interface/truthParticle.h"
 
 // for jet pseudoTag calculations
 #include <TRandom3.h>

@@ -1,4 +1,4 @@
-#include "nTupleAnalysis/interface/jetHists.h"
+#include "nTupleAnalysis/package/interface/jetHists.h"
 
 using namespace nTupleAnalysis;
 

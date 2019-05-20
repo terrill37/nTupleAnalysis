@@ -1,6 +1,6 @@
 #include "TChain.h"
 
-#include "nTupleAnalysis/interface/muonData.h"
+#include "nTupleAnalysis/package/interface/muonData.h"
 
 using namespace nTupleAnalysis;
 

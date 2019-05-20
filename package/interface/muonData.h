@@ -4,7 +4,7 @@
 #define muonData_H
 #include <TChain.h>
 #include <TLorentzVector.h>
-#include "nTupleAnalysis/interface/initBranch.h"
+#include "nTupleAnalysis/package/interface/initBranch.h"
 
 namespace nTupleAnalysis {
   //forward declaration for use in muon constructor from tree

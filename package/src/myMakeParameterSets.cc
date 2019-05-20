@@ -1,4 +1,4 @@
-#include "nTupleAnalysis/interface/myMakeParameterSets.h"
+#include "nTupleAnalysis/package/interface/myMakeParameterSets.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
 #include "FWCore/PythonParameterSet/interface/PythonParameterSet.h"
