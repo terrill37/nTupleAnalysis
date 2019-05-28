@@ -19,6 +19,7 @@ namespace nTupleAnalysis {
     TH1F* deepB;
     TH1F* CSVv2;
     TH1F* deepFlavB;
+    TH1F* nJets;
 
     jetHists(std::string, fwlite::TFileService&, std::string title = "");
     void Fill(std::shared_ptr<jet>&, float);

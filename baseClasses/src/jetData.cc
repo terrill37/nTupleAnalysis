@@ -4,6 +4,8 @@
 
 using namespace nTupleAnalysis;
 
+
+
 //jet object
 jet::jet(){}
 jet::jet(UInt_t i, jetData* data){
@@ -56,25 +58,26 @@ jet::~jet(){}
 
 
 //access tree
-jetData::jetData(std::string name, TChain* tree){
+jetData::jetData(std::string name, TChain* tree, std::string prefix){
 
-  initBranch(tree, ("n"+name).c_str(), n );
+  initBranch(tree, (prefix+"n"+name).c_str(), n );
 
-  initBranch(tree, (name+"_cleanmask").c_str(), cleanmask );
+  initBranch(tree, (prefix+name+"_cleanmask").c_str(), cleanmask );
 
-  initBranch(tree, (name+"_pt"  ).c_str(), pt  );  
-  initBranch(tree, (name+"_eta" ).c_str(), eta );  
-  initBranch(tree, (name+"_phi" ).c_str(), phi );  
-  initBranch(tree, (name+"_mass").c_str(), m   );  
+  initBranch(tree, (prefix+name+"_pt"  ).c_str(), pt  );  
+  initBranch(tree, (prefix+name+"_eta" ).c_str(), eta );  
+  initBranch(tree, (prefix+name+"_phi" ).c_str(), phi );  
+  initBranch(tree, (prefix+name+"_mass").c_str(), m   );  
 
-  initBranch(tree, (name+"_bRegCorr").c_str(), bRegCorr );  
+  initBranch(tree, (prefix+name+"_bRegCorr").c_str(), bRegCorr );  
 
-  initBranch(tree, (name+"_btagDeepB"    ).c_str(), deepB     );
-  initBranch(tree, (name+"_btagCSVV2"    ).c_str(), CSVv2     );
-  initBranch(tree, (name+"_btagDeepFlavB").c_str(), deepFlavB );
+  initBranch(tree, (prefix+name+"_btagDeepB"    ).c_str(), deepB     );
+  initBranch(tree, (prefix+name+"_btagCSVV2"    ).c_str(), CSVv2     );
+  initBranch(tree, (prefix+name+"_btagDeepFlavB").c_str(), deepFlavB );
   //initBranch(tree, (name+"_").c_str(),  );
 
 }
+
 
 std::vector< std::shared_ptr<jet> > jetData::getJets(float ptMin, float ptMax, float etaMax, bool clean, float tagMin, std::string tagger, bool antiTag){
   

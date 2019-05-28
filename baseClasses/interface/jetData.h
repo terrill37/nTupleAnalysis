@@ -6,7 +6,11 @@
 #include <TLorentzVector.h>
 #include "nTupleAnalysis/baseClasses/interface/initBranch.h"
 
+
+
 namespace nTupleAnalysis {
+
+
   //forward declaration for use in jet constructor from tree
   class jetData;
   //jet object
@@ -28,6 +32,9 @@ namespace nTupleAnalysis {
     float CSVv2;
     float deepFlavB;
 
+    float match_dR = -99;
+    std::shared_ptr<jet>  matchedJet = nullptr;
+
     jet();
     jet(UInt_t, jetData*); 
     jet(TLorentzVector&, float tag = -1); 
@@ -36,6 +43,9 @@ namespace nTupleAnalysis {
 
     //void dump();
   };
+
+  typedef std::shared_ptr<jet> jetPtr;
+
 
   //class for tree access
   class jetData {
@@ -57,7 +67,7 @@ namespace nTupleAnalysis {
     float CSVv2[100];
     float deepFlavB[100];
 
-    jetData(std::string, TChain*); 
+    jetData(std::string, TChain*, std::string prefix = ""); 
     std::vector< std::shared_ptr<jet> > getJets(float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);
     std::vector< std::shared_ptr<jet> > getJets(std::vector< std::shared_ptr<jet> > inputJets, 
 						float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);
@@ -65,6 +75,7 @@ namespace nTupleAnalysis {
 
     //void dump();
   };
+
 
 
 }

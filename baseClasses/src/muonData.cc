@@ -11,6 +11,8 @@ muon::muon(UInt_t i, muonData* data){
   eta = data->eta[i];
   phi = data->phi[i];
   m   = data->m  [i];
+  if(m < 0.10) m = 0.1057;
+    
   p = TLorentzVector();
   p.SetPtEtaPhiM(pt, eta, phi, m);
 
@@ -38,7 +40,7 @@ muonData::muonData(std::string name, TChain* tree){
   initBranch(tree, (name+"_pt"  ).c_str(), pt );  
   initBranch(tree, (name+"_eta" ).c_str(), eta );  
   initBranch(tree, (name+"_phi" ).c_str(), phi );  
-  initBranch(tree, (name+"_mass").c_str(), m );  
+  initBranch(tree, (name+"_mass").c_str(), m );
 
   initBranch(tree, (name+"_softId"  ).c_str(), softId );
   initBranch(tree, (name+"_highPtId").c_str(), highPtId );
@@ -48,7 +50,7 @@ muonData::muonData(std::string name, TChain* tree){
 
   initBranch(tree, (name+"_jetIdx").c_str(), jetIdx );
   initBranch(tree, (name+"_pfRelIso04_all").c_str(), pfRelIso04_all );
-  //initBranch(tree, (name+"_").c_str(),  );
+
 
 }
 
