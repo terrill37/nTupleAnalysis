@@ -29,9 +29,11 @@ jet::jet(UInt_t i, jetData* data){
   nFirstTrack = data->nFirstTrack[i];
   nLastTrack = data->nLastTrack[i];
   
-  tracks = data->trkData->getTracks(nFirstTrack,nLastTrack);
-  for(trackPtr track: tracks){
-    track->dR = track->p.DeltaR(p);
+  if(data->trkData){
+    tracks = data->trkData->getTracks(nFirstTrack,nLastTrack);
+    for(trackPtr track: tracks){
+      track->dR = track->p.DeltaR(p);
+    }
   }
 
 }
@@ -83,10 +85,15 @@ jetData::jetData(std::string name, TChain* tree, std::string prefix){
   initBranch(tree, (prefix+name+"_btagDeepFlavB").c_str(), deepFlavB );
   //initBranch(tree, (name+"_").c_str(),  );
 
-  initBranch(tree, (prefix+name+"_nFirstTrack").c_str(),  nFirstTrack);
-  initBranch(tree, (prefix+name+"_nLastTrack" ).c_str(),  nLastTrack );
-
-  trkData = new trackData(prefix, tree);
+  int nFirstTrackCode = initBranch(tree, (prefix+name+"_nFirstTrack").c_str(),  nFirstTrack);
+  int nLastTrackCode  = initBranch(tree, (prefix+name+"_nLastTrack" ).c_str(),  nLastTrack );
+  
+  //
+  //  only load the track if the variables are availible
+  //
+  if(nFirstTrackCode != -1 && nLastTrackCode != -1){
+    trkData = new trackData(prefix, tree);
+  }
 
 }
 
