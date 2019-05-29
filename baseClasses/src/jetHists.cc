@@ -13,6 +13,9 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
     CSVv2     = dir.make<TH1F>("CSVv2",     (name+"/CSVv2; "    +title+" CSV v2; Entries").c_str(), 100,0,1);
     deepFlavB = dir.make<TH1F>("deepFlavB", (name+"/deepFlavB; "+title+" Deep (Jet) Flavour B; Entries").c_str(), 100,0,1);
     nJets     = dir.make<TH1F>("nJets",     (name+"/nJets;    " +title+" Number of Jets; Entries").c_str(),  10,-0.5,9.5);
+    nTrksExpected  = dir.make<TH1F>("nTrksExpected",     (name+"/nTrksExpected;    " +title+" Number of Expected Tracks; Entries").c_str(),  20,-0.5,19.5);
+
+    tracks = new trackHists(name+"/tracks", fs, title);
 } 
 
 void jetHists::Fill(std::shared_ptr<jet> &jet, float weight){
@@ -25,6 +28,13 @@ void jetHists::Fill(std::shared_ptr<jet> &jet, float weight){
   CSVv2    ->Fill(jet->CSVv2, weight);
   deepFlavB->Fill(jet->deepFlavB, weight);
 
+  nTrksExpected->Fill(jet->nLastTrack-jet->nFirstTrack,weight);
+    
+
+  tracks->nTracks->Fill(jet->tracks.size(), weight);
+  for(trackPtr track: jet->tracks) 
+    tracks->Fill(track, weight);
+  
   return;
 }
 

@@ -5,6 +5,7 @@
 #include <TChain.h>
 #include <TLorentzVector.h>
 #include "nTupleAnalysis/baseClasses/interface/initBranch.h"
+#include "nTupleAnalysis/baseClasses/interface/trackData.h"
 
 
 
@@ -32,8 +33,21 @@ namespace nTupleAnalysis {
     float CSVv2;
     float deepFlavB;
 
+    float nFirstTrack;
+    float nLastTrack;
+
+    //
+    //  Tracks in Jet
+    //
+    std::vector<trackPtr> tracks;
+
+    //
+    //  Matched Jets
+    //
     float match_dR = -99;
     std::shared_ptr<jet>  matchedJet = nullptr;
+
+
 
     jet();
     jet(UInt_t, jetData*); 
@@ -66,6 +80,11 @@ namespace nTupleAnalysis {
     float deepB[100];
     float CSVv2[100];
     float deepFlavB[100];
+
+    int nFirstTrack[100];
+    int nLastTrack[100];
+    trackData* trkData = nullptr;
+
 
     jetData(std::string, TChain*, std::string prefix = ""); 
     std::vector< std::shared_ptr<jet> > getJets(float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);

@@ -26,6 +26,14 @@ jet::jet(UInt_t i, jetData* data){
   CSVv2     = data->CSVv2[i];
   deepFlavB = data->deepFlavB[i];
 
+  nFirstTrack = data->nFirstTrack[i];
+  nLastTrack = data->nLastTrack[i];
+  
+  tracks = data->trkData->getTracks(nFirstTrack,nLastTrack);
+  for(trackPtr track: tracks){
+    track->dR = track->p.DeltaR(p);
+  }
+
 }
 
 jet::jet(TLorentzVector& vec, float tag){
@@ -42,7 +50,6 @@ jet::jet(TLorentzVector& vec, float tag){
   deepB = tag;
   CSVv2 = tag;
   deepFlavB = tag;
-
 }
 
 void jet::bRegression(){
@@ -75,6 +82,11 @@ jetData::jetData(std::string name, TChain* tree, std::string prefix){
   initBranch(tree, (prefix+name+"_btagCSVV2"    ).c_str(), CSVv2     );
   initBranch(tree, (prefix+name+"_btagDeepFlavB").c_str(), deepFlavB );
   //initBranch(tree, (name+"_").c_str(),  );
+
+  initBranch(tree, (prefix+name+"_nFirstTrack").c_str(),  nFirstTrack);
+  initBranch(tree, (prefix+name+"_nLastTrack" ).c_str(),  nLastTrack );
+
+  trkData = new trackData(prefix, tree);
 
 }
 
