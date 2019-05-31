@@ -94,6 +94,11 @@ namespace nTupleAnalysis {
     TH1F* trackAlgo      ;
     TH1F* trackOrigAlgo  ;
 
+    TH1F* PV  ;
+    TH1F* PVweight  ;
+    TH1F* SV  ;
+    TH1F* SVweight  ;
+
     trackHists(std::string,       TFileDirectory&, std::string title = "");
     trackHists(std::string, fwlite::TFileService&, std::string title = "");
 

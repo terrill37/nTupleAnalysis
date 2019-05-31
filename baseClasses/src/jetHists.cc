@@ -17,6 +17,7 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
     nTrksExpected  = dir.make<TH1F>("nTrksExpected",     (name+"/nTrksExpected;    " +title+" Number of Expected Tracks; Entries").c_str(),  20,-0.5,19.5);
 
     tracks = new trackHists(name+"/tracks", fs, title);
+    svs    = new secondaryVertexHists(name+"/svs", fs, title);
 } 
 
 void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
@@ -31,10 +32,14 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
 
   nTrksExpected->Fill(jet->nLastTrack-jet->nFirstTrack,weight);
     
-
   tracks->nTracks->Fill(jet->tracks.size(), weight);
   for(const trackPtr& track: jet->tracks) 
     tracks->Fill(track, weight);
+
+  //svs->nTracks->Fill(jet->tracks.size(), weight);
+  for(const svPtr& sv: jet->svs) 
+    svs->Fill(sv, weight);
+
   
   return;
 }

@@ -37,8 +37,12 @@ jet::jet(UInt_t i, jetData* data){
   }
 
 
-  if(data->svData){
-    svs = data->svData->getSecondaryVertices(data->nFirstSV[i],data->nLastSV[i]);
+  if(data->btagData->haveSVs){
+    svs = data->btagData->getSecondaryVertices(data->nFirstSV[i],data->nLastSV[i]);
+  }
+
+  if(data->btagData->haveTrkTagVars){
+    trkTagVars = data->btagData->getTrkTagVars(data->nFirstTrkTagVar[i],data->nLastTrkTagVar[i]);
   }
 
 
@@ -101,12 +105,23 @@ jetData::jetData(std::string name, TChain* tree, std::string prefix){
   }
 
 
+  //
+  //  Load the btagging data
+  //
+  btagData = new btaggingData();
+
   int nFirstSVCode = initBranch(tree, (prefix+name+"_nFirstSV").c_str(),  nFirstSV);
   int nLastSVCode  = initBranch(tree, (prefix+name+"_nLastSV" ).c_str(),  nLastSV );
   if(nFirstSVCode != -1 && nLastSVCode != -1){
-    svData = new secondaryVertexData(prefix, tree);
+    btagData->initSecondaryVerticies(prefix, tree);
   }
 
+  int nFirstTrkTagVarCode = initBranch(tree, (prefix+name+"_nFirstTrkTagVar").c_str(),  nFirstTrkTagVar);
+  int nLastTrkTagVarCode  = initBranch(tree, (prefix+name+"_nLastTrkTagVar" ).c_str(),  nLastTrkTagVar );
+  if(nFirstTrkTagVarCode != -1 && nLastTrkTagVarCode != -1){
+    btagData->initTrkTagVar(prefix, tree);
+  }
+  
 
 }
 

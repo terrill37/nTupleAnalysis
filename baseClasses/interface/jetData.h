@@ -6,7 +6,7 @@
 #include <TLorentzVector.h>
 #include "nTupleAnalysis/baseClasses/interface/initBranch.h"
 #include "nTupleAnalysis/baseClasses/interface/trackData.h"
-#include "nTupleAnalysis/baseClasses/interface/secondaryVertexData.h"
+#include "nTupleAnalysis/baseClasses/interface/btaggingData.h"
 
 
 
@@ -46,9 +46,13 @@ namespace nTupleAnalysis {
     //
     // SVs in Jet
     //
-    float nFirstSV;
-    float nLastSV;
     std::vector<svPtr> svs;
+
+    //
+    // SVs in Jet
+    //
+    std::vector<trkTagVarPtr> trkTagVars;
+
 
     //
     //  Matched Jets
@@ -95,10 +99,14 @@ namespace nTupleAnalysis {
     int nLastTrack[100];
     trackData* trkData = nullptr;
 
+
     int nFirstSV[100];
     int nLastSV[100];
-    secondaryVertexData* svData = nullptr;
 
+    int nFirstTrkTagVar[100];
+    int nLastTrkTagVar [100];
+
+    btaggingData* btagData = nullptr;
 
     jetData(std::string, TChain*, std::string prefix = ""); 
     std::vector< std::shared_ptr<jet> > getJets(float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);
