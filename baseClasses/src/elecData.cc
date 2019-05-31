@@ -84,4 +84,6 @@ std::vector<std::shared_ptr<elec>> elecData::getElecs(float ptMin, float etaMax,
   return outputElecs;
 }
 
-elecData::~elecData(){}
+elecData::~elecData(){
+  std::cout << "elecData::destroyed " << std::endl;
+}

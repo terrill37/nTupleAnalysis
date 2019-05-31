@@ -6,6 +6,7 @@
 #include <TLorentzVector.h>
 #include "nTupleAnalysis/baseClasses/interface/initBranch.h"
 #include "nTupleAnalysis/baseClasses/interface/trackData.h"
+#include "nTupleAnalysis/baseClasses/interface/secondaryVertexData.h"
 
 
 
@@ -33,19 +34,28 @@ namespace nTupleAnalysis {
     float CSVv2;
     float deepFlavB;
 
-    float nFirstTrack;
-    float nLastTrack;
+
 
     //
     //  Tracks in Jet
     //
+    float nFirstTrack;
+    float nLastTrack;
     std::vector<trackPtr> tracks;
 
     //
+    // SVs in Jet
+    //
+    float nFirstSV;
+    float nLastSV;
+    std::vector<svPtr> svs;
+
+    //
     //  Matched Jets
+
     //
     float match_dR = -99;
-    std::shared_ptr<jet>  matchedJet = nullptr;
+    std::weak_ptr<jet>  matchedJet;
 
 
 
@@ -84,6 +94,10 @@ namespace nTupleAnalysis {
     int nFirstTrack[100];
     int nLastTrack[100];
     trackData* trkData = nullptr;
+
+    int nFirstSV[100];
+    int nLastSV[100];
+    secondaryVertexData* svData = nullptr;
 
 
     jetData(std::string, TChain*, std::string prefix = ""); 

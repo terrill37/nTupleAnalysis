@@ -1,3 +1,4 @@
+
 #include "nTupleAnalysis/baseClasses/interface/jetHists.h"
 
 using namespace nTupleAnalysis;
@@ -18,7 +19,7 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
     tracks = new trackHists(name+"/tracks", fs, title);
 } 
 
-void jetHists::Fill(std::shared_ptr<jet> &jet, float weight){
+void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
 
   v->Fill(jet->p, weight);
 
@@ -32,7 +33,7 @@ void jetHists::Fill(std::shared_ptr<jet> &jet, float weight){
     
 
   tracks->nTracks->Fill(jet->tracks.size(), weight);
-  for(trackPtr track: jet->tracks) 
+  for(const trackPtr& track: jet->tracks) 
     tracks->Fill(track, weight);
   
   return;

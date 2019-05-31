@@ -68,8 +68,8 @@ track::~track(){}
 //access tree
 trackData::trackData(std::string name, TChain* tree){
 
-  initBranch(tree, (name+"nTrack").c_str(), nTrack );    
-
+  //initBranch(tree, (name+"nTrack").c_str(), nTrack );    
+  std::cout << "Creating trackData " << name << std::endl;
   initBranch(tree, (name+"Track_dxy"                  ).c_str(),          dxy                   );
   initBranch(tree, (name+"Track_dz"                   ).c_str(),          dz                    );
   initBranch(tree, (name+"Track_dxyError"             ).c_str(),          dxyError              );
@@ -130,5 +130,7 @@ std::vector< std::shared_ptr<track> > trackData::getTracks(int nFirstTrack, int 
 
 
 
-trackData::~trackData(){}
+trackData::~trackData(){
+  std::cout << "track::destroyed " << std::endl;
+}
 

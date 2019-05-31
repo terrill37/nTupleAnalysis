@@ -31,10 +31,16 @@ jet::jet(UInt_t i, jetData* data){
   
   if(data->trkData){
     tracks = data->trkData->getTracks(nFirstTrack,nLastTrack);
-    for(trackPtr track: tracks){
+    for(const trackPtr& track: tracks){
       track->dR = track->p.DeltaR(p);
     }
   }
+
+
+  if(data->svData){
+    svs = data->svData->getSecondaryVertices(data->nFirstSV[i],data->nLastSV[i]);
+  }
+
 
 }
 
@@ -63,7 +69,8 @@ void jet::bRegression(){
   e   = p.E();
 }
 
-jet::~jet(){}
+jet::~jet(){
+}
 
 
 //access tree
@@ -83,17 +90,23 @@ jetData::jetData(std::string name, TChain* tree, std::string prefix){
   initBranch(tree, (prefix+name+"_btagDeepB"    ).c_str(), deepB     );
   initBranch(tree, (prefix+name+"_btagCSVV2"    ).c_str(), CSVv2     );
   initBranch(tree, (prefix+name+"_btagDeepFlavB").c_str(), deepFlavB );
-  //initBranch(tree, (name+"_").c_str(),  );
 
-  int nFirstTrackCode = initBranch(tree, (prefix+name+"_nFirstTrack").c_str(),  nFirstTrack);
-  int nLastTrackCode  = initBranch(tree, (prefix+name+"_nLastTrack" ).c_str(),  nLastTrack );
-  
   //
   //  only load the track if the variables are availible
   //
+  int nFirstTrackCode = initBranch(tree, (prefix+name+"_nFirstTrack").c_str(),  nFirstTrack);
+  int nLastTrackCode  = initBranch(tree, (prefix+name+"_nLastTrack" ).c_str(),  nLastTrack );
   if(nFirstTrackCode != -1 && nLastTrackCode != -1){
     trkData = new trackData(prefix, tree);
   }
+
+
+  int nFirstSVCode = initBranch(tree, (prefix+name+"_nFirstSV").c_str(),  nFirstSV);
+  int nLastSVCode  = initBranch(tree, (prefix+name+"_nLastSV" ).c_str(),  nLastSV );
+  if(nFirstSVCode != -1 && nLastSVCode != -1){
+    svData = new secondaryVertexData(prefix, tree);
+  }
+
 
 }
 
@@ -137,5 +150,7 @@ std::vector< std::shared_ptr<jet> > jetData::getJets(std::vector< std::shared_pt
 }
 
 
-jetData::~jetData(){}
+jetData::~jetData(){ 
+  std::cout << "jetData::destroyed " << std::endl;
+}
 

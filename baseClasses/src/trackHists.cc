@@ -98,7 +98,7 @@ void trackHists::makeHists(std::string name, TFileDirectory& dir, std::string ti
   trackOrigAlgo       = dir.make<TH1F>("origAlgo"  ,  "origAlgo;Track Original Algo", 40, -0.5,  39.5);  
 } 
 
-void trackHists::Fill(std::shared_ptr<track> &track, float weight){
+void trackHists::Fill(const std::shared_ptr<track> &track, float weight){
 
   v->Fill(track->p, weight);
 
@@ -154,22 +154,23 @@ void trackHists::Fill(std::shared_ptr<track> &track, float weight){
   trackAlgo            ->Fill(track->algo);
   trackOrigAlgo        ->Fill(track->originalAlgo);
 
-  if(track->matchedTrack != nullptr){
-    track_matched_dip2d       ->Fill(            track->IP2D  - track->matchedTrack->IP2D);
-    track_matched_phi_vs_dip2d->Fill(track->phi, track->IP2D  - track->matchedTrack->IP2D);
-    track_matched_eta_vs_dip2d->Fill(track->eta, track->IP2D  - track->matchedTrack->IP2D);
+  const nTupleAnalysis::trackPtr trackMatchedTrack = track->matchedTrack.lock();
+  if(trackMatchedTrack){
+    track_matched_dip2d       ->Fill(            track->IP2D  - trackMatchedTrack->IP2D);
+    track_matched_phi_vs_dip2d->Fill(track->phi, track->IP2D  - trackMatchedTrack->IP2D);
+    track_matched_eta_vs_dip2d->Fill(track->eta, track->IP2D  - trackMatchedTrack->IP2D);
     //track_matched_dPtRel   ->Fill(track.ptRel    - track.matchedTrack->ptRel);
     
-    float dPt = track->pt - track->matchedTrack->pt; 
+    float dPt = track->pt - trackMatchedTrack->pt; 
     track_matched_dMomentum->Fill(dPt);
-    float dEta = track->eta      - track->matchedTrack->eta;
+    float dEta = track->eta      - trackMatchedTrack->eta;
     track_matched_dEta     ->Fill(dEta, weight);
     track_matched_dEta_s   ->Fill(dEta, weight);
-    float dPhi = track->p.DeltaPhi(track->matchedTrack->p);
+    float dPhi = track->p.DeltaPhi(trackMatchedTrack->p);
     track_matched_dPhi     ->Fill(dPhi);
 
     //float matched_dEta = (track.eta-track.matchedTrack->eta);
-    float dR   = track->p.DeltaR(track->matchedTrack->p);
+    float dR   = track->p.DeltaR(trackMatchedTrack->p);
     track_matched_dR       ->Fill(dR, weight);
     track_matched_dR_s     ->Fill(dR, weight);
     
@@ -177,18 +178,19 @@ void trackHists::Fill(std::shared_ptr<track> &track, float weight){
     track_matched_dEta_vs_dPhi     ->Fill(dEta, dPhi);
   }
 
-  if(track->secondClosest != nullptr){
-    track_secondClosest_dEta     ->Fill(track->eta      - track->secondClosest->eta);
-    track_secondClosest_dEta_s   ->Fill(track->eta      - track->secondClosest->eta);
-    track_secondClosest_dMomentum->Fill(track->pt - track->secondClosest->pt); 
+  const nTupleAnalysis::trackPtr trackSecondClosest = track->secondClosest.lock();
+  if(trackSecondClosest){
+    track_secondClosest_dEta     ->Fill(track->eta      - trackSecondClosest->eta);
+    track_secondClosest_dEta_s   ->Fill(track->eta      - trackSecondClosest->eta);
+    track_secondClosest_dMomentum->Fill(track->pt - trackSecondClosest->pt); 
 
-    float secondClosest_dEta = track->eta-track->secondClosest->eta;
-    //float secondClosest_dPhi = track->p.DeltaPhi(track->secondClosest->p);
-    float secondClosest_dR   = track->p.DeltaR(track->secondClosest->p);
+    float secondClosest_dEta = track->eta-trackSecondClosest->eta;
+    //float secondClosest_dPhi = track->p.DeltaPhi(trackSecondClosest->p);
+    float secondClosest_dR   = track->p.DeltaR(trackSecondClosest->p);
     track_secondClosest_dR       ->Fill(secondClosest_dR);
     track_secondClosest_dR_s     ->Fill(secondClosest_dR);
-    track_secondClosest_dEta_vs_dMomentum->Fill(secondClosest_dEta, track->pt - track->secondClosest->pt);
-    track_dEta12->Fill(track->matchedTrack->eta - track->secondClosest->eta);
+    track_secondClosest_dEta_vs_dMomentum->Fill(secondClosest_dEta, track->pt - trackSecondClosest->pt);
+    track_dEta12->Fill(trackMatchedTrack->eta - trackSecondClosest->eta);
  }
 
 
@@ -196,7 +198,7 @@ void trackHists::Fill(std::shared_ptr<track> &track, float weight){
 }
 
 void 
-trackHists::FillMatchStats (std::shared_ptr<track> &track, float weight){
+trackHists::FillMatchStats (const std::shared_ptr<track> &track, float weight){
   nMatches->Fill(track->nMatches, weight);
   return;
 }

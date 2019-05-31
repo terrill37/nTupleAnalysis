@@ -26,7 +26,7 @@ namespace nTupleAnalysis {
     trackHists* tracks;
 
     jetHists(std::string, fwlite::TFileService&, std::string title = "");
-    void Fill(std::shared_ptr<jet>&, float);
+    void Fill(const std::shared_ptr<jet>&, float);
     ~jetHists(); 
 
   };

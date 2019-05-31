@@ -73,4 +73,6 @@ std::vector<std::shared_ptr<muon>> muonData::getMuons(float ptMin, float etaMax,
   return outputMuons;
 }
 
-muonData::~muonData(){}
+muonData::~muonData(){
+  std::cout << "muonData::destroyed " << std::endl;
+}

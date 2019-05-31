@@ -98,8 +98,8 @@ namespace nTupleAnalysis {
     trackHists(std::string, fwlite::TFileService&, std::string title = "");
 
     void makeHists(std::string, TFileDirectory&, std::string title);
-    void Fill(trackPtr&, float);
-    void FillMatchStats(trackPtr&, float);
+    void Fill(const trackPtr&, float);
+    void FillMatchStats(const trackPtr&, float);
 
     ~trackHists(); 
 

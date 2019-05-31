@@ -67,8 +67,8 @@ namespace nTupleAnalysis {
 
     float match_dR = -99;
     int   nMatches = 0;
-    std::shared_ptr<track>  matchedTrack  = nullptr;
-    std::shared_ptr<track>  secondClosest = nullptr;
+    std::weak_ptr<track>  matchedTrack;
+    std::weak_ptr<track>  secondClosest;
 
     track();
     track(UInt_t, trackData*); 
@@ -86,7 +86,7 @@ namespace nTupleAnalysis {
 
   public:
 
-    int   nTrack;
+    //int   nTrack;
     float dxy                   [100];
     float dz                    [100];
     float dxyError              [100];
