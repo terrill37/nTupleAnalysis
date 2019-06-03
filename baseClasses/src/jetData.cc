@@ -45,6 +45,23 @@ jet::jet(UInt_t i, jetData* data){
     trkTagVars = data->btagData->getTrkTagVars(data->nFirstTrkTagVar[i],data->nLastTrkTagVar[i]);
   }
 
+  //
+  // Hack to fix trkTagVas phi which is not filled in cmssw
+  //
+  //for(const trkTagVarPtr& trkTagVar: trkTagVars){
+  //  //std::cout << "Matching " << trkTagVar->trackEta << " " << trkTagVar->pt << std::endl;
+  //  for(const trackPtr& track: tracks){
+  //    //std::cout << "\t " << track->eta << " " << track->pt << std::endl;
+  //    if(fabs(track->eta - trkTagVar->trackEta) < 0.0001 && fabs(track->pt - trkTagVar->pt) < 0.0001){
+  //	trkTagVar->trackPhi = track->phi;
+  //	trkTagVar->p.SetPtEtaPhiM(trkTagVar->pt, trkTagVar->trackEta, trkTagVar->trackPhi, trkTagVar->m);
+  //	trkTagVar->e = p.E();
+  //	break;
+  //    }
+  //	
+  //  }
+  //}
+  
 
 }
 

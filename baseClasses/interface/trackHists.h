@@ -52,6 +52,7 @@ namespace nTupleAnalysis {
     TH1F* trackPhi           ;       
     TH1F* trackPPar          ;       
     TH1F* trackDeltaR        ;       
+    TH1F* trackDeltaR_l        ;       
     TH1F* trackEtaRel        ;       
     TH1F* trackPtRatio       ;       
     TH1F* trackPParRatio     ;       

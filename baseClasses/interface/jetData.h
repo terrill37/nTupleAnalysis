@@ -49,7 +49,7 @@ namespace nTupleAnalysis {
     std::vector<svPtr> svs;
 
     //
-    // SVs in Jet
+    // trkTag in Jet
     //
     std::vector<trkTagVarPtr> trkTagVars;
 

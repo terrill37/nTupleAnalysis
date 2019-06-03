@@ -59,9 +59,15 @@ namespace nTupleAnalysis {
 
   public:
 
-    float trackMomentum	   ;
+    float pt;
     float trackEta	   ;
     float trackPhi	   ;
+    float m;
+    float e;
+    TLorentzVector p;
+
+    float trackMomentum	   ;
+
     float trackPtRel	   ;
     float trackPPar	   ;
     float trackEtaRel	   ;
@@ -72,8 +78,8 @@ namespace nTupleAnalysis {
     float trackSip2dSig	   ;
     float trackSip3dVal	   ;
     float trackSip3dSig	   ;
-    float trackDecayLenVa  ;
-    float trackDecayLenSi  ;
+    float trackDecayLenVal ;
+    float trackDecayLenSig ;
     float trackJetDistVal  ;
     float trackJetDistSig  ;
     float trackChi2	   ;
@@ -141,8 +147,8 @@ namespace nTupleAnalysis {
     float trackSip2dSig	    [100];
     float trackSip3dVal	    [100];
     float trackSip3dSig	    [100];
-    float trackDecayLenVa   [100];
-    float trackDecayLenSi   [100];
+    float trackDecayLenVal  [100];
+    float trackDecayLenSig  [100];
     float trackJetDistVal   [100];
     float trackJetDistSig   [100];
     float trackChi2	    [100];

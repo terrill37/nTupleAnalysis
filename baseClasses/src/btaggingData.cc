@@ -1,7 +1,7 @@
 #include "TChain.h"
 
 #include "nTupleAnalysis/baseClasses/interface/btaggingData.h"
-
+#include <math.h>
 using namespace nTupleAnalysis;
 
 
@@ -47,10 +47,15 @@ secondaryVertex::~secondaryVertex(){}
 trkTagVar::trkTagVar(){}
 trkTagVar::trkTagVar(UInt_t i, btaggingData* data){
 
-
-  trackMomentum	        = data->trackMomentum	 [i];
   trackEta	        = data->trackEta	 [i];
+  trackMomentum	        = data->trackMomentum	 [i];
+  pt                    = trackMomentum/cosh(trackEta);
   trackPhi	        = data->trackPhi	 [i];
+  m   = 0.140;
+  p = TLorentzVector();
+  p.SetPtEtaPhiM(pt, trackEta, trackPhi, m);
+  e = p.E();
+
   trackPtRel	        = data->trackPtRel	 [i];
   trackPPar	        = data->trackPPar	 [i];
   trackEtaRel	        = data->trackEtaRel	 [i];
@@ -61,8 +66,8 @@ trkTagVar::trkTagVar(UInt_t i, btaggingData* data){
   trackSip2dSig	        = data->trackSip2dSig	 [i];
   trackSip3dVal	        = data->trackSip3dVal	 [i];
   trackSip3dSig	        = data->trackSip3dSig	 [i];
-  trackDecayLenVa       = data->trackDecayLenVa  [i];
-  trackDecayLenSi       = data->trackDecayLenSi  [i];
+  trackDecayLenVal      = data->trackDecayLenVal [i];
+  trackDecayLenSig      = data->trackDecayLenSig [i];
   trackJetDistVal       = data->trackJetDistVal  [i];
   trackJetDistSig       = data->trackJetDistSig  [i];
   trackChi2	        = data->trackChi2	 [i];
@@ -135,8 +140,8 @@ void btaggingData::initTrkTagVar(std::string name, TChain* tree){
   initBranch(tree, (name+"TagVar_trackSip2dSig"        ).c_str(),      trackSip2dSig    ); 
   initBranch(tree, (name+"TagVar_trackSip3dVal"        ).c_str(),      trackSip3dVal    ); 
   initBranch(tree, (name+"TagVar_trackSip3dSig"        ).c_str(),      trackSip3dSig    ); 
-  initBranch(tree, (name+"TagVar_trackDecayLenVal"     ).c_str(),      trackDecayLenVa  );
-  initBranch(tree, (name+"TagVar_trackDecayLenSig"     ).c_str(),      trackDecayLenSi  );
+  initBranch(tree, (name+"TagVar_trackDecayLenVal"     ).c_str(),      trackDecayLenVal );
+  initBranch(tree, (name+"TagVar_trackDecayLenSig"     ).c_str(),      trackDecayLenSig );
   initBranch(tree, (name+"TagVar_trackJetDistVal"      ).c_str(),      trackJetDistVal  );
   initBranch(tree, (name+"TagVar_trackJetDistSig"      ).c_str(),      trackJetDistSig  );
   initBranch(tree, (name+"TagVar_trackChi2"            ).c_str(),      trackChi2        );
@@ -162,7 +167,9 @@ std::vector<trkTagVarPtr> btaggingData::getTrkTagVars(int nFirstTrkTagVar, int n
   
   std::vector<trkTagVarPtr> outputTrkTagVars;
   for(int i = nFirstTrkTagVar; i < nLastTrkTagVar; ++i){
-    outputTrkTagVars.push_back(std::make_shared<trkTagVar>(trkTagVar(i, this)));
+    if(this->trackDeltaR[i] < 0.3){
+      outputTrkTagVars.push_back(std::make_shared<trkTagVar>(trkTagVar(i, this)));
+    }
   }
   return outputTrkTagVars;
 }

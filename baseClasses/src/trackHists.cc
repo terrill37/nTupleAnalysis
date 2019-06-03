@@ -55,6 +55,7 @@ void trackHists::makeHists(std::string name, TFileDirectory& dir, std::string ti
   trackPhi                   = dir.make<TH1F>("Phi"            ,    "trackPhi;track #phi;Entries", 100, -3.2, 3.2);            
   trackPPar                  = dir.make<TH1F>("PPar"           ,    "trackPPar;track PPar [GeV];Entries",60, 0, 60);           
   trackDeltaR                = dir.make<TH1F>("DeltaR"         ,    "trackDeltaR;track #DeltaR;Entries", 160, -0.05, 0.35);         
+  trackDeltaR_l              = dir.make<TH1F>("DeltaR_l"         ,    "trackDeltaR;track #DeltaR;Entries", 160, -0.05, 0.6);         
   trackEtaRel                = dir.make<TH1F>("EtaRel"         ,    "trackEtaRel;track Eta Rel;Entries", 100, 0, 7);         
   trackPtRatio               = dir.make<TH1F>("PtRatio"        ,    "trackPtRatio;track p_{T} Ratio;Entries", 100, -0.01, 0.3); 
   trackPParRatio             = dir.make<TH1F>("PParRatio"      ,    "trackPParRatio;track P Par Ratio;Entries", 100, 0.95, 1.02);  
@@ -90,7 +91,7 @@ void trackHists::makeHists(std::string name, TFileDirectory& dir, std::string ti
   track_secondClosest_dEta_vs_dMomentum = dir.make<TH2F>("secondClosest_dEta_vs_dMomentum", "dEta_vs_dMomentum;#eta-#eta^{secondClosest};p-p^{secondClosest} [GeV]",100,-0.01,0.01,100,-5,5);
   track_dEta12 = dir.make<TH1F>("dEta12", "track_dEta12;#eta^{matched}-#eta^{second closest};Entries", 500, -0.1, 0.1);
 
-  nTracks         = dir.make<TH1F>("nTracks",     ("nTracks;    " +title+" Number of Tracks; Entries").c_str(),  10,-0.5,9.5);
+  nTracks         = dir.make<TH1F>("nTracks",     ("nTracks;    " +title+" Number of Tracks; Entries").c_str(),  20,-0.5,19.5);
   trackCharge     = dir.make<TH1F>("charge",     ("charge;    " +title+" Charge; Entries").c_str(),  3,-1.5,1.5);
   trackIsFromSV   = dir.make<TH1F>("IsFromSV"  ,  "IsFromSV;Is from SV;Entries", 2, -0.5,  1.5);  
   trackIsFromV0   = dir.make<TH1F>("IsFromV0"  ,  "IsFromV0;Is from V0;Entries", 2, -0.5,  1.5);  
@@ -141,7 +142,8 @@ void trackHists::Fill(const std::shared_ptr<track> &track, float weight){
   trackEta             ->Fill(eta        ,weight);
   trackPhi             ->Fill(track->p.Phi()        ,weight);
   //trackPPar            ->Fill(track->pPar       ,weight);
-  //trackDeltaR          ->Fill(track->dR         ,weight);
+  trackDeltaR          ->Fill(track->dR         ,weight);
+  trackDeltaR_l          ->Fill(track->dR         ,weight);
   //trackEtaRel          ->Fill(track->etaRel     ,weight);
   //trackPtRatio         ->Fill(track->ptRatio    ,weight);
   //trackPParRatio       ->Fill(track->pParRatio  ,weight);

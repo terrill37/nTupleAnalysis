@@ -8,7 +8,7 @@
 #include "nTupleAnalysis/baseClasses/interface/jetData.h"
 #include "nTupleAnalysis/baseClasses/interface/fourVectorHists.h"
 #include "nTupleAnalysis/baseClasses/interface/trackHists.h"
-#include "nTupleAnalysis/baseClasses/interface/secondaryVertexHists.h"
+#include "nTupleAnalysis/baseClasses/interface/btaggingHists.h"
 
 namespace nTupleAnalysis {
 
@@ -25,7 +25,7 @@ namespace nTupleAnalysis {
     TH1F* nTrksExpected;
 
     trackHists* tracks;
-    secondaryVertexHists* svs;
+    btaggingHists* btags;
 
     jetHists(std::string, fwlite::TFileService&, std::string title = "");
     void Fill(const std::shared_ptr<jet>&, float);
