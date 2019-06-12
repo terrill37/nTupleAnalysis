@@ -2,6 +2,7 @@
 
 #include "nTupleAnalysis/baseClasses/interface/jetData.h"
 
+
 using namespace nTupleAnalysis;
 
 
@@ -24,15 +25,58 @@ jet::jet(UInt_t i, jetData* data){
 
   deepB     = data->deepB[i];
   CSVv2     = data->CSVv2[i];
+  // Normalizize the underflow
+  if(CSVv2 < 0) 
+    CSVv2 = -0.1; 
+
   deepFlavB = data->deepFlavB[i];
+
+
+  ntracks        = data->ntracks        [i];
+  nseltracks     = data->nseltracks     [i];
+
+  //CombIVF_N      = data->CombIVF_N      [i];
+  SoftMu         = data->SoftMu         [i];
+  if(SoftMu < 0) 
+    SoftMu = -0.1; 
+
+  SoftEl         = data->SoftEl         [i];
+  if(SoftEl < 0) 
+    SoftEl = -0.1; 
+
+
+  nSM            = data->nSM            [i];
+  nSE            = data->nSE            [i];
+  looseID        = data->looseID        [i];
+  tightID        = data->tightID        [i];
+  DeepCSVb       = data->DeepCSVb       [i];
+  DeepCSVc       = data->DeepCSVc       [i];
+  DeepCSVl       = data->DeepCSVl       [i];
+  DeepCSVbb      = data->DeepCSVbb      [i];
+
+  DeepCSV = DeepCSVb+DeepCSVbb;
+  if(DeepCSV < 0)
+    DeepCSV = -0.1;
+
+  flavour        = data->flavour        [i];
+  flavourCleaned = data->flavourCleaned [i];
+  partonFlavour  = data->partonFlavour  [i];
+  hadronFlavour  = data->hadronFlavour  [i];
+  nbHadrons      = data->nbHadrons      [i];
+  ncHadrons      = data->ncHadrons      [i];
+
 
   nFirstTrack = data->nFirstTrack[i];
   nLastTrack = data->nLastTrack[i];
   
   if(data->trkData){
-    tracks = data->trkData->getTracks(nFirstTrack,nLastTrack);
-    for(const trackPtr& track: tracks){
+    std::vector<trackPtr> tracksTmp = data->trkData->getTracks(nFirstTrack,nLastTrack);
+    for(const trackPtr& track: tracksTmp){
       track->dR = track->p.DeltaR(p);
+      track->ptRel = track->p.Vect().Perp(p.Vect().Unit());
+      track->pPar  = track->p.Vect().Dot(p.Vect().Unit());
+      if(track->dR < 0.3)
+	tracks.push_back(track);
     }
   }
 
@@ -45,23 +89,50 @@ jet::jet(UInt_t i, jetData* data){
     trkTagVars = data->btagData->getTrkTagVars(data->nFirstTrkTagVar[i],data->nLastTrkTagVar[i]);
   }
 
+  if(data->btagData->haveTagVars){
+    tagVars = data->btagData->getTagVars(i);
+  }
+
+
   //
   // Hack to fix trkTagVas phi which is not filled in cmssw
   //
-  //for(const trkTagVarPtr& trkTagVar: trkTagVars){
-  //  //std::cout << "Matching " << trkTagVar->trackEta << " " << trkTagVar->pt << std::endl;
-  //  for(const trackPtr& track: tracks){
-  //    //std::cout << "\t " << track->eta << " " << track->pt << std::endl;
-  //    if(fabs(track->eta - trkTagVar->trackEta) < 0.0001 && fabs(track->pt - trkTagVar->pt) < 0.0001){
-  //	trkTagVar->trackPhi = track->phi;
-  //	trkTagVar->p.SetPtEtaPhiM(trkTagVar->pt, trkTagVar->trackEta, trkTagVar->trackPhi, trkTagVar->m);
-  //	trkTagVar->e = p.E();
-  //	break;
-  //    }
-  //	
-  //  }
-  //}
+  for(const trkTagVarPtr& trkTagVar: trkTagVars){
+    //std::cout << "Matching " << trkTagVar->trackEta << " " << trkTagVar->pt << std::endl;
+    for(const trackPtr& track: tracks){
+      //std::cout << "\t " << track->eta << " " << track->pt << std::endl;
+      if(fabs(track->eta - trkTagVar->trackEta) < 0.001 && fabs(track->pt - trkTagVar->pt) < 0.001){
+  	trkTagVar->trackPhi = track->phi;
+  	trkTagVar->p.SetPtEtaPhiM(trkTagVar->pt, trkTagVar->trackEta, trkTagVar->trackPhi, trkTagVar->m);
+  	trkTagVar->e = p.E();
+  	break;
+      }
+      
+    }
+  }
+
+
+  for(const trkTagVarPtr& trkTagVar: trkTagVars){
+    //std::cout << "Matching " << trkTagVar->trackEta << " " << trkTagVar->pt << std::endl;
+    for(const trackPtr& track: tracks){
+      
+      if(track->p.DeltaR(trkTagVar->p) < 0.01){
+	trkTagVar->hasTrackMatch = true;
+	trkTagVar->matchIsFromV0 = track->isfromV0;
+	track->hasTrkTagVarMatch = true;
+      }
+    }
+  }
+
+
+
+
   
+//  std::cout << data->m_prefix+data->m_name << std::endl;
+//  std::cout << "\t Jet Level: " << ntracks << " " << nseltracks << std::endl;
+//  std::cout << "\t tracks " << tracks.size() << std::endl;
+//  std::cout << "\t trkTagVars " << trkTagVars.size() << std::endl;
+//  std::cout << "\t tagVars " << tagVars->jetNTracks <<std::endl;
 
 }
 
@@ -97,6 +168,9 @@ jet::~jet(){
 //access tree
 jetData::jetData(std::string name, TChain* tree, std::string prefix){
 
+  m_name = name;
+  m_prefix = prefix;
+
   initBranch(tree, (prefix+"n"+name).c_str(), n );
 
   initBranch(tree, (prefix+name+"_cleanmask").c_str(), cleanmask );
@@ -109,8 +183,34 @@ jetData::jetData(std::string name, TChain* tree, std::string prefix){
   initBranch(tree, (prefix+name+"_bRegCorr").c_str(), bRegCorr );  
 
   initBranch(tree, (prefix+name+"_btagDeepB"    ).c_str(), deepB     );
-  initBranch(tree, (prefix+name+"_btagCSVV2"    ).c_str(), CSVv2     );
+
+  if(initBranch(tree, (prefix+name+"_btagCSVV2"    ).c_str(), CSVv2     ) == -1){
+    std::cout << "\tUsing " << (prefix+name+"_CombIVF"        ) << " for CSVc2 " << std::endl;
+    initBranch(tree, (prefix+name+"_CombIVF"        ).c_str(),         CSVv2        ); 
+  }
+  
   initBranch(tree, (prefix+name+"_btagDeepFlavB").c_str(), deepFlavB );
+
+  initBranch(tree, (prefix+name+"_ntracks"        ).c_str(),         ntracks        );
+  initBranch(tree, (prefix+name+"_nseltracks"     ).c_str(),         nseltracks     );
+  initBranch(tree, (prefix+name+"_flavour"        ).c_str(),         flavour        ); 
+  initBranch(tree, (prefix+name+"_flavourCleaned" ).c_str(),         flavourCleaned );
+  initBranch(tree, (prefix+name+"_partonFlavour"  ).c_str(),         partonFlavour  );
+  initBranch(tree, (prefix+name+"_hadronFlavour"  ).c_str(),         hadronFlavour  );
+  initBranch(tree, (prefix+name+"_nbHadrons"      ).c_str(),         nbHadrons      );
+  initBranch(tree, (prefix+name+"_ncHadrons"      ).c_str(),         ncHadrons      );
+
+  initBranch(tree, (prefix+name+"_SoftMu"         ).c_str(),         SoftMu         ); 
+  initBranch(tree, (prefix+name+"_SoftEl"         ).c_str(),         SoftEl         ); 
+  initBranch(tree, (prefix+name+"_nSM"            ).c_str(),         nSM            ); 
+  initBranch(tree, (prefix+name+"_nSE"            ).c_str(),         nSE            ); 
+  initBranch(tree, (prefix+name+"_looseID"        ).c_str(),         looseID        ); 
+  initBranch(tree, (prefix+name+"_tightID"        ).c_str(),         tightID        ); 
+  initBranch(tree, (prefix+name+"_DeepCSVb"       ).c_str(),         DeepCSVb       );
+  initBranch(tree, (prefix+name+"_DeepCSVc"       ).c_str(),         DeepCSVc       );
+  initBranch(tree, (prefix+name+"_DeepCSVl"       ).c_str(),         DeepCSVl       );
+  initBranch(tree, (prefix+name+"_DeepCSVbb"      ).c_str(),         DeepCSVbb      );
+
 
   //
   //  only load the track if the variables are availible
@@ -126,6 +226,7 @@ jetData::jetData(std::string name, TChain* tree, std::string prefix){
   //  Load the btagging data
   //
   btagData = new btaggingData();
+  btagData->initTagVar(prefix, tree);  
 
   int nFirstSVCode = initBranch(tree, (prefix+name+"_nFirstSV").c_str(),  nFirstSV);
   int nLastSVCode  = initBranch(tree, (prefix+name+"_nLastSV" ).c_str(),  nLastSV );
@@ -138,7 +239,7 @@ jetData::jetData(std::string name, TChain* tree, std::string prefix){
   if(nFirstTrkTagVarCode != -1 && nLastTrkTagVarCode != -1){
     btagData->initTrkTagVar(prefix, tree);
   }
-  
+
 
 }
 

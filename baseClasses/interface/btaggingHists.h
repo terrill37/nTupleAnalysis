@@ -7,6 +7,7 @@
 #include <TH2F.h>
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "nTupleAnalysis/baseClasses/interface/btaggingData.h"
+#include "nTupleAnalysis/baseClasses/interface/jetData.h"
 
 namespace nTupleAnalysis {
 
@@ -32,6 +33,9 @@ namespace nTupleAnalysis {
     TH1F*   sv_Phi        ;
     TH1F*   sv_DistJetAxis;
     TH1F*   sv_nSVs;
+    TH1F*   sv_boostOverSqrtJetPt;
+    TH1F*   sv_massVertexEnergyFraction;
+    TH1F*   sv_totCharge;
 
     //TrkTagVar Hists
     TH1F* trkTag_ip3d_l ;
@@ -68,14 +72,36 @@ namespace nTupleAnalysis {
     TH1F* trkTag_trackNTotalHits    ;       
     TH1F* trkTag_trackNPixelHits    ;       
     TH1F* trkTag_nTracks;
+    TH1F* trkTag_isFromV0  ;
+
+    TH1F*   tag_jetNTracks                      ;
+    TH1F*   tag_jetNSecondaryVertices              ;
+    TH1F*   tag_chargedMultiplicity             ;
+    TH1F*   tag_chargedHadronEnergyFraction     ;
+    TH1F*   tag_chargedHadronMultiplicity       ;
+    TH1F*   tag_chargedEmEnergyFraction         ;
+    TH1F*   tag_neutralMultiplicity             ;
+    TH1F*   tag_neutralHadronEnergyFraction     ;
+    TH1F*   tag_neutralHadronMultiplicity       ;
+    TH1F*   tag_neutralEmEnergyFraction         ;
+    TH1F*   tag_photonMultiplicity              ;
+    TH1F*   tag_photonEnergyFraction            ;
+    TH1F*   tag_muonMultiplicity                ;
+    TH1F*   tag_muonEnergyFraction              ;
+    TH1F*   tag_elecMultiplicity                ;
+    TH1F*   tag_elecEnergyFraction              ;
+    TH1F*   tag_totalMultiplicity               ;
+
 
     btaggingHists(std::string,       TFileDirectory&, std::string title = "");
     btaggingHists(std::string, fwlite::TFileService&, std::string title = "");
 
     void makeHists(std::string, TFileDirectory&, std::string title);
-    void FillSVHists(const svPtr&, float);
+    void FillSVHists(const svPtr&, const jetPtr&, float);
 
     void FillTrkTagVarHists(const trkTagVarPtr&, float);
+
+    void FillTagVarHists(const tagVarPtr &, float );
 
     ~btaggingHists(); 
 

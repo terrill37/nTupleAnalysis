@@ -23,7 +23,6 @@ namespace nTupleAnalysis {
     float m;
     float e;
     TLorentzVector p;
-    float dR                   ;
 
     float dxy                  ;
     float dz                   ;
@@ -65,10 +64,16 @@ namespace nTupleAnalysis {
     float TPAssociationQuality ;
     int   idxMatchedTP         ;
 
+    float dR                   ;
+    float ptRel                   ;
+    float pPar                   ;
+
     float match_dR = -99;
     int   nMatches = 0;
     std::weak_ptr<track>  matchedTrack;
     std::weak_ptr<track>  secondClosest;
+
+    bool hasTrkTagVarMatch = false;
 
     track();
     track(UInt_t, trackData*); 

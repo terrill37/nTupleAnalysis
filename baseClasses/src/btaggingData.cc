@@ -9,6 +9,8 @@ using namespace nTupleAnalysis;
 //secondaryVertex object
 secondaryVertex::secondaryVertex(){}
 secondaryVertex::secondaryVertex(UInt_t i, btaggingData* data){
+
+
   x                    = data->sv_x                 [i];
   y                    = data->sv_y                 [i];
   z                    = data->sv_z                 [i];
@@ -36,6 +38,11 @@ secondaryVertex::secondaryVertex(UInt_t i, btaggingData* data){
   dir_y                = data->sv_dir_y             [i];
   dir_z                = data->sv_dir_z             [i];
 
+  p = TLorentzVector();
+  p.SetPtEtaPhiM(vtx_pt, vtx_eta, vtx_phi, mass);
+  e = p.E();
+
+
 }
 
 
@@ -43,7 +50,7 @@ secondaryVertex::~secondaryVertex(){}
 
 
 
-//secondaryVertex object
+//trkTag object
 trkTagVar::trkTagVar(){}
 trkTagVar::trkTagVar(UInt_t i, btaggingData* data){
 
@@ -79,6 +86,40 @@ trkTagVar::trkTagVar(UInt_t i, btaggingData* data){
 
 
 trkTagVar::~trkTagVar(){}
+
+
+//tagVar object
+tagVar::tagVar(){}
+tagVar::tagVar(UInt_t i, btaggingData* data){
+
+  jetNTracks            = data-> jetNTracks               [i];
+  jetNSecondaryVertices = data-> jetNSecondaryVertices    [i];
+
+  chargedMultiplicity         = data-> chargedMultiplicity      [i];
+  chargedHadronEnergyFraction = data-> chargedHadronEnergyFraction      [i];
+  chargedHadronMultiplicity   = data-> chargedHadronMultiplicity      [i];
+  chargedEmEnergyFraction     = data-> chargedEmEnergyFraction      [i];
+
+  neutralMultiplicity   = data-> neutralMultiplicity      [i];
+  neutralHadronEnergyFraction = data-> neutralHadronEnergyFraction      [i];
+  neutralHadronMultiplicity = data-> neutralHadronMultiplicity      [i];
+  neutralEmEnergyFraction = data->neutralEmEnergyFraction [i];
+
+  photonEnergyFraction  = data-> photonEnergyFraction     [i];
+  photonMultiplicity    = data-> photonMultiplicity       [i];
+
+  muonEnergyFraction    = data-> muonEnergyFraction       [i];
+  muonMultiplicity      = data-> muonMultiplicity         [i];
+
+  electronEnergyFraction  = data-> electronEnergyFraction     [i];
+  electronMultiplicity  = data-> electronMultiplicity     [i];
+
+  numberOfDaughters     = data-> numberOfDaughters        [i];
+
+}
+
+
+tagVar::~tagVar(){}
 
 
 
@@ -152,6 +193,30 @@ void btaggingData::initTrkTagVar(std::string name, TChain* tree){
 
 }
 
+//access tree
+void btaggingData::initTagVar(std::string name, TChain* tree){
+
+  haveTagVars = true;
+
+  initBranch(tree, (name+"TagVar_jetNTracks"            ).c_str(),    jetNTracks            );
+  initBranch(tree, (name+"TagVar_jetNSecondaryVertices" ).c_str(),    jetNSecondaryVertices );
+
+  initBranch(tree, (name+"TagVar_chargedMultiplicity"        ).c_str(), chargedMultiplicity            );
+  initBranch(tree, (name+"TagVar_chargedHadronEnergyFraction").c_str(), chargedHadronEnergyFraction    );
+  initBranch(tree, (name+"TagVar_chargedHadronMultiplicity"  ).c_str(), chargedHadronMultiplicity      );
+  initBranch(tree, (name+"TagVar_chargedEmEnergyFraction"    ).c_str(), chargedEmEnergyFraction        );
+  initBranch(tree, (name+"TagVar_neutralMultiplicity"        ).c_str(), neutralMultiplicity            );
+  initBranch(tree, (name+"TagVar_neutralHadronEnergyFraction").c_str(), neutralHadronEnergyFraction    );
+  initBranch(tree, (name+"TagVar_neutralHadronMultiplicity"  ).c_str(), neutralHadronMultiplicity      );
+  initBranch(tree, (name+"TagVar_neutralEmEnergyFraction"    ).c_str(), neutralEmEnergyFraction        );
+  initBranch(tree, (name+"TagVar_photonEnergyFraction"       ).c_str(), photonEnergyFraction           );
+  initBranch(tree, (name+"TagVar_photonMultiplicity"         ).c_str(), photonMultiplicity             );
+  initBranch(tree, (name+"TagVar_muonEnergyFraction"         ).c_str(), muonEnergyFraction             );
+  initBranch(tree, (name+"TagVar_muonMultiplicity"           ).c_str(), muonMultiplicity               );
+  initBranch(tree, (name+"TagVar_electronEnergyFraction"     ).c_str(), electronEnergyFraction         );
+  initBranch(tree, (name+"TagVar_electronMultiplicity"       ).c_str(), electronMultiplicity           );
+  initBranch(tree, (name+"TagVar_numberOfDaughters"          ).c_str(), numberOfDaughters              );
+}
 
 std::vector< std::shared_ptr<secondaryVertex> > btaggingData::getSecondaryVertices(int nFirstSV, int nLastSV){
   
@@ -167,11 +232,17 @@ std::vector<trkTagVarPtr> btaggingData::getTrkTagVars(int nFirstTrkTagVar, int n
   
   std::vector<trkTagVarPtr> outputTrkTagVars;
   for(int i = nFirstTrkTagVar; i < nLastTrkTagVar; ++i){
-    if(this->trackDeltaR[i] < 0.3){
+    if(this->trackDeltaR[i] < 0.3 && fabs(this->trackJetDistVal[i]) < 0.07 && this->trackDecayLenVal[i] < 5 ){
       outputTrkTagVars.push_back(std::make_shared<trkTagVar>(trkTagVar(i, this)));
     }
   }
   return outputTrkTagVars;
+}
+
+
+
+tagVarPtr btaggingData::getTagVars(int jetIdx){
+  return std::make_shared<tagVar>(tagVar(jetIdx, this));
 }
 
 

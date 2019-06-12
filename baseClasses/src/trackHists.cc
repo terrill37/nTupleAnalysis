@@ -41,7 +41,7 @@ void trackHists::makeHists(std::string name, TFileDirectory& dir, std::string ti
   ip2d_err_l = dir.make<TH1F>("ip2d_err_l","ip2d err;IP2D uncertianty [cm]",100,-0.01,0.1);
   ip2d_err   = dir.make<TH1F>("ip2d_err",  "ip2d err;IP2D uncertianty [cm]",100,-0.001,0.01);
     
-  trackDecayLenVal_l         = dir.make<TH1F>("DecayLenVal_l"  ,    "trackDecayLenVal;trackDecayLenVal [cm];Entries", 100, -0.1,  5);
+  trackDecayLenVal_l         = dir.make<TH1F>("DecayLenVal_l"  ,    "trackDecayLenVal;trackDecayLenVal [cm];Entries", 100, -0.1,  6);
   trackDecayLenVal           = dir.make<TH1F>("DecayLenVal"    ,    "trackDecayLenVal;trackDecayLenVal [cm];Entries", 100, -0.1,  0.5);
   trackJetDistVal            = dir.make<TH1F>("JetDistVal"     ,    "trackJetDistVal;trackJetDistVal [cm];Entries",  100, -0.1,0.01);      
   trackPtRel                 = dir.make<TH1F>("PtRel"          ,    "trackPtRel;track p_{T} Rel [GeV];Entries", 100, -0.1, 7);          
@@ -135,18 +135,18 @@ void trackHists::Fill(const std::shared_ptr<track> &track, float weight){
   trackDecayLenVal_l   ->Fill(track->length,weight);
   trackDecayLenVal     ->Fill(track->length,weight);
   trackJetDistVal      ->Fill(track->dist ,weight);
-  //trackPtRel           ->Fill(track->ptRel      ,weight);
+  trackPtRel           ->Fill(track->ptRel      ,weight);
 
-  trackMomentum        ->Fill(pt   ,weight); 
+  trackMomentum        ->Fill(track->p.P()   ,weight); 
   trackPt_logx         ->Fill(pt         ,weight); 
   trackEta             ->Fill(eta        ,weight);
   trackPhi             ->Fill(track->p.Phi()        ,weight);
-  //trackPPar            ->Fill(track->pPar       ,weight);
+  trackPPar            ->Fill(track->pPar       ,weight);
   trackDeltaR          ->Fill(track->dR         ,weight);
   trackDeltaR_l          ->Fill(track->dR         ,weight);
   //trackEtaRel          ->Fill(track->etaRel     ,weight);
-  //trackPtRatio         ->Fill(track->ptRatio    ,weight);
-  //trackPParRatio       ->Fill(track->pParRatio  ,weight);
+  trackPtRatio         ->Fill(track->ptRel/ track->p.P()    ,weight);
+  trackPParRatio       ->Fill(track->pPar / track->p.P()  ,weight);
 
   trackChi2                  ->Fill(track->chi2      ,weight);
   trackNTotalHits            ->Fill(track->nHitAll,weight); 

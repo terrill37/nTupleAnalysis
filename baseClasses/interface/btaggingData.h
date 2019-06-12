@@ -16,6 +16,8 @@ namespace nTupleAnalysis {
   class secondaryVertex {
 
   public:
+    float e;
+    TLorentzVector p;
 
     float x                 ;
     float y                 ;
@@ -85,6 +87,10 @@ namespace nTupleAnalysis {
     float trackChi2	   ;
     float trackNTotalHits  ;
     float trackNPixelHits  ;
+    bool  hasTrackMatch = false;
+    int   matchIsFromV0 = -99;
+
+    std::weak_ptr<trkTagVar>  matchedTrkTagVar;
 
 
     trkTagVar();
@@ -96,6 +102,42 @@ namespace nTupleAnalysis {
   };
 
   typedef std::shared_ptr<trkTagVar> trkTagVarPtr;
+
+  class tagVar {
+
+  public:
+
+
+    int   jetNTracks            ;
+    int   jetNSecondaryVertices ;
+
+    int   chargedMultiplicity         ;
+    float chargedHadronEnergyFraction ;
+    int   chargedHadronMultiplicity   ;
+    float chargedEmEnergyFraction     ;
+    int   neutralMultiplicity         ;
+    float neutralHadronEnergyFraction ;
+    int   neutralHadronMultiplicity   ;
+    float neutralEmEnergyFraction     ;
+    float photonEnergyFraction        ;   
+    int   photonMultiplicity          ;   
+    float muonEnergyFraction          ;   
+    int   muonMultiplicity            ;   
+    float electronEnergyFraction      ;   
+    int   electronMultiplicity        ;   
+    int   numberOfDaughters           ;   
+
+
+    tagVar();
+    tagVar(UInt_t, btaggingData*); 
+
+    ~tagVar(); 
+
+    //void dump();
+  };
+
+  typedef std::shared_ptr<tagVar> tagVarPtr;
+
 
 
 
@@ -155,6 +197,25 @@ namespace nTupleAnalysis {
     float trackNTotalHits   [100];
     float trackNPixelHits   [100];
 
+    bool  haveTagVars = false;
+    int   jetNTracks            [100];
+    int   jetNSecondaryVertices [100];
+    int   chargedMultiplicity         [100];
+    float chargedHadronEnergyFraction [100];
+    int   chargedHadronMultiplicity   [100];
+    float chargedEmEnergyFraction     [100];
+    int   neutralMultiplicity         [100];
+    float neutralHadronEnergyFraction [100];
+    int   neutralHadronMultiplicity   [100];
+    float neutralEmEnergyFraction     [100];
+    float photonEnergyFraction        [100];   
+    int   photonMultiplicity          [100];   
+    float muonEnergyFraction          [100];   
+    int   muonMultiplicity            [100];   
+    float electronEnergyFraction      [100];   
+    int   electronMultiplicity        [100];   
+    int   numberOfDaughters           [100];   
+
 
     btaggingData(); 
 
@@ -163,6 +224,9 @@ namespace nTupleAnalysis {
 
     void initTrkTagVar(std::string name, TChain* tree);
     std::vector<trkTagVarPtr> getTrkTagVars(int nFirstTrkTagVar, int nLastTrkTagVar);
+
+    void initTagVar(std::string name, TChain* tree);
+    tagVarPtr getTagVars(int jetIdx);
 
     ~btaggingData(); 
 

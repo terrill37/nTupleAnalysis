@@ -35,6 +35,28 @@ namespace nTupleAnalysis {
     float deepFlavB;
 
 
+    int ntracks        ;
+    int nseltracks     ;
+    float SoftMu       ;
+    float SoftEl       ;
+    int nSM            ;
+    int nSE            ;
+    int looseID        ;
+    int tightID        ;
+    float DeepCSV      ;
+    float DeepCSVb     ;
+    float DeepCSVc     ;
+    float DeepCSVl     ;
+    float DeepCSVbb    ;
+
+    // truth Info
+    int flavour        ;
+    int flavourCleaned ;
+    int partonFlavour  ;
+    int hadronFlavour  ;
+    int nbHadrons      ;
+    int ncHadrons      ;
+
 
     //
     //  Tracks in Jet
@@ -52,6 +74,11 @@ namespace nTupleAnalysis {
     // trkTag in Jet
     //
     std::vector<trkTagVarPtr> trkTagVars;
+
+    //
+    // tag vars in Jet
+    //
+    tagVarPtr tagVars;
 
 
     //
@@ -79,6 +106,9 @@ namespace nTupleAnalysis {
   class jetData {
 
   public:
+    std::string m_name ="";
+    std::string m_prefix ="";
+
     UInt_t n;
     //ULong64_t n;
 
@@ -94,6 +124,29 @@ namespace nTupleAnalysis {
     float deepB[100];
     float CSVv2[100];
     float deepFlavB[100];
+
+
+    int ntracks        [100];
+    int nseltracks     [100];
+    float SoftMu       [100];
+    float SoftEl       [100];
+    int nSM            [100];
+    int nSE            [100];
+    int looseID        [100];
+    int tightID        [100];
+    float DeepCSVb     [100];
+    float DeepCSVc     [100];
+    float DeepCSVl     [100];
+    float DeepCSVbb    [100];
+
+    // truth Info
+    int flavour        [100];
+    int flavourCleaned [100];
+    int partonFlavour  [100];
+    int hadronFlavour  [100];
+    int nbHadrons      [100];
+    int ncHadrons      [100];
+
 
     int nFirstTrack[100];
     int nLastTrack[100];

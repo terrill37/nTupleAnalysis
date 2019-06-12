@@ -2,6 +2,7 @@
 
 using namespace nTupleAnalysis;
 
+
 btaggingHists::btaggingHists(std::string name, fwlite::TFileService& fs, std::string title) {
   TFileDirectory dir = fs.mkdir(name);
   this->makeHists(name, dir, title);
@@ -30,9 +31,11 @@ void btaggingHists::makeHists(std::string name, TFileDirectory& dir, std::string
   sv_Pt             = dir.make<TH1F>("sv_Pt         "            ,"Pt         ;Vertex Pt          "             ,100, -0.1, 100);
   sv_Eta            = dir.make<TH1F>("sv_Eta        "            ,"Eta        ;Vertex Eta         "             ,100, -2.5, 2.5);
   sv_Phi            = dir.make<TH1F>("sv_Phi        "            ,"Phi        ;Vertex Phi         "             ,100, -3.2, 3.2);
-  sv_DistJetAxis    = dir.make<TH1F>("sv_DistJetAxis"            ,"DistJetAxis;Vertex DistJetAxis "             ,100, -0.1, 10);
+  sv_DistJetAxis    = dir.make<TH1F>("sv_DistJetAxis"            ,"DistJetAxis;Vertex DistJetAxis "             ,100, -0.1, 4e-3);
   sv_nSVs           = dir.make<TH1F>("sv_nSVs",     ("nSVs;    " +title+" Number of Sec. Verticies; Entries").c_str(),  10,-0.5,9.5);
-
+  sv_boostOverSqrtJetPt         = dir.make<TH1F>("sv_BoostOverSqrtJetPt"     ,"vertexBoostOverSqrtJetPt;Vertex Boost/#sqrt{jet P_{T}}"      ,100, -0.1, 1.1);
+  sv_massVertexEnergyFraction   = dir.make<TH1F>("sv_massVertexEnergyFraction"     ,"massVertexEnergyFraction;massVertexEnergyFraction"      ,100, -0.1,2.5);
+  sv_totCharge   = dir.make<TH1F>("sv_totCharge"     ,"totCharge;totCharge"      ,11, -5.5,5.5);
 
 
   trkTag_ip3d_l = dir.make<TH1F>("ip3d_l","ip3d;IP3D [cm]",100,-0.2,0.2);
@@ -71,9 +74,38 @@ void btaggingHists::makeHists(std::string name, TFileDirectory& dir, std::string
   trkTag_trackNTotalHits            = dir.make<TH1F>("trackNTotalHits"      ,    "trackNTotalHits;trackNTotalHits;Entries", 30, -0.5, 29.5);
   trkTag_trackNPixelHits            = dir.make<TH1F>("trackNPixelHits"      ,    "trackNPixelHits;trackNPixelHits;Entries", 10, -0.5,  9.5);  
   trkTag_nTracks                    = dir.make<TH1F>("nTracks",     ("nTrkTags;    " +title+" Number of Tracks; Entries").c_str(),  20,-0.5,19.5);
+  trkTag_isFromV0                    = dir.make<TH1F>("trackIsFromV0"  ,  "IsFromV0;Is from V0;Entries", 2, -0.5,  1.5);  
+
+
+
+  tag_jetNTracks                       = dir.make<TH1F>("jetNTracks"                   ,"jetNTracks;Number Tracks"                    ,42, -1.5, 40.5);
+  tag_jetNSecondaryVertices               = dir.make<TH1F>("jetNSecondaryVertices"           ,"jetNSelectedTracks;Number Selected Tracks"            ,42, -1.5, 40.5);
+
+  tag_chargedMultiplicity               = dir.make<TH1F>("chargedMultiplicity"           ,"chargedMultiplicity;charged multiplicity"            ,42, -1.5, 40.5);
+  tag_chargedHadronEnergyFraction       = dir.make<TH1F>("chargedHadronEnergyFraction"         ,"chargedHadronEnergyFraction;charged Hadron energy fraction"          ,100, -0.1,1.5);
+  tag_chargedHadronMultiplicity         = dir.make<TH1F>("chargedHadronMultiplicity"           ,"chargedHadronMultiplicity;charged hadron multiplicity"            ,42, -1.5, 40.5);
+  tag_chargedEmEnergyFraction           = dir.make<TH1F>("chargedEmEnergyFraction"         ,"chargedEmEnergyFraction;charged Em energy fraction"          ,100, -0.1,1.5);
+
+  tag_neutralMultiplicity               = dir.make<TH1F>("neutralMultiplicity"           ,"neutralMultiplicity;neutral multiplicity"            ,42, -1.5, 40.5);
+  tag_neutralHadronEnergyFraction       = dir.make<TH1F>("neutralHadronEnergyFraction"         ,"neutralHadronEnergyFraction;neutral Hadron energy fraction"          ,100, -0.1,1.5);
+  tag_neutralHadronMultiplicity         = dir.make<TH1F>("neutralHadronMultiplicity"           ,"neutralHadronMultiplicity;neutral hadron multiplicity"            ,42, -1.5, 40.5);
+  tag_neutralEmEnergyFraction           = dir.make<TH1F>("neutralEmEnergyFraction"         ,"neutralEmEnergyFraction;neutral Em energy fraction"          ,100, -0.1,1.5);
+
+  tag_photonMultiplicity               = dir.make<TH1F>("photonMultiplicity"           ,"photonMultiplicity;photon multiplicity"            ,42, -1.5, 40.5);
+  tag_photonEnergyFraction             = dir.make<TH1F>("photonEnergyFraction"         ,"photonEnergyFraction;photon energy fraction"          ,100, -0.1,1.5);
+   
+  tag_muonMultiplicity                 = dir.make<TH1F>("muonMultiplicity"             ,"muonMultiplicity;muonMultiplicity"              ,12, -1.5, 10.5);
+  tag_muonEnergyFraction               = dir.make<TH1F>("muonEnergyFraction"           ,"muonEnergyFraction;muonEnergyFraction"            ,100, -0.1,1.5);
+
+  tag_elecMultiplicity                 = dir.make<TH1F>("elecMultiplicity"             ,"elecMultiplicity;elecMultiplicity"              ,12, -1.5, 10.5);
+  tag_elecEnergyFraction               = dir.make<TH1F>("elecEnergyFraction"           ,"elecEnergyFraction;elecEnergyFraction"            ,100, -0.1,1.5);
+
+  tag_totalMultiplicity                = dir.make<TH1F>("totalMultiplicity"            ,"totalMultiplicity;total multiplicity"             ,62, -1.5, 60.5);
+
+
 } 
 
-void btaggingHists::FillSVHists(const svPtr &sv, float weight){
+void btaggingHists::FillSVHists(const svPtr &sv, const jetPtr& jet, float weight){
 
   
   sv_NTracks                ->Fill(sv->nTrk, weight);
@@ -81,6 +113,7 @@ void btaggingHists::FillSVHists(const svPtr &sv, float weight){
   sv_JetDeltaR              ->Fill(sv->deltaR_jet, weight);
   //svFitProb                ->Fill(sv->, weight);
   sv_EnergyRatio            ->Fill(sv->EnergyRatio, weight);
+  sv_totCharge              ->Fill(sv->totCharge, weight);
 
   float svR = sqrt(sv->x*sv->x + sv->y*sv->y);
   sv_R                ->Fill(svR, weight);
@@ -101,6 +134,8 @@ void btaggingHists::FillSVHists(const svPtr &sv, float weight){
   sv_Phi               ->Fill(sv->vtx_phi, weight);
   sv_DistJetAxis       ->Fill(sv->vtxDistJetAxis, weight);
 
+  sv_boostOverSqrtJetPt ->Fill(sv->p.BoostVector().Mag()/ sqrt(jet->p.Pt()), weight);
+  sv_massVertexEnergyFraction -> Fill(sv->p.M() / sv->p.E(), weight);
 
   return;
 }
@@ -147,16 +182,40 @@ void btaggingHists::FillTrkTagVarHists(const trkTagVarPtr &trkTag, float weight)
   trkTag_trackNTotalHits            ->Fill(trkTag->trackNTotalHits,weight ); 
   trkTag_trackNPixelHits            ->Fill(trkTag->trackNPixelHits,weight );
 
+  trkTag_isFromV0->Fill(trkTag->matchIsFromV0, weight);
 
 //  trackDecayLenSi       = data->trackDecayLenSi  [i];
 
 //  trackJetDistSig       = data->trackJetDistSig  [i];
 
-
-
   return;
 }
 
 
+void btaggingHists::FillTagVarHists(const tagVarPtr &tag, float weight){
+  
+  tag_jetNTracks                  ->Fill(tag-> jetNTracks                  ,weight);
+  tag_jetNSecondaryVertices       ->Fill(tag-> jetNSecondaryVertices       ,weight);
+  tag_chargedMultiplicity         ->Fill(tag-> chargedMultiplicity         ,weight);
+  tag_chargedHadronEnergyFraction ->Fill(tag-> chargedHadronEnergyFraction ,weight);
+  tag_chargedHadronMultiplicity   ->Fill(tag-> chargedHadronMultiplicity   ,weight);
+  tag_chargedEmEnergyFraction     ->Fill(tag-> chargedEmEnergyFraction     ,weight);
+
+  tag_neutralMultiplicity         ->Fill(tag-> neutralMultiplicity         ,weight);
+  tag_neutralHadronEnergyFraction ->Fill(tag-> neutralHadronEnergyFraction ,weight);
+  tag_neutralHadronMultiplicity   ->Fill(tag-> neutralHadronMultiplicity   ,weight);
+  tag_neutralEmEnergyFraction     ->Fill(tag-> neutralEmEnergyFraction     ,weight);
+
+  tag_photonEnergyFraction        ->Fill(tag-> photonEnergyFraction        ,weight);
+  tag_photonMultiplicity          ->Fill(tag-> photonMultiplicity          ,weight);
+  tag_muonEnergyFraction          ->Fill(tag-> muonEnergyFraction          ,weight);
+  tag_muonMultiplicity            ->Fill(tag-> muonMultiplicity            ,weight);
+  tag_elecEnergyFraction          ->Fill(tag-> electronEnergyFraction      ,weight);
+  tag_elecMultiplicity            ->Fill(tag-> electronMultiplicity        ,weight);
+  tag_totalMultiplicity           ->Fill(tag-> numberOfDaughters           ,weight);
+
+
+
+}
 
 btaggingHists::~btaggingHists(){} 
