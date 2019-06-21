@@ -28,6 +28,9 @@ namespace nTupleAnalysis {
     float CSVv2;
     float deepFlavB;
 
+    Int_t puId;
+    Int_t jetId;
+
     jet();
     jet(UInt_t, jetData*); 
     jet(TLorentzVector&, float tag = -1); 
@@ -56,6 +59,9 @@ namespace nTupleAnalysis {
     float deepB[100];
     float CSVv2[100];
     float deepFlavB[100];
+
+    Int_t puId[100];
+    Int_t jetId[100];
 
     jetData(std::string, TChain*); 
     std::vector< std::shared_ptr<jet> > getJets(float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);
