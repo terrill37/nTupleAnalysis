@@ -1,6 +1,7 @@
 #include "TChain.h"
 
 #include "nTupleAnalysis/baseClasses/interface/trackData.h"
+#include "DataFormats/BTauReco/interface/ParticleMasses.h"
 
 using namespace nTupleAnalysis;
 
@@ -13,7 +14,7 @@ track::track(UInt_t i, trackData* data){
   pt  = data->pt[i];
   eta = data->eta[i];
   phi = data->phi[i];
-  m   = 0.140;
+  m   = reco::ParticleMasses::piPlus;
   p = TLorentzVector();
   p.SetPtEtaPhiM(pt, eta, phi, m);
   e = p.E();

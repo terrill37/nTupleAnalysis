@@ -1,6 +1,7 @@
 #include "TChain.h"
 
 #include "nTupleAnalysis/baseClasses/interface/jetData.h"
+#include "DataFormats/BTauReco/interface/ParticleMasses.h"
 
 
 using namespace nTupleAnalysis;
@@ -28,6 +29,7 @@ jet::jet(UInt_t i, jetData* data){
   // Normalizize the underflow
   if(CSVv2 < 0) 
     CSVv2 = -0.1; 
+
 
   deepFlavB = data->deepFlavB[i];
 
@@ -58,6 +60,13 @@ jet::jet(UInt_t i, jetData* data){
   if(DeepCSV < 0)
     DeepCSV = -0.1;
 
+  if(DeepCSVb < 0)
+    DeepCSVb = -0.1;
+
+  if(DeepCSVbb < 0)
+    DeepCSVbb = -0.1;
+
+
   flavour        = data->flavour        [i];
   flavourCleaned = data->flavourCleaned [i];
   partonFlavour  = data->partonFlavour  [i];
@@ -68,7 +77,7 @@ jet::jet(UInt_t i, jetData* data){
 
   nFirstTrack = data->nFirstTrack[i];
   nLastTrack = data->nLastTrack[i];
-  
+
   if(data->trkData){
     std::vector<trackPtr> tracksTmp = data->trkData->getTracks(nFirstTrack,nLastTrack);
     for(const trackPtr& track: tracksTmp){
@@ -80,10 +89,49 @@ jet::jet(UInt_t i, jetData* data){
     }
   }
 
+  //
+  //  Set the isV0 bits
+  //
+  unsigned int nTracks = tracks.size();
+  for(unsigned int iTrk1 = 0; iTrk1 < nTracks; ++iTrk1){
+    for(unsigned int iTrk2 = iTrk1; iTrk2 < nTracks; ++iTrk2){
+      if(iTrk1 == iTrk2 ) continue;
+
+      if (tracks[iTrk1]->charge * tracks[iTrk2]->charge > 0)
+	continue;
+
+
+      float invariantMass = (tracks[iTrk1]->p + tracks[iTrk2]->p).M();
+      if (std::abs(invariantMass - reco::ParticleMasses::k0) < 0.05){
+	tracks[iTrk1]->isfromV0 = true;
+	tracks[iTrk2]->isfromV0 = true;
+      }
+
+    }
+  }
+
+  if(data->debug){
+    std::cout << "i is " << i << std::endl;;
+
+    std::cout << "nFirst is ";
+    for(unsigned int iT =0; iT < 100; ++iT){
+      std::cout << data->nFirstSV[iT] << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "nLast is ";
+    for(unsigned int iT =0; iT < 100; ++iT){
+      std::cout << data->nLastSV[iT] << " ";
+    }
+    std::cout << std::endl;
+  }
 
   if(data->btagData->haveSVs){
-    svs = data->btagData->getSecondaryVertices(data->nFirstSV[i],data->nLastSV[i]);
+    if(data->debug)  std::cout << data->m_name << " Getting SVs " << data->nFirstSV[i] << " " << data->nLastSV[i] << std::endl;
+    svs = data->btagData->getSecondaryVertices(data->nFirstSV[i],data->nLastSV[i], data->debug);
   }
+
+
 
   if(data->btagData->haveTrkTagVars){
     trkTagVars = data->btagData->getTrkTagVars(data->nFirstTrkTagVar[i],data->nLastTrkTagVar[i]);
@@ -171,7 +219,7 @@ jetData::jetData(std::string name, TChain* tree, std::string prefix){
   m_name = name;
   m_prefix = prefix;
 
-  initBranch(tree, (prefix+"n"+name).c_str(), n );
+  initBranch(tree, (prefix+"n"+name).c_str(), nJets );
 
   initBranch(tree, (prefix+name+"_cleanmask").c_str(), cleanmask );
 
@@ -250,8 +298,13 @@ std::vector< std::shared_ptr<jet> > jetData::getJets(float ptMin, float ptMax, f
   float *tag = CSVv2;
   if(tagger == "deepB")     tag = deepB;
   if(tagger == "deepFlavB") tag = deepFlavB;
-
-  for(UInt_t i = 0; i < n; ++i){
+  if(debug) std::cout << "We have " << nJets << " jets"<< std::endl;
+  for(Int_t i = 0; i < nJets; ++i){
+    if(i > 99) {
+      std::cout  << m_name << "::Warning too many jets! " << nJets << " jets. Skipping. "<< std::endl;
+      break;
+    }
+      
     if(clean && cleanmask[i] == 0) continue;
     if(          pt[i]  <  ptMin ) continue;
     if(          pt[i]  >= ptMax ) continue;

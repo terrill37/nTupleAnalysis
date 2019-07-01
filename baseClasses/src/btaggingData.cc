@@ -130,8 +130,8 @@ btaggingData::btaggingData(){
 void btaggingData::initSecondaryVerticies(std::string name, TChain* tree){
 
   haveSVs = true;
-  //nSV       : nSV/I                                                  *
-  
+
+  initBranch(tree, (name+"nSV"                 ).c_str(),   nSV);
   initBranch(tree, (name+"SV_x"                ).c_str(),   sv_x                 );
   initBranch(tree, (name+"SV_y"                ).c_str(),   sv_y                 );
   initBranch(tree, (name+"SV_z"                ).c_str(),   sv_z                 );
@@ -218,12 +218,14 @@ void btaggingData::initTagVar(std::string name, TChain* tree){
   initBranch(tree, (name+"TagVar_numberOfDaughters"          ).c_str(), numberOfDaughters              );
 }
 
-std::vector< std::shared_ptr<secondaryVertex> > btaggingData::getSecondaryVertices(int nFirstSV, int nLastSV){
-  
+std::vector< std::shared_ptr<secondaryVertex> > btaggingData::getSecondaryVertices(int nFirstSV, int nLastSV, bool debug){
+  if(debug) std::cout << "btaggingData::getSecondaryVertices " << nFirstSV << " to " << nLastSV << std::endl;  
   std::vector< std::shared_ptr<secondaryVertex> > outputSVs;
   for(int i = nFirstSV; i < nLastSV; ++i){
+    if(debug) std::cout << "btaggingData::getSecondaryVertices " << i <<  "vs nSVs " << nSV <<  std::endl; 
     outputSVs.push_back(std::make_shared<secondaryVertex>(secondaryVertex(i, this)));
   }
+  if(debug) std::cout << "leave btaggingData::getSecondaryVertices " << std::endl;
   return outputSVs;
 }
 

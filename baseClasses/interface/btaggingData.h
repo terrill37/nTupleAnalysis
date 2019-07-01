@@ -146,7 +146,7 @@ namespace nTupleAnalysis {
 
   public:
 
-    //int   nSV;
+    int   nSV;
     bool  haveSVs = false;
     float sv_x                 [100];
     float sv_y                 [100];
@@ -220,7 +220,7 @@ namespace nTupleAnalysis {
     btaggingData(); 
 
     void initSecondaryVerticies(std::string name, TChain* tree);
-    std::vector<svPtr> getSecondaryVertices(int nFirstSV, int nLastSV);
+    std::vector<svPtr> getSecondaryVertices(int nFirstSV, int nLastSV, bool debug);
 
     void initTrkTagVar(std::string name, TChain* tree);
     std::vector<trkTagVarPtr> getTrkTagVars(int nFirstTrkTagVar, int nLastTrkTagVar);

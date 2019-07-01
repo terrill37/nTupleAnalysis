@@ -108,8 +108,9 @@ namespace nTupleAnalysis {
   public:
     std::string m_name ="";
     std::string m_prefix ="";
+    bool debug = false;
 
-    UInt_t n;
+    Int_t nJets;
     //ULong64_t n;
 
     UChar_t cleanmask[100];
@@ -137,7 +138,7 @@ namespace nTupleAnalysis {
     float DeepCSVb     [100];
     float DeepCSVc     [100];
     float DeepCSVl     [100];
-    float DeepCSVbb    [100];
+    float DeepCSVbb    [100] = {0};
 
     // truth Info
     int flavour        [100];
@@ -153,8 +154,8 @@ namespace nTupleAnalysis {
     trackData* trkData = nullptr;
 
 
-    int nFirstSV[100];
-    int nLastSV[100];
+    int nFirstSV[100] = {0};
+    int nLastSV[100] = {0};
 
     int nFirstTrkTagVar[100];
     int nLastTrkTagVar [100];

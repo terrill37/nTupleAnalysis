@@ -100,6 +100,16 @@ namespace nTupleAnalysis {
     TH1F* SV  ;
     TH1F* SVweight  ;
 
+    //
+    // For Algo study
+    //
+    const unsigned int nAlgos = 30;
+    std::vector<TH1F*> trackEta_forAlgo;
+    std::vector<TH1F*> trackPhi_forAlgo;
+    std::vector<TH1F*> trackPt_forAlgo;
+
+    
+
     trackHists(std::string,       TFileDirectory&, std::string title = "");
     trackHists(std::string, fwlite::TFileService&, std::string title = "");
 

@@ -28,6 +28,8 @@ namespace nTupleAnalysis {
     TH1F*   nseltracks ;
     TH1F*   CSVv2_l    ;
     TH1F*   deepCSV_l    ;
+    TH1F*   deepCSVb_l    ;
+    TH1F*   deepCSVbb_l    ;
 
     TH1F*   SoftMu     ;
     TH1F*   nSoftMu        ;

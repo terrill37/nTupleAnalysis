@@ -21,6 +21,8 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
 
     CSVv2_l     = dir.make<TH1F>("CSVv2_l",     (name+"/CSVv2_l; "   +title+" CSV v2; Entries").c_str(), 120,-0.2,1.2);
     deepCSV_l   = dir.make<TH1F>("DeepCSV_l",   (name+"/DeepCSV_l; "   +title+" DeepCSV; Entries").c_str(), 120,-0.2,1.2);
+    deepCSVb_l  = dir.make<TH1F>("DeepCSVb_l",   (name+"/DeepCSVb_l; "   +title+" DeepCSVb; Entries").c_str(), 120,-0.2,1.2);
+    deepCSVbb_l = dir.make<TH1F>("DeepCSVbb_l",   (name+"/DeepCSVbb_l; "   +title+" DeepCSVbb; Entries").c_str(), 120,-0.2,1.2);
     SoftMu      = dir.make<TH1F>("SoftMu",      (name+"/SoftMu; "    +title+" SoftMu; Entries").c_str(), 120,-0.2,1.2);
     nSoftMu     = dir.make<TH1F>("nSoftEl",     (name+"/nSoftEl;    " +title+" Number of Soft El.; Entries").c_str(),  11,-0.5,10.5);
     SoftEl      = dir.make<TH1F>("SoftEl",      (name+"/SoftEl; "    +title+" SoftEl; Entries").c_str(), 120,-0.2,1.2);
@@ -55,6 +57,8 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
   ntracks    ->Fill(jet->ntracks    ,weight);
   nseltracks ->Fill(jet->nseltracks ,weight);
   deepCSV_l  ->Fill(jet->DeepCSV    ,weight);
+  deepCSVb_l  ->Fill(jet->DeepCSVb    ,weight);
+  deepCSVbb_l  ->Fill(jet->DeepCSVbb    ,weight);
 
   SoftMu     ->Fill(jet->SoftMu     ,weight);
   nSoftMu    ->Fill(jet->nSM        ,weight);

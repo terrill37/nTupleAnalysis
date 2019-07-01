@@ -1,3 +1,4 @@
+
 #include "nTupleAnalysis/baseClasses/interface/trackHists.h"
 
 using namespace nTupleAnalysis;
@@ -65,7 +66,13 @@ void trackHists::makeHists(std::string name, TFileDirectory& dir, std::string ti
   trackNPixelHits            = dir.make<TH1F>("NPixelHits"      ,    "trackNPixelHits;trackNPixelHits;Entries", 10, -0.5,  9.5);  
   trackNStripHits            = dir.make<TH1F>("NStripHits"      ,    "trackNStripHits;trackNStripHits;Entries", 30, -0.5, 39.5);  
   trackHasInnerPixHit        = dir.make<TH1F>("HasInnerPixHit"  ,    "trackHasInnerPixHit;trackHasInnerPixHit;Entries", 2, -0.5,  1.5);  
-  
+
+  for(unsigned int iAlgo = 0; iAlgo < nAlgos; ++iAlgo){
+    std::string sAlgo = std::to_string(iAlgo);
+    trackEta_forAlgo.push_back(dir.make<TH1F>(("Eta_forAlgo"+sAlgo).c_str(),    ("Eta;track #eta (algo = "+sAlgo+");Entries").c_str(), 100, -2.6, 2.6));              
+    trackPhi_forAlgo.push_back(dir.make<TH1F>(("Phi_forAlgo"+sAlgo).c_str(),    ("Phi;track #phi (algo = "+sAlgo+");Entries").c_str(), 100, -3.2, 3.2));              
+    trackPt_forAlgo .push_back(dir.make<TH1F>(("Pt_forAlgo"+sAlgo ).c_str(),    ("Pt;track P_{T} (algo = "+sAlgo+");Entries").c_str(), 100, 0, 50));              
+  }
   
   nMatches = dir.make<TH1F>("nMatches", "track_nMatches;# of matched tracks;Entries", 6, -0.5, 5.5);
   
@@ -122,11 +129,12 @@ void trackHists::Fill(const std::shared_ptr<track> &track, float weight){
   ip2d_sig  ->Fill(track->IP2Dsig,weight);
   ip2d_sig_l->Fill(track->IP2Dsig,weight);
   
-  ip2d_err  ->Fill(track->IPerr,weight);
-  ip2d_err_l->Fill(track->IPerr,weight);
+  ip2d_err  ->Fill(track->IP2Derr,weight);
+  ip2d_err_l->Fill(track->IP2Derr,weight);
 
   float pt = track->p.Pt();
   float eta = track->p.Eta();
+  float phi  = track->p.Phi();
 
   ip2d_vs_pt->Fill(     pt, track->IP2D,weight);
   ip2d_vs_eta->Fill(fabs(eta)    , track->IP2D,weight);
@@ -140,7 +148,7 @@ void trackHists::Fill(const std::shared_ptr<track> &track, float weight){
   trackMomentum        ->Fill(track->p.P()   ,weight); 
   trackPt_logx         ->Fill(pt         ,weight); 
   trackEta             ->Fill(eta        ,weight);
-  trackPhi             ->Fill(track->p.Phi()        ,weight);
+  trackPhi             ->Fill(phi        ,weight);
   trackPPar            ->Fill(track->pPar       ,weight);
   trackDeltaR          ->Fill(track->dR         ,weight);
   trackDeltaR_l          ->Fill(track->dR         ,weight);
@@ -203,6 +211,15 @@ void trackHists::Fill(const std::shared_ptr<track> &track, float weight){
     track_secondClosest_dEta_vs_dMomentum->Fill(secondClosest_dEta, track->pt - trackSecondClosest->pt,weight);
     track_dEta12->Fill(trackMatchedTrack->eta - trackSecondClosest->eta,weight);
  }
+
+
+  for(unsigned int iAlgo = 0; iAlgo < nAlgos; ++iAlgo){
+    if(track->algo == int(iAlgo)){
+      trackEta_forAlgo.at(iAlgo)->Fill(eta, weight);
+      trackPhi_forAlgo.at(iAlgo)->Fill(phi, weight);
+      trackPt_forAlgo .at(iAlgo)->Fill(pt, weight);
+    }
+  }
 
 
   return;
