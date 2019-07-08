@@ -35,6 +35,8 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
     nbHadrons     = dir.make<TH1F>("nbHadrons",     (name+"/nbHadrons;    " +title+" Number of B Hadrons; Entries").c_str(),  5,-0.5,4.5);
     ncHadrons     = dir.make<TH1F>("ncHadrons",     (name+"/ncHadrons;    " +title+" Number of C Hadrons; Entries").c_str(),  5,-0.5,4.5);
 
+    SF      = dir.make<TH1F>("SF",     (name+"/SF;SF;Entries").c_str(),50,-0.1,2);
+
     tracks = new trackHists(name+"/tracks", fs, title);
     btags  = new btaggingHists(name+"/btags", fs, title);
 
@@ -72,6 +74,8 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
   hadronFlavour    ->Fill(jet->hadronFlavour,   weight);
   nbHadrons        ->Fill(jet->nbHadrons,   weight);
   ncHadrons        ->Fill(jet->ncHadrons,   weight);
+
+  SF               ->Fill(jet->SF      , weight);
 
   nTrksExpected->Fill(jet->nLastTrack-jet->nFirstTrack,weight);
   tracks->nTracks->Fill(jet->tracks.size(), weight);

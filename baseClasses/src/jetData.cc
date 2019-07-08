@@ -2,7 +2,8 @@
 
 #include "nTupleAnalysis/baseClasses/interface/jetData.h"
 #include "DataFormats/BTauReco/interface/ParticleMasses.h"
-
+#include "CondFormats/BTauObjects/interface/BTagEntry.h"
+#include "CondFormats/BTauObjects/interface/BTagCalibration.h"
 
 using namespace nTupleAnalysis;
 
@@ -174,6 +175,13 @@ jet::jet(UInt_t i, jetData* data){
 
 
 
+  if(data->m_isMC && data->m_btagCalibrationTool){
+    SF = data->getSF(eta, pt, DeepCSV, hadronFlavour);
+  }else{
+    SF = 1.0;
+  }
+
+
 
   
 //  std::cout << data->m_prefix+data->m_name << std::endl;
@@ -214,11 +222,12 @@ jet::~jet(){
 
 
 //access tree
-jetData::jetData(std::string name, TChain* tree, std::string prefix){
+jetData::jetData(std::string name, TChain* tree, std::string prefix, bool isMC, std::string SFName){
 
   m_name = name;
   m_prefix = prefix;
-
+  m_isMC = isMC;
+  
   initBranch(tree, (prefix+"n"+name).c_str(), nJets );
 
   initBranch(tree, (prefix+name+"_cleanmask").c_str(), cleanmask );
@@ -289,6 +298,47 @@ jetData::jetData(std::string name, TChain* tree, std::string prefix){
   }
 
 
+  //
+  // Load the BTagging SFs
+  //
+  if(m_isMC){
+
+    if(SFName != "2017" && SFName != "2018"){
+      std::cout << "jetData::Warning no scale factors for " << m_name << std::endl;
+    }else{
+
+      std::string sfFileName =  "nTupleAnalysis/baseClasses/data/BTagSF2017/DeepCSV_94XSF_V4_B_F.csv";
+      if(SFName == "2018")
+	std::string sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2018/DeepCSV_102XSF_V1.csv";
+      
+      std::cout << "jetData::Loading SF from " << sfFileName << " For jets " << m_name << std::endl;
+      BTagCalibration calib = BTagCalibration("deepcsv", sfFileName);
+      
+      m_btagCalibrationTool = new BTagCalibrationReader(BTagEntry::OP_RESHAPING,              // 0 is for loose op, 1: medium, 2: tight, 3: discr. reshaping
+							"central"      // central systematic type
+							);
+
+      m_btagCalibrationTool->load(calib, 
+				  BTagEntry::FLAV_B,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
+				  "iterativefit"      // measurement type
+				  );
+
+      m_btagCalibrationTool->load(calib, 
+				  BTagEntry::FLAV_C,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
+				  "iterativefit"      // measurement type
+				  );
+
+
+      m_btagCalibrationTool->load(calib, 
+				  BTagEntry::FLAV_UDSG,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
+				  "iterativefit"      // measurement type
+				  );
+
+    }
+
+  }
+
+
 }
 
 
@@ -340,3 +390,13 @@ jetData::~jetData(){
   std::cout << "jetData::destroyed " << std::endl;
 }
 
+
+float jetData::getSF(float jetEta,  float jetPt,  float jetDeepCSV, int jetHadronFlavour){ 
+  if(fabs(jetHadronFlavour) == 5){
+    return m_btagCalibrationTool->eval_auto_bounds("central", BTagEntry::FLAV_B, fabs(jetEta), jetPt, jetDeepCSV);
+  }else if(fabs(jetHadronFlavour) == 4){
+    return m_btagCalibrationTool->eval_auto_bounds("central", BTagEntry::FLAV_C, fabs(jetEta), jetPt, jetDeepCSV);
+  }
+
+  return m_btagCalibrationTool->eval_auto_bounds("central", BTagEntry::FLAV_UDSG, fabs(jetEta), jetPt, jetDeepCSV);
+}

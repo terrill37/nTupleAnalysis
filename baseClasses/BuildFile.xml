@@ -3,6 +3,8 @@
 <use   name="roothistmatrix"/>
 <use   name="CommonTools/Utils"/>
 <use   name="DataFormats/FWLite"/>
+<use   name="CondFormats/BTauObjects"/>
+<use   name="CondTools/BTau"/>
 <export>
   <lib name="nTupleAnalysisbaseClasses"/>
 </export>
