@@ -1,7 +1,6 @@
 // -*- C++ -*-
-
-#if !defined(Helpers_H)
-#define Helpers_H
+#if !defined(helpers_H)
+#define helpers_H
 
 
 #include "nTupleAnalysis/baseClasses/interface/muonData.h"
@@ -9,26 +8,12 @@
 #include <TLorentzVector.h>
 
 namespace nTupleAnalysis {
-
-  bool failOverlap(const TLorentzVector& jet,const std::vector<muonPtr>& muons, float dRCut = 0.4) {
-    
-    for( muonPtr m : muons){
-      if(jet.DeltaR(m->p) < dRCut)
-	return true;
-    }
-    return false;
-  }
+  
+  bool failOverlap(const TLorentzVector& jet,const std::vector<muonPtr>& muons, float dRCut = 0.4);
 
 
-  bool failOverlap(const TLorentzVector& jet,const std::vector<elecPtr>& elecs, float dRCut = 0.4) {
-    
-    for( elecPtr e : elecs){
-      if(jet.DeltaR(e->p) < dRCut)
-	return true;
-    }
-    return false;
-  }
+  bool failOverlap(const TLorentzVector& jet,const std::vector<elecPtr>& elecs, float dRCut = 0.4);
 
 
 }
-#endif // Helpers_H
+#endif // helpers_H
