@@ -13,10 +13,10 @@ muonHists::muonHists(std::string name, fwlite::TFileService& fs, std::string tit
     isolation_cor_s = dir.make<TH1F>("iso_cor_s", (name+"/iso_cor_s; "+title+" Isolation; Entries").c_str(), 50,0,0.1);
     dR        = dir.make<TH1F>("dR",        (name+"/dR;        "+title+" Min #DeltaR(muon,jet); Entries").c_str(), 50, 0, 5);
     nMuons    = dir.make<TH1F>("nMuons",    (name+"/nMuons;    "+title+" Number of Muons; Entries").c_str(),  6,-0.5,5.5);
-
+    SF      = dir.make<TH1F>("SF",     (name+"/SF;SF;Entries").c_str(),50,-0.1,2);
 } 
 
-void muonHists::Fill(std::shared_ptr<muon> &muon, float weight){
+void muonHists::Fill(const muonPtr &muon, float weight){
 
   v->Fill(muon->p, weight);
 
@@ -25,7 +25,7 @@ void muonHists::Fill(std::shared_ptr<muon> &muon, float weight){
   isolation_cor->Fill(muon->isolation_corrected, weight);
   isolation_cor_s->Fill(muon->isolation_corrected, weight);
   dR       ->Fill(muon->dR,        weight);
-
+  SF               ->Fill(muon->SF      , weight);
   return;
 }
 

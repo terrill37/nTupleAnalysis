@@ -3,6 +3,7 @@
 #if !defined(elecData_H)
 #define elecData_H
 #include <TChain.h>
+#include <TH2D.h>
 #include <TLorentzVector.h>
 #include "nTupleAnalysis/baseClasses/interface/initBranch.h"
 
@@ -38,6 +39,7 @@ namespace nTupleAnalysis {
     float sumPhotonEt       ;
     float sumPUPt           ;
 
+    float SF = 1.0;
 
     elec(UInt_t, elecData*); 
     ~elec(); 
@@ -53,6 +55,7 @@ namespace nTupleAnalysis {
   public:
     std::string m_name;
     static const unsigned int MAXELECS = 10;
+    bool m_isMC;
 
     UInt_t n;
 
@@ -76,9 +79,18 @@ namespace nTupleAnalysis {
     float sumPhotonEt        [MAXELECS];
     float sumPUPt            [MAXELECS];
     
-    elecData(std::string, TChain*); 
+    elecData(std::string, TChain*, bool isMC = false, std::string SFName = ""); 
     std::vector<std::shared_ptr<elec>> getElecs(float ptMin = -1e6, float etaMax = 1e6, int tag = -1, bool isolation = false);
     ~elecData(); 
+
+    TH2D*  m_SFHistTight = nullptr;
+    TH2D*  m_SFHistReco = nullptr;
+
+  private:
+
+    TFile* m_SFFileTight = nullptr;
+    TFile* m_SFFileReco = nullptr;
+
 
     //void dump();
   };

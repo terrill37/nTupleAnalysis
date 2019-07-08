@@ -1,4 +1,5 @@
 #include "TChain.h"
+#include "TFile.h"
 
 #include "nTupleAnalysis/baseClasses/interface/elecData.h"
 
@@ -9,6 +10,7 @@ elec::elec(UInt_t i, elecData* data){
 
   pt  = data->pt [i];
   eta = data->eta[i];
+  superClusterEta = data->superClusterEta[i];
   phi = data->phi[i];
   m   = data->m  [i];
   if(m < 0.10) m = 0.0005;
@@ -35,17 +37,25 @@ elec::elec(UInt_t i, elecData* data){
   
   float isoCorrection = (data->sumNeutralHadronEt[i] + data->sumPhotonEt[i] - 0.5 * data->sumPUPt[i]);
   isolation_corrected = (isoCorrection > 0) ? (data->sumChargedHadronPt[i] + isoCorrection) / pt : data->sumChargedHadronPt[i] / pt;
-    
 
+  //
+  // Load the SFs
+  //
+  if(data->m_isMC && data->m_SFHistTight && data->m_SFHistReco){
+    SF *= data->m_SFHistReco ->GetBinContent(data->m_SFHistReco ->FindBin(superClusterEta, pt));
+    SF *= data->m_SFHistTight->GetBinContent(data->m_SFHistTight->FindBin(superClusterEta, pt));
+  }
+  
 }
 
 elec::~elec(){}
 
 
 //access tree
-elecData::elecData(std::string name, TChain* tree){
+elecData::elecData(std::string name, TChain* tree, bool isMC, std::string SFName){
 
   m_name = name;
+  m_isMC = isMC;
 
   initBranch(tree, ("n"+name).c_str(), n );
 
@@ -91,6 +101,34 @@ elecData::elecData(std::string name, TChain* tree){
 
 //  *Br   38 :nPatElec  : nPatElec/I                                             *
 //    *Br   43 :PatElec_isLooseElec : PatElec_isLooseElec[nPatElec]/I              *
+
+  //
+  // Load the electron SFs
+  //
+  if(m_isMC){
+
+    if(SFName != "2017" && SFName != "2018"){
+      std::cout << "elecData::Warning no scale factors for " << m_name << std::endl;
+    }else{
+
+      std::string tightSFName = "nTupleAnalysis/baseClasses/data/ElecSF2017/egammaEffi.txt_EGM2D_runBCDEF_passingTight94X.root";
+      std::string recoSFName  = "nTupleAnalysis/baseClasses/data/ElecSF2017/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root";
+      if(SFName == "2018"){
+	tightSFName = "nTupleAnalysis/baseClasses/data/ElecSF2018/2018_ElectronTight.root";
+	recoSFName  = "nTupleAnalysis/baseClasses/data/ElecSF2018/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root";
+      }
+
+      std::cout << "elecData::Loading SF from files: \n\t" << tightSFName << "\n and \n\t" << recoSFName  << "\n For elecs " << m_name << std::endl;{
+
+      m_SFFileTight = new TFile(tightSFName.c_str(),"READ");
+      m_SFHistTight = (TH2D*)m_SFFileTight->Get("EGamma_SF2D");
+      
+      m_SFFileReco = new TFile(recoSFName.c_str(),"READ");
+      m_SFHistReco = (TH2D*)m_SFFileReco->Get("EGamma_SF2D");
+    }
+
+  }// isMC
+
 
 }
 
