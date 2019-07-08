@@ -3,6 +3,7 @@
 #if !defined(muonData_H)
 #define muonData_H
 #include <TChain.h>
+#include <TH2D.h>
 #include <TLorentzVector.h>
 #include "nTupleAnalysis/baseClasses/interface/initBranch.h"
 
@@ -33,6 +34,8 @@ namespace nTupleAnalysis {
     float isolation_trackerOnly;
     float dR = 1e6;
 
+    float SF = 1.0;
+
     muon(UInt_t, muonData*); 
     ~muon(); 
 
@@ -47,7 +50,7 @@ namespace nTupleAnalysis {
   public:
     std::string m_name;
     static const unsigned int MAXMUONS = 20;
-
+    bool m_isMC;
     
     Int_t n;
 
@@ -67,9 +70,18 @@ namespace nTupleAnalysis {
     float isolation_corrected[MAXMUONS];
     float isolation_trkIsoOnly[MAXMUONS];
     
-    muonData(std::string, TChain*); 
+    muonData(std::string, TChain*, bool isMC = false, std::string SFName=""); 
     std::vector<std::shared_ptr<muon>> getMuons(float ptMin = -1e6, float etaMax = 1e6, int tag = -1, bool isolation = false);
     ~muonData(); 
+
+    TH2D*  m_SFHistTight = nullptr;
+    TH2D*  m_SFHistIso = nullptr;
+
+  private:
+
+    TFile* m_SFFileID = nullptr;
+    TFile* m_SFFileIso = nullptr;
+
 
     //void dump();
   };

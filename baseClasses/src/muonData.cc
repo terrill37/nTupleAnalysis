@@ -1,5 +1,6 @@
 
 #include "TChain.h"
+#include "TFile.h"
 
 #include "nTupleAnalysis/baseClasses/interface/muonData.h"
 
@@ -31,16 +32,28 @@ muon::muon(UInt_t i, muonData* data){
   isolation_corrected = data->isolation_corrected[i];
   isolation_trackerOnly = data->isolation_trkIsoOnly[i];
 
+  //
+  // Load the SFs
+  //
+  if(data->m_isMC && data->m_SFHistTight && data->m_SFHistIso){
+    //std::cout << "Muon Iso SF " << data->m_SFHistIso  ->GetBinContent(data->m_SFHistIso  ->FindBin(fabs(eta), pt)) << std::endl;;
+    SF *= data->m_SFHistIso  ->GetBinContent(data->m_SFHistIso  ->FindBin(pt, fabs(eta)));
+    //std::cout << "Muon Tight SF " << data->m_SFHistTight  ->GetBinContent(data->m_SFHistTight  ->FindBin(fabs(eta), pt)) << std::endl;;
+    SF *= data->m_SFHistTight->GetBinContent(data->m_SFHistTight->FindBin(pt, fabs(eta)));
+  }
+  
+
 }
 
 muon::~muon(){}
 
 
 //access tree
-muonData::muonData(std::string name, TChain* tree){
-
-  m_name = name;
+muonData::muonData(std::string name, TChain* tree, bool isMC, std::string SFName){
   
+  m_name = name;
+  m_isMC = isMC;
+
   initBranch(tree, ("n"+name).c_str(), n );
 
   initBranch(tree, (name+"_pt"  ).c_str(), pt );  
@@ -75,6 +88,48 @@ muonData::muonData(std::string name, TChain* tree){
 //    *Br   36 :PatMuon_IP2D : PatMuon_IP2D[nPatMuon]/F                            *
 //    *Br   37 :PatMuon_IP2Dsig : PatMuon_IP2Dsig[nPatMuon]/F                      *
     
+
+  //
+  // Load the muon SFs
+  //
+  if(m_isMC){
+
+    if(SFName != "2017" && SFName != "2018"){
+      std::cout << "muonData::Warning no scale factors for " << m_name << std::endl;
+    }else{
+
+      std::string IDSFName = "";
+      std::string IsoSFName = "";
+      
+      if(SFName == "2017"){
+	
+	IDSFName = "nTupleAnalysis/baseClasses/data/MuonSF2017/RunBCDEF_SF_ID.root";
+	IsoSFName = "nTupleAnalysis/baseClasses/data/MuonSF2017/RunBCDEF_SF_ISO.root";
+
+	m_SFFileID = new TFile(IDSFName.c_str(),"READ");
+	m_SFHistTight = (TH2D*)m_SFFileID->Get("NUM_TightID_DEN_genTracks_pt_abseta");
+      
+	m_SFFileIso = new TFile(IsoSFName.c_str(),"READ");
+	m_SFHistIso = (TH2D*)m_SFFileIso->Get("NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta");
+
+      }else{
+	IDSFName = "nTupleAnalysis/baseClasses/data/MuonSF2018/RunABCD_SF_ID.root";
+	IsoSFName = "nTupleAnalysis/baseClasses/data/MuonSF2018/RunABCD_SF_ISO.root";
+
+	m_SFFileID = new TFile(IDSFName.c_str(),"READ");
+	m_SFHistTight = (TH2D*)m_SFFileID->Get("NUM_TightID_DEN_TrackerMuons_pt_abseta");
+      
+	m_SFFileIso = new TFile(IsoSFName.c_str(),"READ");
+	m_SFHistIso = (TH2D*)m_SFFileIso->Get("NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta");
+
+      }
+
+      std::cout << "muonData::Loading SF from files: \n\t" << IDSFName << "\n and \n\t" << IsoSFName  << "\n For muons " << m_name << std::endl;
+
+    }
+
+  }// isMC
+
 
 
 }

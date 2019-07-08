@@ -13,9 +13,11 @@ elecHists::elecHists(std::string name, fwlite::TFileService& fs, std::string tit
     isolation_cor_s = dir.make<TH1F>("iso_cor_s", (name+"/iso_cor_s; "+title+" Isolation; Entries").c_str(), 50,0,0.1);
     dR        = dir.make<TH1F>("dR",        (name+"/dR;        "+title+" Min #DeltaR(elec,jet); Entries").c_str(), 50, 0, 5);
     nElecs    = dir.make<TH1F>("nElecs",    (name+"/nElecs;    "+title+" Number of Electrons; Entries").c_str(),  6,-0.5,5.5);
+
+    SF      = dir.make<TH1F>("SF",     (name+"/SF;SF;Entries").c_str(),50,-0.1,2);
 } 
 
-void elecHists::Fill(std::shared_ptr<elec> &elec, float weight){
+void elecHists::Fill(const elecPtr& elec, float weight){
 
   v->Fill(elec->p, weight);
 
@@ -25,6 +27,7 @@ void elecHists::Fill(std::shared_ptr<elec> &elec, float weight){
   isolation_cor_s->Fill(elec->isolation_corrected, weight);
   dR       ->Fill(elec->dR,        weight);
 
+  SF               ->Fill(elec->SF      , weight);
   return;
 }
 
