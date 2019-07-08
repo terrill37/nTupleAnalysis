@@ -27,6 +27,16 @@ elec::elec(UInt_t i, elecData* data){
   jetIdx    = data->jetIdx[i];
   isolation = data->pfRelIso04_all[i];
 
+  sumChargedHadronPt = data->sumChargedHadronPt[i]; 
+  sumNeutralHadronEt = data->sumNeutralHadronEt[i]; 
+  sumPhotonEt        = data->sumPhotonEt       [i]; 
+  sumPUPt            = data->sumPUPt           [i]; 
+
+  
+  float isoCorrection = (data->sumNeutralHadronEt[i] + data->sumPhotonEt[i] - 0.5 * data->sumPUPt[i]);
+  isolation_corrected = (isoCorrection > 0) ? (data->sumChargedHadronPt[i] + isoCorrection) / pt : data->sumChargedHadronPt[i] / pt;
+    
+
 }
 
 elec::~elec(){}
@@ -35,21 +45,39 @@ elec::~elec(){}
 //access tree
 elecData::elecData(std::string name, TChain* tree){
 
+  m_name = name;
+
   initBranch(tree, ("n"+name).c_str(), n );
 
   initBranch(tree, (name+"_pt"  ).c_str(), pt );  
   initBranch(tree, (name+"_eta" ).c_str(), eta );  
+  initBranch(tree, (name+"_superClusterEta" ).c_str(), superClusterEta );  
   initBranch(tree, (name+"_phi" ).c_str(), phi );  
   initBranch(tree, (name+"_mass").c_str(), m );
 
   initBranch(tree, (name+"_softId"  ).c_str(), softId );
   initBranch(tree, (name+"_highPtId").c_str(), highPtId );
 
-  initBranch(tree, (name+"_mediumId").c_str(), mediumId );
-  initBranch(tree, (name+"_tightId" ).c_str(), tightId );
+  if(initBranch(tree, (name+"_mediumId").c_str(), mediumId ) == -1){
+    std::cout << "\tUsing " << (name+"_isMediumElec"        ) << " for mediumId " << std::endl;
+    initBranch(tree, (name+"_isMediumElec"        ).c_str(),         mediumId        ); 
+  }
+
+  if(initBranch(tree, (name+"_tightId" ).c_str(), tightId ) == -1){
+    std::cout << "\tUsing " << (name+"_isTightElec"        ) << " for tightId " << std::endl;
+    initBranch(tree, (name+"_isTightElec"        ).c_str(),         tightId        ); 
+  }
 
   initBranch(tree, (name+"_jetIdx").c_str(), jetIdx );
   initBranch(tree, (name+"_pfRelIso04_all").c_str(), pfRelIso04_all );
+
+
+  initBranch(tree, (name+"_sumChargedHadronPt").c_str(),    sumChargedHadronPt );
+  initBranch(tree, (name+"_sumNeutralHadronEt").c_str(),    sumNeutralHadronEt );
+  initBranch(tree, (name+"_sumPhotonEt"       ).c_str(),    sumPhotonEt        );
+  initBranch(tree, (name+"_sumPUPt"           ).c_str(),    sumPUPt            );
+
+
   //initBranch(tree, (name+"_").c_str(),  );
 
 //  *Br   72 :nPFElectron : nPFElectron/I                                        *
@@ -60,8 +88,9 @@ elecData::elecData(std::string name, TChain* tree){
 //    *Br   80 :PFElectron_ratioRel : PFElectron_ratioRel[nPFElectron]/F           *
 //    *Br   81 :PFElectron_IP : PFElectron_IP[nPFElectron]/F                       *
 //    *Br   82 :PFElectron_IP2D : PFElectron_IP2D[nPFElectron]/F                   *
-    
-    
+
+//  *Br   38 :nPatElec  : nPatElec/I                                             *
+//    *Br   43 :PatElec_isLooseElec : PatElec_isLooseElec[nPatElec]/I              *
 
 }
 
@@ -69,6 +98,11 @@ std::vector<std::shared_ptr<elec>> elecData::getElecs(float ptMin, float etaMax,
 
   std::vector<std::shared_ptr<elec>> outputElecs;
   for(UInt_t i = 0; i < n; ++i){
+    if(i > int(MAXELECS-1)) {
+      std::cout  << m_name << "::Warning too many elecs! " << n << " elecs. Skipping. "<< std::endl;
+      break;
+    }
+
     //if(tag == 0 && softId[i]   == 0) continue;
     //if(tag == 1 && highPtId[i] == 0) continue;
     //if(tag == 2 && mediumId[i] == 0) continue;

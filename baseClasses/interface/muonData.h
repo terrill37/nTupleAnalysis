@@ -29,6 +29,8 @@ namespace nTupleAnalysis {
 
     int jetIdx;
     float isolation;
+    float isolation_corrected;
+    float isolation_trackerOnly;
     float dR = 1e6;
 
     muon(UInt_t, muonData*); 
@@ -43,21 +45,27 @@ namespace nTupleAnalysis {
   class muonData {
 
   public:
-    UInt_t n;
+    std::string m_name;
+    static const unsigned int MAXMUONS = 20;
 
-    float pt [10];
-    float eta[10];
-    float phi[10];
-    float m  [10] = {0};
+    
+    Int_t n;
 
-    Bool_t  softId[10];
-    UChar_t highPtId[10];
+    float pt [MAXMUONS];
+    float eta[MAXMUONS];
+    float phi[MAXMUONS];
+    float m  [MAXMUONS] = {0};
 
-    Bool_t mediumId[10];
-    Bool_t tightId[10];
+    Bool_t  softId[MAXMUONS];
+    UChar_t highPtId[MAXMUONS];
 
-    int jetIdx[10];
-    float pfRelIso04_all[10];
+    Bool_t mediumId[MAXMUONS];
+    Bool_t tightId[MAXMUONS];
+
+    int jetIdx[MAXMUONS];
+    float pfRelIso04_all[MAXMUONS];
+    float isolation_corrected[MAXMUONS];
+    float isolation_trkIsoOnly[MAXMUONS];
     
     muonData(std::string, TChain*); 
     std::vector<std::shared_ptr<muon>> getMuons(float ptMin = -1e6, float etaMax = 1e6, int tag = -1, bool isolation = false);

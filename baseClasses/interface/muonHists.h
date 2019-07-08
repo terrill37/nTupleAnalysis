@@ -17,6 +17,8 @@ namespace nTupleAnalysis {
     fourVectorHists* v;
     TH1F* quality;
     TH1F* isolation;
+    TH1F* isolation_cor;
+    TH1F* isolation_cor_s;
     TH1F* dR;
     TH1F* nMuons;
 
