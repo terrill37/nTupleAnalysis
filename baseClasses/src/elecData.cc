@@ -118,7 +118,7 @@ elecData::elecData(std::string name, TChain* tree, bool isMC, std::string SFName
 	recoSFName  = "nTupleAnalysis/baseClasses/data/ElecSF2018/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root";
       }
 
-      std::cout << "elecData::Loading SF from files: \n\t" << tightSFName << "\n and \n\t" << recoSFName  << "\n For elecs " << m_name << std::endl;{
+      std::cout << "elecData::Loading SF from files: \n\t" << tightSFName << "\n and \n\t" << recoSFName  << "\n For elecs " << m_name << std::endl;
 
       m_SFFileTight = new TFile(tightSFName.c_str(),"READ");
       m_SFHistTight = (TH2D*)m_SFFileTight->Get("EGamma_SF2D");
@@ -126,13 +126,13 @@ elecData::elecData(std::string name, TChain* tree, bool isMC, std::string SFName
       m_SFFileReco = new TFile(recoSFName.c_str(),"READ");
       m_SFHistReco = (TH2D*)m_SFFileReco->Get("EGamma_SF2D");
     }
-
+    
   }// isMC
-
-
+  
+  
 }
 
-std::vector<std::shared_ptr<elec>> elecData::getElecs(float ptMin, float etaMax, int tag, bool isolation){
+std::vector<std::shared_ptr<elec> > elecData::getElecs(float ptMin, float etaMax, int tag, bool isolation){
 
   std::vector<std::shared_ptr<elec>> outputElecs;
   for(UInt_t i = 0; i < n; ++i){
