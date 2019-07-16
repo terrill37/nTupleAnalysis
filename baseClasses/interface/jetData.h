@@ -164,7 +164,7 @@ namespace nTupleAnalysis {
 
     btaggingData* btagData = nullptr;
 
-    jetData(std::string, TChain*, std::string prefix = "", bool isMC = false, std::string SFName = ""); 
+    jetData(std::string, TChain*, std::string jetDetailLevel = "Tracks.btagInputs", std::string prefix = "", bool isMC = false, std::string SFName = ""); 
     std::vector< std::shared_ptr<jet> > getJets(float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);
     std::vector< std::shared_ptr<jet> > getJets(std::vector< std::shared_ptr<jet> > inputJets, 
 						float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);
