@@ -7,8 +7,9 @@
 #include "nTupleAnalysis/baseClasses/interface/jetData.h"
 
 namespace nTupleAnalysis {
-  const float mH = 125.0;
+  const float mW =  80.4;
   const float mZ =  91.0;
+  const float mH = 125.0;
 
   //dijet object
   class dijet {
@@ -26,8 +27,13 @@ namespace nTupleAnalysis {
     float m;
     float e;
 
+    TLorentzVector pW;
     TLorentzVector pZ;
     TLorentzVector pH;
+
+    float xW;
+    float xZ;
+    float xH;
 
     //dijet();
     dijet(std::shared_ptr<jet>&, std::shared_ptr<jet>&); 

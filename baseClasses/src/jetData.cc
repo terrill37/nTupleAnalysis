@@ -24,8 +24,8 @@ jet::jet(UInt_t i, jetData* data){
   CSVv2     = data->CSVv2[i];
   deepFlavB = data->deepFlavB[i];
 
-  puId = data->puId[i];
-  jetId = data->jetId[i];
+  // puId = data->puId[i];
+  // jetId = data->jetId[i];
 }
 
 jet::jet(TLorentzVector& vec, float tag){
@@ -75,8 +75,8 @@ jetData::jetData(std::string name, TChain* tree){
   initBranch(tree, (name+"_btagCSVV2"    ).c_str(), CSVv2     );
   initBranch(tree, (name+"_btagDeepFlavB").c_str(), deepFlavB );
 
-  initBranch(tree, (name+"_puId" ).c_str(), puId  );
-  initBranch(tree, (name+"_jetId").c_str(), jetId );
+  // initBranch(tree, (name+"_puId" ).c_str(), puId  );
+  // initBranch(tree, (name+"_jetId").c_str(), jetId );
   //initBranch(tree, (name+"_").c_str(),  );
 
 }
