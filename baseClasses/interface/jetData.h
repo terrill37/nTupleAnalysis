@@ -34,7 +34,8 @@ namespace nTupleAnalysis {
     float deepB;
     float CSVv2;
     float deepFlavB;
-
+    Int_t puId;
+    Int_t jetId;
 
     int ntracks        ;
     int nseltracks     ;
@@ -90,7 +91,6 @@ namespace nTupleAnalysis {
 
     float SF = 1.0; //btagging scale-factor
 
-
     jet();
     jet(UInt_t, jetData*); 
     jet(TLorentzVector&, float tag = -1); 
@@ -127,7 +127,8 @@ namespace nTupleAnalysis {
     float deepB[100];
     float CSVv2[100];
     float deepFlavB[100];
-
+    Int_t puId[100];
+    Int_t jetId[100];
 
     int ntracks        [100];
     int nseltracks     [100];
@@ -165,6 +166,7 @@ namespace nTupleAnalysis {
     btaggingData* btagData = nullptr;
 
     jetData(std::string, TChain*, std::string jetDetailLevel = "Tracks.btagInputs", std::string prefix = "", bool isMC = false, std::string SFName = ""); 
+
     std::vector< std::shared_ptr<jet> > getJets(float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);
     std::vector< std::shared_ptr<jet> > getJets(std::vector< std::shared_ptr<jet> > inputJets, 
 						float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);

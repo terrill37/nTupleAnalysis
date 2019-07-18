@@ -30,10 +30,11 @@ jet::jet(UInt_t i, jetData* data){
   // Normalizize the underflow
   if(CSVv2 < 0) 
     CSVv2 = -0.1; 
-
+  
+  puId = data->puId[i];
+  jetId = data->jetId[i];
 
   deepFlavB = data->deepFlavB[i];
-
 
   ntracks        = data->ntracks        [i];
   nseltracks     = data->nseltracks     [i];
@@ -187,7 +188,6 @@ jet::jet(UInt_t i, jetData* data){
 //  std::cout << "\t tracks " << tracks.size() << std::endl;
 //  std::cout << "\t trkTagVars " << trkTagVars.size() << std::endl;
 //  std::cout << "\t tagVars " << tagVars->jetNTracks <<std::endl;
-
 }
 
 jet::jet(TLorentzVector& vec, float tag){
@@ -246,6 +246,9 @@ jetData::jetData(std::string name, TChain* tree, std::string jetDetailLevel, std
   
   initBranch(tree, (prefix+name+"_btagDeepFlavB").c_str(), deepFlavB );
 
+  initBranch(tree, (prefix+name+"_puId" ).c_str(), puId  );
+  initBranch(tree, (prefix+name+"_jetId").c_str(), jetId );
+  
   initBranch(tree, (prefix+name+"_ntracks"        ).c_str(),         ntracks        );
   initBranch(tree, (prefix+name+"_nseltracks"     ).c_str(),         nseltracks     );
   initBranch(tree, (prefix+name+"_flavour"        ).c_str(),         flavour        ); 
