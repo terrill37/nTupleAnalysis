@@ -135,7 +135,7 @@ elecData::elecData(std::string name, TChain* tree, bool isMC, std::string SFName
 std::vector<std::shared_ptr<elec> > elecData::getElecs(float ptMin, float etaMax, int tag, bool isolation){
 
   std::vector<std::shared_ptr<elec>> outputElecs;
-  for(UInt_t i = 0; i < n; ++i){
+  for(Int_t i = 0; i < n; ++i){
     if(i > int(MAXELECS-1)) {
       std::cout  << m_name << "::Warning too many elecs! " << n << " elecs. Skipping. "<< std::endl;
       break;

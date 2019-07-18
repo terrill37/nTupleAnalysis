@@ -37,6 +37,14 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
 
     SF      = dir.make<TH1F>("SF",     (name+"/SF;SF;Entries").c_str(),50,-0.1,2);
 
+    matched_dPt      = dir.make<TH1F>("matched_dPt",     (name+"/matched_dPt     ;P_{T}-P_{T}^{matched} [GeV];Entries").c_str()  ,100,-50, 50);
+    matched_dEta     = dir.make<TH1F>("matched_dEta",    (name+"/matched_dEta    ;#eta-#eta^{matched};Entries"        ).c_str()  ,100,-0.5,0.5);
+    matched_dPhi     = dir.make<TH1F>("matched_dPhi",    (name+"/matched_dPhi    ;#phi-#phi^{matched};Entries"        ).c_str()  ,100,-0.5,0.5);
+    matched_dR       = dir.make<TH1F>("matched_dR",      (name+"/matched_dR      ;#DeltaR(Online,Offline);;Entries"   ).c_str()  ,100, 0,0.45);
+    matched_dcsv     = dir.make<TH1F>("matched_dcsv",    (name+"/matched_dcsv;CSV-CSV^{matched};Entries"              ).c_str()  ,100,-1,1);
+    matched_dDeepcsv = dir.make<TH1F>("matched_dDeepcsv",(name+"/matched_dDeepcsv;DeepCSV-DeepCSV^{matched};Entries"  ).c_str()  ,100,-1,1);
+
+
     tracks = new trackHists(name+"/tracks", fs, title);
     btags  = new btaggingHists(name+"/btags", fs, title);
 
@@ -64,7 +72,7 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
 
   SoftMu     ->Fill(jet->SoftMu     ,weight);
   nSoftMu    ->Fill(jet->nSM        ,weight);
-
+  
   SoftEl     ->Fill(jet->SoftEl     ,weight);
   nSoftMu    ->Fill(jet->nSE        ,weight);
 
@@ -114,6 +122,15 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
   }
   tracks_noV0->nTracks->Fill(nTrks_noV0, weight);  
   
+  std::shared_ptr<nTupleAnalysis::jet> matchedJet = jet->matchedJet.lock();
+  if(matchedJet){
+    matched_dPt      ->Fill(jet->pt  - matchedJet->pt ,weight);
+    matched_dEta     ->Fill(jet->eta - matchedJet->eta,weight);
+    matched_dPhi     ->Fill(jet->p.DeltaPhi(matchedJet->p),weight);
+    matched_dR       ->Fill(jet->p.DeltaR(matchedJet->p),weight);
+    matched_dcsv     ->Fill(jet->CSVv2 - matchedJet->CSVv2,weight);
+    matched_dDeepcsv ->Fill(jet->DeepCSV - matchedJet->DeepCSV,weight);
+  }
 
   return;
 }

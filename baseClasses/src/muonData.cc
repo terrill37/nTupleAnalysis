@@ -8,7 +8,7 @@ using namespace nTupleAnalysis;
 
 //muon object
 muon::muon(UInt_t i, muonData* data){
-  
+
 
   pt  = data->pt [i];
   eta = data->eta[i];
@@ -21,7 +21,7 @@ muon::muon(UInt_t i, muonData* data){
 
   softId   = data->softId[i];
   highPtId = data->highPtId[i];
-
+  
   mediumId = data->mediumId[i];
   tightId  = data->tightId[i];
 
@@ -31,15 +31,15 @@ muon::muon(UInt_t i, muonData* data){
   isolation = data->pfRelIso04_all[i];
   isolation_corrected = data->isolation_corrected[i];
   isolation_trackerOnly = data->isolation_trkIsoOnly[i];
-
+ 
   //
   // Load the SFs
   //
   if(data->m_isMC && data->m_SFHistTight && data->m_SFHistIso){
-    //std::cout << "Muon Iso SF " << data->m_SFHistIso  ->GetBinContent(data->m_SFHistIso  ->FindBin(fabs(eta), pt)) << std::endl;;
-    SF *= data->m_SFHistIso  ->GetBinContent(data->m_SFHistIso  ->FindBin(pt, fabs(eta)));
-    //std::cout << "Muon Tight SF " << data->m_SFHistTight  ->GetBinContent(data->m_SFHistTight  ->FindBin(fabs(eta), pt)) << std::endl;;
-    SF *= data->m_SFHistTight->GetBinContent(data->m_SFHistTight->FindBin(pt, fabs(eta)));
+    if(pt < 120. ){
+      SF *= data->m_SFHistIso  ->GetBinContent(data->m_SFHistIso  ->FindBin(pt, fabs(eta)));
+      SF *= data->m_SFHistTight->GetBinContent(data->m_SFHistTight->FindBin(pt, fabs(eta)));
+    }
   }
   
 
@@ -54,7 +54,7 @@ muonData::muonData(std::string name, TChain* tree, bool isMC, std::string SFName
   m_name = name;
   m_isMC = isMC;
 
-  initBranch(tree, ("n"+name).c_str(), n );
+  initBranch(tree, ("n"+name).c_str(), nMuons );
 
   initBranch(tree, (name+"_pt"  ).c_str(), pt );  
   initBranch(tree, (name+"_eta" ).c_str(), eta );  
@@ -127,7 +127,7 @@ muonData::muonData(std::string name, TChain* tree, bool isMC, std::string SFName
       std::cout << "muonData::Loading SF from files: \n\t" << IDSFName << "\n and \n\t" << IsoSFName  << "\n For muons " << m_name << std::endl;
 
     }
-
+    
   }// isMC
 
 
@@ -138,9 +138,9 @@ std::vector<std::shared_ptr<muon>> muonData::getMuons(float ptMin, float etaMax,
 
   std::vector<std::shared_ptr<muon>> outputMuons;
 
-  for(Int_t i = 0; i < n; ++i){
+  for(Int_t i = 0; i < nMuons; ++i){
     if(i > int(MAXMUONS-1)) {
-      std::cout  << m_name << "::Warning too many muons! " << n << " muons. Skipping. "<< std::endl;
+      std::cout  << m_name << "::Warning too many muons! " << nMuons << " muons. Skipping. "<< std::endl;
       break;
     }
 

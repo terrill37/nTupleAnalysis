@@ -49,10 +49,10 @@ namespace nTupleAnalysis {
 
   public:
     std::string m_name;
-    static const unsigned int MAXMUONS = 20;
+    static const unsigned int MAXMUONS = 1000;
     bool m_isMC;
     
-    Int_t n;
+    Int_t nMuons;
 
     float pt [MAXMUONS];
     float eta[MAXMUONS];
