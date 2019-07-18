@@ -1,16 +1,16 @@
 // -*- C++ -*-
 
-#if !defined(muonData_H)
-#define muonData_H
+#if !defined(elecData_H)
+#define elecData_H
 #include <TChain.h>
 #include <TLorentzVector.h>
 #include "nTupleAnalysis/baseClasses/interface/initBranch.h"
 
 namespace nTupleAnalysis {
-  //forward declaration for use in muon constructor from tree
-  class muonData;
-  //muon object
-  class muon {
+  //forward declaration for use in elec constructor from tree
+  class elecData;
+  //elec object
+  class elec {
 
   public:
     float pt;
@@ -31,16 +31,16 @@ namespace nTupleAnalysis {
     float isolation;
     float dR = 1e6;
 
-    muon(UInt_t, muonData*); 
-    ~muon(); 
+    elec(UInt_t, elecData*); 
+    ~elec(); 
 
     //void dump();
   };
 
-  typedef std::shared_ptr<muon> muonPtr;
+  typedef std::shared_ptr<elec> elecPtr;
 
   //class for tree access
-  class muonData {
+  class elecData {
 
   public:
     UInt_t n;
@@ -59,13 +59,13 @@ namespace nTupleAnalysis {
     int jetIdx[10];
     float pfRelIso04_all[10];
     
-    muonData(std::string, TChain*); 
-    std::vector<std::shared_ptr<muon>> getMuons(float ptMin = -1e6, float etaMax = 1e6, int tag = -1, bool isolation = false);
-    ~muonData(); 
+    elecData(std::string, TChain*); 
+    std::vector<std::shared_ptr<elec>> getElecs(float ptMin = -1e6, float etaMax = 1e6, int tag = -1, bool isolation = false);
+    ~elecData(); 
 
     //void dump();
   };
 
 }
-#endif // muonData_H
+#endif // elecData_H
 
