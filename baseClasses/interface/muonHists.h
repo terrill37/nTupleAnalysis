@@ -17,11 +17,14 @@ namespace nTupleAnalysis {
     fourVectorHists* v;
     TH1F* quality;
     TH1F* isolation;
+    TH1F* isolation_cor;
+    TH1F* isolation_cor_s;
     TH1F* dR;
     TH1F* nMuons;
+    TH1F* SF;
 
     muonHists(std::string, fwlite::TFileService&, std::string title = "");
-    void Fill(std::shared_ptr<muon>&, float);
+    void Fill(const muonPtr&, float);
     ~muonHists(); 
 
   };

@@ -8,6 +8,7 @@
 #include "nTupleAnalysis/baseClasses/interface/trackData.h"
 #include "nTupleAnalysis/baseClasses/interface/btaggingData.h"
 
+#include "CondTools/BTau/interface/BTagCalibrationReader.h"
 
 
 namespace nTupleAnalysis {
@@ -84,11 +85,11 @@ namespace nTupleAnalysis {
 
     //
     //  Matched Jets
-
     //
     float match_dR = -99;
     std::weak_ptr<jet>  matchedJet;
 
+    float SF = 1.0; //btagging scale-factor
 
     jet();
     jet(UInt_t, jetData*); 
@@ -107,6 +108,7 @@ namespace nTupleAnalysis {
 
   public:
     std::string m_name ="";
+    bool m_isMC = false;
     std::string m_prefix ="";
     bool debug = false;
 
@@ -163,12 +165,15 @@ namespace nTupleAnalysis {
 
     btaggingData* btagData = nullptr;
 
-    jetData(std::string, TChain*, std::string prefix = ""); 
+    jetData(std::string, TChain*, std::string jetDetailLevel = "Tracks.btagInputs", std::string prefix = "", bool isMC = false, std::string SFName = ""); 
 
     std::vector< std::shared_ptr<jet> > getJets(float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);
     std::vector< std::shared_ptr<jet> > getJets(std::vector< std::shared_ptr<jet> > inputJets, 
 						float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);
     ~jetData(); 
+
+    BTagCalibrationReader* m_btagCalibrationTool = nullptr;
+    float getSF(float jetEta,  float jetPt,  float jetDeepCSV, int jetHadronFlavour);
 
     //void dump();
   };

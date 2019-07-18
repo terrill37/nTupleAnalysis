@@ -17,11 +17,14 @@ namespace nTupleAnalysis {
     fourVectorHists* v;
     TH1F* quality;
     TH1F* isolation;
+    TH1F* isolation_cor;
+    TH1F* isolation_cor_s;
     TH1F* dR;
     TH1F* nElecs;
+    TH1F* SF;
 
     elecHists(std::string, fwlite::TFileService&, std::string title = "");
-    void Fill(std::shared_ptr<elec>&, float);
+    void Fill(const elecPtr&, float);
     ~elecHists(); 
 
   };

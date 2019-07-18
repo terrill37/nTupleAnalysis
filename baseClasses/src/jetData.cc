@@ -2,7 +2,8 @@
 
 #include "nTupleAnalysis/baseClasses/interface/jetData.h"
 #include "DataFormats/BTauReco/interface/ParticleMasses.h"
-
+#include "CondFormats/BTauObjects/interface/BTagEntry.h"
+#include "CondFormats/BTauObjects/interface/BTagCalibration.h"
 
 using namespace nTupleAnalysis;
 
@@ -75,11 +76,10 @@ jet::jet(UInt_t i, jetData* data){
   nbHadrons      = data->nbHadrons      [i];
   ncHadrons      = data->ncHadrons      [i];
 
-
-  nFirstTrack = data->nFirstTrack[i];
-  nLastTrack = data->nLastTrack[i];
-
   if(data->trkData){
+    nFirstTrack = data->nFirstTrack[i];
+    nLastTrack = data->nLastTrack[i];
+
     std::vector<trackPtr> tracksTmp = data->trkData->getTracks(nFirstTrack,nLastTrack);
     for(const trackPtr& track: tracksTmp){
       track->dR = track->p.DeltaR(p);
@@ -127,21 +127,20 @@ jet::jet(UInt_t i, jetData* data){
     std::cout << std::endl;
   }
 
-  if(data->btagData->haveSVs){
-    if(data->debug)  std::cout << data->m_name << " Getting SVs " << data->nFirstSV[i] << " " << data->nLastSV[i] << std::endl;
-    svs = data->btagData->getSecondaryVertices(data->nFirstSV[i],data->nLastSV[i], data->debug);
+  if(data->btagData){
+    if(data->btagData->haveSVs){
+      if(data->debug)  std::cout << data->m_name << " Getting SVs " << data->nFirstSV[i] << " " << data->nLastSV[i] << std::endl;
+      svs = data->btagData->getSecondaryVertices(data->nFirstSV[i],data->nLastSV[i], data->debug);
+    }
+    
+    if(data->btagData->haveTrkTagVars){
+      trkTagVars = data->btagData->getTrkTagVars(data->nFirstTrkTagVar[i],data->nLastTrkTagVar[i]);
+    }
+    
+    if(data->btagData->haveTagVars){
+      tagVars = data->btagData->getTagVars(i);
+    }
   }
-
-
-
-  if(data->btagData->haveTrkTagVars){
-    trkTagVars = data->btagData->getTrkTagVars(data->nFirstTrkTagVar[i],data->nLastTrkTagVar[i]);
-  }
-
-  if(data->btagData->haveTagVars){
-    tagVars = data->btagData->getTagVars(i);
-  }
-
 
   //
   // Hack to fix trkTagVas phi which is not filled in cmssw
@@ -173,6 +172,13 @@ jet::jet(UInt_t i, jetData* data){
     }
   }
 
+
+
+  if(data->m_isMC && data->m_btagCalibrationTool){
+    SF = data->getSF(eta, pt, DeepCSV, hadronFlavour);
+  }else{
+    SF = 1.0;
+  }
 
 
 
@@ -214,10 +220,11 @@ jet::~jet(){
 
 
 //access tree
-jetData::jetData(std::string name, TChain* tree, std::string prefix){
+jetData::jetData(std::string name, TChain* tree, std::string jetDetailLevel, std::string prefix, bool isMC, std::string SFName){
 
   m_name = name;
   m_prefix = prefix;
+  m_isMC = isMC;
 
   initBranch(tree, (prefix+"n"+name).c_str(), nJets );
 
@@ -266,29 +273,74 @@ jetData::jetData(std::string name, TChain* tree, std::string prefix){
   //
   //  only load the track if the variables are availible
   //
-  int nFirstTrackCode = initBranch(tree, (prefix+name+"_nFirstTrack").c_str(),  nFirstTrack);
-  int nLastTrackCode  = initBranch(tree, (prefix+name+"_nLastTrack" ).c_str(),  nLastTrack );
-  if(nFirstTrackCode != -1 && nLastTrackCode != -1){
-    trkData = new trackData(prefix, tree);
+  if(jetDetailLevel.find("Tracks") != std::string::npos){
+    std::cout << "jetData::" << m_name << " loading Tracks" << std::endl;
+    int nFirstTrackCode = initBranch(tree, (prefix+name+"_nFirstTrack").c_str(),  nFirstTrack);
+    int nLastTrackCode  = initBranch(tree, (prefix+name+"_nLastTrack" ).c_str(),  nLastTrack );
+    if(nFirstTrackCode != -1 && nLastTrackCode != -1){
+      trkData = new trackData(prefix, tree);
+    }
   }
-
 
   //
   //  Load the btagging data
   //
-  btagData = new btaggingData();
-  btagData->initTagVar(prefix, tree);  
+  if(jetDetailLevel.find("btagInputs") != std::string::npos){
+    std::cout << "jetData::" << m_name << " loading btagInputs" << std::endl;
+    btagData = new btaggingData();
+    btagData->initTagVar(prefix, tree);  
+  
+    int nFirstSVCode = initBranch(tree, (prefix+name+"_nFirstSV").c_str(),  nFirstSV);
+    int nLastSVCode  = initBranch(tree, (prefix+name+"_nLastSV" ).c_str(),  nLastSV );
+    if(nFirstSVCode != -1 && nLastSVCode != -1){
+      btagData->initSecondaryVerticies(prefix, tree);
+    }
 
-  int nFirstSVCode = initBranch(tree, (prefix+name+"_nFirstSV").c_str(),  nFirstSV);
-  int nLastSVCode  = initBranch(tree, (prefix+name+"_nLastSV" ).c_str(),  nLastSV );
-  if(nFirstSVCode != -1 && nLastSVCode != -1){
-    btagData->initSecondaryVerticies(prefix, tree);
+    int nFirstTrkTagVarCode = initBranch(tree, (prefix+name+"_nFirstTrkTagVar").c_str(),  nFirstTrkTagVar);
+    int nLastTrkTagVarCode  = initBranch(tree, (prefix+name+"_nLastTrkTagVar" ).c_str(),  nLastTrkTagVar );
+    if(nFirstTrkTagVarCode != -1 && nLastTrkTagVarCode != -1){
+      btagData->initTrkTagVar(prefix, tree);
+    }
   }
 
-  int nFirstTrkTagVarCode = initBranch(tree, (prefix+name+"_nFirstTrkTagVar").c_str(),  nFirstTrkTagVar);
-  int nLastTrkTagVarCode  = initBranch(tree, (prefix+name+"_nLastTrkTagVar" ).c_str(),  nLastTrkTagVar );
-  if(nFirstTrkTagVarCode != -1 && nLastTrkTagVarCode != -1){
-    btagData->initTrkTagVar(prefix, tree);
+  //
+  // Load the BTagging SFs
+  //
+  if(m_isMC){
+
+    if(SFName != "2017" && SFName != "2018"){
+      std::cout << "jetData::Warning no scale factors for " << m_name << std::endl;
+    }else{
+
+      std::string sfFileName =  "nTupleAnalysis/baseClasses/data/BTagSF2017/DeepCSV_94XSF_V4_B_F.csv";
+      if(SFName == "2018")
+	std::string sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2018/DeepCSV_102XSF_V1.csv";
+      
+      std::cout << "jetData::Loading SF from " << sfFileName << " For jets " << m_name << std::endl;
+      BTagCalibration calib = BTagCalibration("deepcsv", sfFileName);
+      
+      m_btagCalibrationTool = new BTagCalibrationReader(BTagEntry::OP_RESHAPING,              // 0 is for loose op, 1: medium, 2: tight, 3: discr. reshaping
+							"central"      // central systematic type
+							);
+
+      m_btagCalibrationTool->load(calib, 
+				  BTagEntry::FLAV_B,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
+				  "iterativefit"      // measurement type
+				  );
+
+      m_btagCalibrationTool->load(calib, 
+				  BTagEntry::FLAV_C,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
+				  "iterativefit"      // measurement type
+				  );
+
+
+      m_btagCalibrationTool->load(calib, 
+				  BTagEntry::FLAV_UDSG,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
+				  "iterativefit"      // measurement type
+				  );
+
+    }
+
   }
 
 
@@ -343,3 +395,13 @@ jetData::~jetData(){
   std::cout << "jetData::destroyed " << std::endl;
 }
 
+
+float jetData::getSF(float jetEta,  float jetPt,  float jetDeepCSV, int jetHadronFlavour){ 
+  if(fabs(jetHadronFlavour) == 5){
+    return m_btagCalibrationTool->eval_auto_bounds("central", BTagEntry::FLAV_B, fabs(jetEta), jetPt, jetDeepCSV);
+  }else if(fabs(jetHadronFlavour) == 4){
+    return m_btagCalibrationTool->eval_auto_bounds("central", BTagEntry::FLAV_C, fabs(jetEta), jetPt, jetDeepCSV);
+  }
+
+  return m_btagCalibrationTool->eval_auto_bounds("central", BTagEntry::FLAV_UDSG, fabs(jetEta), jetPt, jetDeepCSV);
+}

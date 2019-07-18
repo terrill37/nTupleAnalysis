@@ -43,6 +43,15 @@ namespace nTupleAnalysis {
     TH1F* hadronFlavour ;
     TH1F* nbHadrons     ;
     TH1F* ncHadrons     ;
+    TH1F* SF     ;
+
+    TH1F* matched_dPt      ;
+    TH1F* matched_dEta     ;
+    TH1F* matched_dPhi     ;
+    TH1F* matched_dR       ;
+    TH1F* matched_dcsv     ;
+    TH1F* matched_dDeepcsv ;
+
 
     trackHists* tracks;
     btaggingHists* btags;
