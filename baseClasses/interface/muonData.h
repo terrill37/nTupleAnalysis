@@ -3,6 +3,7 @@
 #if !defined(muonData_H)
 #define muonData_H
 #include <TChain.h>
+#include <TH2D.h>
 #include <TLorentzVector.h>
 #include "nTupleAnalysis/baseClasses/interface/initBranch.h"
 
@@ -29,7 +30,11 @@ namespace nTupleAnalysis {
 
     int jetIdx;
     float isolation;
+    float isolation_corrected;
+    float isolation_trackerOnly;
     float dR = 1e6;
+
+    float SF = 1.0;
 
     muon(UInt_t, muonData*); 
     ~muon(); 
@@ -37,29 +42,46 @@ namespace nTupleAnalysis {
     //void dump();
   };
 
+  typedef std::shared_ptr<muon> muonPtr;
+
   //class for tree access
   class muonData {
 
   public:
-    UInt_t n;
-
-    float pt [10];
-    float eta[10];
-    float phi[10];
-    float m  [10];
-
-    Bool_t  softId[10];
-    UChar_t highPtId[10];
-
-    Bool_t mediumId[10];
-    Bool_t tightId[10];
-
-    int jetIdx[10];
-    float pfRelIso04_all[10];
+    std::string m_name;
+    static const unsigned int MAXMUONS = 1000;
+    bool m_isMC;
     
-    muonData(std::string, TChain*); 
+    Int_t nMuons;
+
+    float pt [MAXMUONS];
+    float eta[MAXMUONS];
+    float phi[MAXMUONS];
+    float m  [MAXMUONS] = {0};
+
+    Bool_t  softId[MAXMUONS];
+    UChar_t highPtId[MAXMUONS];
+
+    Bool_t mediumId[MAXMUONS];
+    Bool_t tightId[MAXMUONS];
+
+    int jetIdx[MAXMUONS];
+    float pfRelIso04_all[MAXMUONS];
+    float isolation_corrected[MAXMUONS];
+    float isolation_trkIsoOnly[MAXMUONS];
+    
+    muonData(std::string, TChain*, bool isMC = false, std::string SFName=""); 
     std::vector<std::shared_ptr<muon>> getMuons(float ptMin = -1e6, float etaMax = 1e6, int tag = -1, bool isolation = false);
     ~muonData(); 
+
+    TH2D*  m_SFHistTight = nullptr;
+    TH2D*  m_SFHistIso = nullptr;
+
+  private:
+
+    TFile* m_SFFileID = nullptr;
+    TFile* m_SFFileIso = nullptr;
+
 
     //void dump();
   };

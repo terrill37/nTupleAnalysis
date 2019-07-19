@@ -1,16 +1,16 @@
 // -*- C++ -*-
-#if !defined(muonHists_H)
-#define muonHists_H
+#if !defined(elecHists_H)
+#define elecHists_H
 
 #include <iostream>
 #include <TH1F.h>
 #include "PhysicsTools/FWLite/interface/TFileService.h"
-#include "nTupleAnalysis/baseClasses/interface/muonData.h"
+#include "nTupleAnalysis/baseClasses/interface/elecData.h"
 #include "nTupleAnalysis/baseClasses/interface/fourVectorHists.h"
 
 namespace nTupleAnalysis {
 
-  class muonHists {
+  class elecHists {
   public:
     TFileDirectory dir;
     
@@ -20,14 +20,14 @@ namespace nTupleAnalysis {
     TH1F* isolation_cor;
     TH1F* isolation_cor_s;
     TH1F* dR;
-    TH1F* nMuons;
+    TH1F* nElecs;
     TH1F* SF;
 
-    muonHists(std::string, fwlite::TFileService&, std::string title = "");
-    void Fill(const muonPtr&, float);
-    ~muonHists(); 
+    elecHists(std::string, fwlite::TFileService&, std::string title = "");
+    void Fill(const elecPtr&, float);
+    ~elecHists(); 
 
   };
 
 }
-#endif // muonHists_H
+#endif // elecHists_H

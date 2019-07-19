@@ -64,7 +64,7 @@ std::vector<std::shared_ptr<trig>> trigData::getTrigs(float ptMin, float etaMax,
   for(UInt_t i = 0; i < n; ++i){
     if(             pt[i]  <  ptMin ) continue;
     if(       fabs(eta[i]) > etaMax ) continue;
-    if(objId > 0 && id[i] == objId  ) continue;
+    if(objId > 0 && (id[i] != objId)  ) continue;
     outputTrigs.push_back(std::make_shared<trig>(trig(i, this)));
   }
 
