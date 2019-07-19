@@ -351,8 +351,8 @@ std::vector< std::shared_ptr<jet> > jetData::getJets(float ptMin, float ptMax, f
   if(tagger == "deepB")     tag = deepB;
   if(tagger == "deepFlavB") tag = deepFlavB;
   if(debug) std::cout << "We have " << nJets << " jets"<< std::endl;
-  for(Int_t i = 0; i < nJets; ++i){
-    if(i > 99) {
+  for(Int_t i = 0; i < int(nJets); ++i){
+    if(i > int(MAXJETS-1)) {
       std::cout  << m_name << "::Warning too many jets! " << nJets << " jets. Skipping. "<< std::endl;
       break;
     }

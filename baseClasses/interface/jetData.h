@@ -111,57 +111,58 @@ namespace nTupleAnalysis {
     bool m_isMC = false;
     std::string m_prefix ="";
     bool debug = false;
+    static const unsigned int MAXJETS = 100;
 
-    Int_t nJets;
+    UInt_t nJets;
     //ULong64_t n;
 
-    UChar_t cleanmask[100];
+    UChar_t cleanmask[MAXJETS];
 
-    float pt [100];
-    float eta[100];
-    float phi[100];
-    float m  [100];
+    float pt [MAXJETS];
+    float eta[MAXJETS];
+    float phi[MAXJETS];
+    float m  [MAXJETS];
 
-    float bRegCorr[100];
+    float bRegCorr[MAXJETS];
 
-    float deepB[100];
-    float CSVv2[100];
-    float deepFlavB[100];
-    Int_t puId[100];
-    Int_t jetId[100];
+    float deepB[MAXJETS];
+    float CSVv2[MAXJETS];
+    float deepFlavB[MAXJETS];
+    Int_t puId[MAXJETS];
+    Int_t jetId[MAXJETS];
 
-    int ntracks        [100];
-    int nseltracks     [100];
-    float SoftMu       [100];
-    float SoftEl       [100];
-    int nSM            [100];
-    int nSE            [100];
-    int looseID        [100];
-    int tightID        [100];
-    float DeepCSVb     [100];
-    float DeepCSVc     [100];
-    float DeepCSVl     [100];
-    float DeepCSVbb    [100] = {0};
+    int ntracks        [MAXJETS];
+    int nseltracks     [MAXJETS];
+    float SoftMu       [MAXJETS];
+    float SoftEl       [MAXJETS];
+    int nSM            [MAXJETS];
+    int nSE            [MAXJETS];
+    int looseID        [MAXJETS];
+    int tightID        [MAXJETS];
+    float DeepCSVb     [MAXJETS];
+    float DeepCSVc     [MAXJETS];
+    float DeepCSVl     [MAXJETS];
+    float DeepCSVbb    [MAXJETS] = {0};
 
     // truth Info
-    int flavour        [100];
-    int flavourCleaned [100];
-    int partonFlavour  [100];
-    int hadronFlavour  [100];
-    int nbHadrons      [100];
-    int ncHadrons      [100];
+    int flavour        [MAXJETS];
+    int flavourCleaned [MAXJETS];
+    int partonFlavour  [MAXJETS];
+    int hadronFlavour  [MAXJETS];
+    int nbHadrons      [MAXJETS];
+    int ncHadrons      [MAXJETS];
 
 
-    int nFirstTrack[100];
-    int nLastTrack[100];
+    int nFirstTrack[MAXJETS];
+    int nLastTrack[MAXJETS];
     trackData* trkData = nullptr;
 
 
-    int nFirstSV[100] = {0};
-    int nLastSV[100] = {0};
+    int nFirstSV[MAXJETS] = {0};
+    int nLastSV[MAXJETS] = {0};
 
-    int nFirstTrkTagVar[100];
-    int nLastTrkTagVar [100];
+    int nFirstTrkTagVar[MAXJETS];
+    int nLastTrkTagVar [MAXJETS];
 
     btaggingData* btagData = nullptr;
 

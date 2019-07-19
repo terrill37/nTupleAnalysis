@@ -52,7 +52,7 @@ namespace nTupleAnalysis {
     static const unsigned int MAXMUONS = 1000;
     bool m_isMC;
     
-    Int_t nMuons;
+    UInt_t nMuons;
 
     float pt [MAXMUONS];
     float eta[MAXMUONS];

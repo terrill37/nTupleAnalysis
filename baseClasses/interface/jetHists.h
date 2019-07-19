@@ -45,7 +45,7 @@ namespace nTupleAnalysis {
     TH1F* ncHadrons     ;
     TH1F* SF     ;
 
-    TH1F* matched_dPt      ;
+    TH1F* matched_dPt      = NULL;
     TH1F* matched_dEta     ;
     TH1F* matched_dPhi     ;
     TH1F* matched_dR       ;
@@ -53,13 +53,13 @@ namespace nTupleAnalysis {
     TH1F* matched_dDeepcsv ;
 
 
-    trackHists* tracks;
-    btaggingHists* btags;
+    trackHists* tracks = NULL;
+    trackHists* tracks_noV0 = NULL;
 
-    btaggingHists* btags_noV0;
-    trackHists*    tracks_noV0;
+    btaggingHists* btags = NULL;
+    btaggingHists* btags_noV0 = NULL;
 
-    jetHists(std::string, fwlite::TFileService&, std::string title = "");
+    jetHists(std::string, fwlite::TFileService&, std::string title = "", std::string jetDetailLevel = "");
     void Fill(const std::shared_ptr<jet>&, float);
     ~jetHists(); 
 

@@ -138,7 +138,7 @@ std::vector<std::shared_ptr<muon>> muonData::getMuons(float ptMin, float etaMax,
 
   std::vector<std::shared_ptr<muon>> outputMuons;
 
-  for(Int_t i = 0; i < nMuons; ++i){
+  for(Int_t i = 0; i < int(nMuons); ++i){
     if(i > int(MAXMUONS-1)) {
       std::cout  << m_name << "::Warning too many muons! " << nMuons << " muons. Skipping. "<< std::endl;
       break;
