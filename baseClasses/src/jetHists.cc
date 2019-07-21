@@ -3,7 +3,7 @@
 
 using namespace nTupleAnalysis;
 
-jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title) {
+jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title, std::string jetDetailLevel) {
 
     dir = fs.mkdir(name);
     v = new fourVectorHists(name, dir, title);
