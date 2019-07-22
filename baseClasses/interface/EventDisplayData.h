@@ -46,7 +46,7 @@ namespace nTupleAnalysis {
 
     void NewEvent();
 
-    void Write();
+    void Write (std::string outfileName);
   };
 
 }

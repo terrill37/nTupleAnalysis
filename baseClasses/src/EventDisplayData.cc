@@ -134,7 +134,7 @@ EventDisplayData::NewEvent (){
 }
 
 void
-EventDisplayData::Write (){
+EventDisplayData::Write (std::string outfileName){
 
   for(string varName : m_varNames){  
     oroot.add_child(varName, m_AllEvent_info[varName]);
@@ -149,7 +149,7 @@ EventDisplayData::Write (){
   }
 
   ofstream myfile;
-  myfile.open ("example.txt");
+  myfile.open (outfileName);
   
   pt::write_json(myfile, oroot);
   myfile.close();
