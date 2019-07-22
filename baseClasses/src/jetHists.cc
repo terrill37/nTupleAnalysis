@@ -3,7 +3,7 @@
 
 using namespace nTupleAnalysis;
 
-jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title) {
+jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title, std::string jetDetailLevel) {
 
     dir = fs.mkdir(name);
     v = new fourVectorHists(name, dir, title);
@@ -76,7 +76,7 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
   
   SoftEl     ->Fill(jet->SoftEl     ,weight);
   nSoftMu    ->Fill(jet->nSE        ,weight);
-  
+
   //
   // track hists
   //
