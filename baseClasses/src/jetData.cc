@@ -312,9 +312,9 @@ jetData::jetData(std::string name, TChain* tree, std::string jetDetailLevel, std
 
       std::string sfFileName =  "nTupleAnalysis/baseClasses/data/BTagSF2017/DeepCSV_94XSF_V4_B_F.csv";
       if(SFName == "deepcsv2018")
-	std::string sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2018/DeepCSV_102XSF_V1.csv";
+	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2018/DeepCSV_102XSF_V1.csv";
       if(SFName == "deepjet2018")
-	std::string sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2018/DeepJet_102XSF_V1.csv";
+	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2018/DeepJet_102XSF_V1.csv";
       
       std::cout << "jetData::Loading SF from " << sfFileName << " For jets " << m_name << std::endl;
       BTagCalibration calib = BTagCalibration("deepcsv", sfFileName);
