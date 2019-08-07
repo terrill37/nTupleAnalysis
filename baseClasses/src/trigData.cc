@@ -31,7 +31,7 @@ trig::~trig(){}
 //access tree
 trigData::trigData(std::string name, TChain* tree){
 
-  initBranch(tree, ("n"+name).c_str(), n );
+  initBranch(tree, ("n"+name).c_str(), nTrigObjs );
 
   initBranch(tree, (name+"_pt"  ).c_str(), pt  );  
   initBranch(tree, (name+"_eta" ).c_str(), eta );  
@@ -61,7 +61,14 @@ std::vector<std::shared_ptr<trig>> trigData::getTrigs(float ptMin, float etaMax,
   
   std::vector< std::shared_ptr<trig> > outputTrigs;
 
-  for(UInt_t i = 0; i < n; ++i){
+  for(UInt_t i = 0; i < nTrigObjs; ++i){
+
+    if(i > int(MAXTRIGS-1)) {
+      std::cout  << "trigData::Warning too many trig Objsts! " << nTrigObjs << " trigs. Skipping. "<< std::endl;
+      break;
+    }
+
+
     if(             pt[i]  <  ptMin ) continue;
     if(       fabs(eta[i]) > etaMax ) continue;
     if(objId > 0 && (id[i] != objId)  ) continue;

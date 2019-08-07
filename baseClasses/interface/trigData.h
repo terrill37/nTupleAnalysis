@@ -38,17 +38,20 @@ namespace nTupleAnalysis {
   class trigData {
 
   public:
-    UInt_t n;
+    UInt_t nTrigObjs;
 
-    float pt [40];
-    float eta[40];
-    float phi[40];
+    static const unsigned int MAXTRIGS = 1000;
 
-    float l1pt[40];
-    float l1pt_2[40];
-    float l2pt[40];
-    int id[40];
-    int filterBits[40];
+
+    float pt [MAXTRIGS];
+    float eta[MAXTRIGS];
+    float phi[MAXTRIGS];
+
+    float l1pt[MAXTRIGS];
+    float l1pt_2[MAXTRIGS];
+    float l2pt[MAXTRIGS];
+    int id[MAXTRIGS];
+    int filterBits[MAXTRIGS];
 
     trigData(std::string, TChain*); 
     std::vector<std::shared_ptr<trig>> getTrigs(float ptMin = -1e6, float etaMax = 1e6, int objId = 0);
