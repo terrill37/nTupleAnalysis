@@ -80,6 +80,9 @@ jet::jet(UInt_t i, jetData* data){
   nbHadrons      = data->nbHadrons      [i];
   ncHadrons      = data->ncHadrons      [i];
 
+  isTag          = data->isTag      [i];
+  isSel          = data->isSel      [i];
+
   if(data->trkData){
     nFirstTrack = data->nFirstTrack[i];
     nLastTrack = data->nLastTrack[i];
@@ -231,95 +234,22 @@ void jet::RotateZ(float dPhi){
 jet::~jet(){
 }
 
-
+//
 //access tree
-jetData::jetData(std::string name, TChain* tree, std::string jetDetailLevel, std::string prefix, bool isMC, std::string SFName){
+//
+jetData::jetData(std::string name, TTree* tree, bool readIn, std::string jetDetailLevel, std::string prefix, bool isMC, std::string SFName){
 
   m_name = name;
   m_prefix = prefix;
   m_isMC = isMC;
+  m_jetDetailLevel = jetDetailLevel;
 
-  initBranch(tree, (prefix+"n"+name).c_str(), nJets );
-
-  initBranch(tree, (prefix+name+"_cleanmask").c_str(), cleanmask );
-
-  initBranch(tree, (prefix+name+"_pt"  ).c_str(), pt  );  
-  initBranch(tree, (prefix+name+"_eta" ).c_str(), eta );  
-  initBranch(tree, (prefix+name+"_phi" ).c_str(), phi );  
-  initBranch(tree, (prefix+name+"_mass").c_str(), m   );  
-
-  initBranch(tree, (prefix+name+"_bRegCorr").c_str(), bRegCorr );  
-
-  initBranch(tree, (prefix+name+"_btagDeepB"    ).c_str(), deepB     );
-
-  if(initBranch(tree, (prefix+name+"_btagCSVV2"    ).c_str(), CSVv2     ) == -1){
-    std::cout << "\tUsing " << (prefix+name+"_CombIVF"        ) << " for CSVc2 " << std::endl;
-    initBranch(tree, (prefix+name+"_CombIVF"        ).c_str(),         CSVv2        ); 
-  }
-  
-  initBranch(tree, (prefix+name+"_btagDeepFlavB").c_str(), deepFlavB );
-
-  initBranch(tree, (prefix+name+"_puId" ).c_str(), puId  );
-  initBranch(tree, (prefix+name+"_jetId").c_str(), jetId );
-  
-  initBranch(tree, (prefix+name+"_ntracks"        ).c_str(),         ntracks        );
-  initBranch(tree, (prefix+name+"_nseltracks"     ).c_str(),         nseltracks     );
-  initBranch(tree, (prefix+name+"_flavour"        ).c_str(),         flavour        ); 
-  initBranch(tree, (prefix+name+"_flavourCleaned" ).c_str(),         flavourCleaned );
-  initBranch(tree, (prefix+name+"_partonFlavour"  ).c_str(),         partonFlavour  );
-  initBranch(tree, (prefix+name+"_hadronFlavour"  ).c_str(),         hadronFlavour  );
-  initBranch(tree, (prefix+name+"_nbHadrons"      ).c_str(),         nbHadrons      );
-  initBranch(tree, (prefix+name+"_ncHadrons"      ).c_str(),         ncHadrons      );
-
-  initBranch(tree, (prefix+name+"_SoftMu"         ).c_str(),         SoftMu         ); 
-  initBranch(tree, (prefix+name+"_SoftEl"         ).c_str(),         SoftEl         ); 
-  initBranch(tree, (prefix+name+"_nSM"            ).c_str(),         nSM            ); 
-  initBranch(tree, (prefix+name+"_nSE"            ).c_str(),         nSE            ); 
-  initBranch(tree, (prefix+name+"_looseID"        ).c_str(),         looseID        ); 
-  initBranch(tree, (prefix+name+"_tightID"        ).c_str(),         tightID        ); 
-  initBranch(tree, (prefix+name+"_DeepCSVb"       ).c_str(),         DeepCSVb       );
-  initBranch(tree, (prefix+name+"_DeepCSVc"       ).c_str(),         DeepCSVc       );
-  initBranch(tree, (prefix+name+"_DeepCSVl"       ).c_str(),         DeepCSVl       );
-  initBranch(tree, (prefix+name+"_DeepCSVbb"      ).c_str(),         DeepCSVbb      );
-
-
-  //
-  //  only load the track if the variables are availible
-  //
-  if(jetDetailLevel.find("Tracks") != std::string::npos){
-    std::cout << "jetData::" << m_name << " loading Tracks" << std::endl;
-    int nFirstTrackCode = initBranch(tree, (prefix+name+"_nFirstTrack").c_str(),  nFirstTrack);
-    int nLastTrackCode  = initBranch(tree, (prefix+name+"_nLastTrack" ).c_str(),  nLastTrack );
-    if(nFirstTrackCode != -1 && nLastTrackCode != -1){
-      trkData = new trackData(prefix, tree);
-    }
-  }
-
-  //
-  //  Load the btagging data
-  //
-  if(jetDetailLevel.find("btagInputs") != std::string::npos){
-    std::cout << "jetData::" << m_name << " loading btagInputs" << std::endl;
-    btagData = new btaggingData();
-    btagData->initTagVar(prefix, tree);  
-  
-    int nFirstSVCode = initBranch(tree, (prefix+name+"_nFirstSV").c_str(),  nFirstSV);
-    int nLastSVCode  = initBranch(tree, (prefix+name+"_nLastSV" ).c_str(),  nLastSV );
-    if(nFirstSVCode != -1 && nLastSVCode != -1){
-      btagData->initSecondaryVerticies(prefix, tree);
-    }
-
-    int nFirstTrkTagVarCode = initBranch(tree, (prefix+name+"_nFirstTrkTagVar").c_str(),  nFirstTrkTagVar);
-    int nLastTrkTagVarCode  = initBranch(tree, (prefix+name+"_nLastTrkTagVar" ).c_str(),  nLastTrkTagVar );
-    if(nFirstTrkTagVarCode != -1 && nLastTrkTagVarCode != -1){
-      btagData->initTrkTagVar(prefix, tree);
-    }
-  }
+  connectBranches(readIn, tree);
 
   //
   // Load the BTagging SFs
   //
-  if(m_isMC){
+  if(readIn && m_isMC){
 
     if(SFName != "2017" && SFName != "2018"){
       std::cout << "jetData::Warning no scale factors for " << m_name << std::endl;
@@ -357,6 +287,9 @@ jetData::jetData(std::string name, TChain* tree, std::string jetDetailLevel, std
   }
 
 }
+
+
+
 
 
 std::vector< std::shared_ptr<jet> > jetData::getJets(float ptMin, float ptMax, float etaMax, bool clean, float tagMin, std::string tagger, bool antiTag){
@@ -416,4 +349,167 @@ float jetData::getSF(float jetEta,  float jetPt,  float jetDeepCSV, int jetHadro
   }
 
   return m_btagCalibrationTool->eval_auto_bounds("central", BTagEntry::FLAV_UDSG, fabs(jetEta), jetPt, jetDeepCSV);
+}
+
+
+void jetData::writeJets(std::vector< std::shared_ptr<jet> > outputJets){
+  
+  int nOutputJets = outputJets.size();
+  this->nJets = outputJets.size();
+
+  for(Int_t i = 0; i < int(this->nJets); ++i){
+    if(i > int(MAXJETS-1)) {
+      std::cout  << m_name << "::Warning too many jets! " << nOutputJets << " jets. Skipping. "<< std::endl;
+      break;
+    }
+
+    const jetPtr& thisJet = outputJets.at(i);
+    this->cleanmask[i] = thisJet->cleanmask;
+
+    this->pt [i] = thisJet->pt  ;
+    this->eta[i] = thisJet->eta ;
+    this->phi[i] = thisJet->phi ;
+    this->m  [i] = thisJet->m   ;
+
+
+    this->bRegCorr[i] =  thisJet-> bRegCorr;
+
+    this->deepB[i]	      = thisJet->deepB   ; 
+    this->CSVv2[i]	      = thisJet->CSVv2   ; 
+    this->deepFlavB[i]   = thisJet->deepFlavB; 
+  
+    this->puId[i] = thisJet->puId;
+    this->jetId[i] = thisJet->jetId;
+    
+    this->deepFlavB[i] = thisJet->deepFlavB ;
+    
+    this->ntracks        [i] = thisJet->ntracks        ;
+    this->nseltracks     [i] = thisJet->nseltracks     ; 
+    
+      //CombIVF_N      = this->CombIVF_N      [i];
+    this->SoftMu         [i] =     thisJet->SoftMu          ;
+    this->SoftEl         [i] =     thisJet->SoftEl          ;
+    
+    this->nSM            [i] =      thisJet->nSM            ;
+    this->nSE            [i] =      thisJet->nSE            ;
+    this->looseID        [i] =      thisJet->looseID        ;
+    this->tightID        [i] =      thisJet->tightID        ;
+    this->DeepCSVb       [i] =      thisJet->DeepCSVb       ;
+    this->DeepCSVc       [i] =      thisJet->DeepCSVc       ;
+    this->DeepCSVl       [i] =      thisJet->DeepCSVl       ;
+    this->DeepCSVbb      [i] =      thisJet->DeepCSVbb      ;
+    
+    this->flavour        [i] =     thisJet->flavour        ;
+    this->flavourCleaned [i] =     thisJet->flavourCleaned ;
+    this->partonFlavour  [i] =     thisJet->partonFlavour  ;
+    this->hadronFlavour  [i] =     thisJet->hadronFlavour  ;
+    this->nbHadrons      [i] =     thisJet->nbHadrons      ;
+    this->ncHadrons      [i] =     thisJet->ncHadrons      ;
+
+    this->isTag      [i] =   thisJet->isTag          ;
+    this->isSel      [i] =   thisJet->isSel          ;
+
+  }
+
+  return ;
+}
+
+
+void jetData::connectBranches(bool readIn, TTree* tree){
+  
+  std::string jetName =  m_prefix+m_name;
+  std::string NjetName = m_prefix+"n"+m_name;
+
+
+  connectBranch(readIn, tree, NjetName, nJets, "i");
+
+  connectBranchArr(readIn, tree, jetName+"_pt",   pt,  NjetName,  "F");
+  connectBranchArr(readIn, tree, jetName+"_eta",  eta, NjetName,  "F");
+  connectBranchArr(readIn, tree, jetName+"_phi",  phi, NjetName,  "F");
+  connectBranchArr(readIn, tree, jetName+"_mass", m,   NjetName,  "F");  
+
+  connectBranchArr(readIn, tree, jetName+"_cleanmask", m,   NjetName,  "B");  
+
+  connectBranchArr(readIn, tree, jetName+"_bRegCorr", bRegCorr,   NjetName,  "F");  
+  connectBranchArr(readIn, tree, jetName+"_btagDeepB", deepB,   NjetName,  "F");  
+
+  int CSVRes = connectBranchArr(readIn, tree, jetName+"_btagCSVV2", CSVv2,   NjetName,  "F");  
+  if(readIn && CSVRes == -1){
+    std::cout << "\tUsing " << (m_prefix+m_name+"_CombIVF"        ) << " for CSVc2 " << std::endl;
+    connectBranchArr(readIn, tree, jetName+"_CombIVF", CSVv2,   NjetName,  "F");  
+  }
+
+  connectBranchArr(readIn, tree, jetName+"_btagDeepFlavB", deepFlavB,   NjetName,  "F");  
+
+  connectBranchArr(readIn, tree, jetName+"_puId",  puId,   NjetName,  "i");  
+  connectBranchArr(readIn, tree, jetName+"_jetId", puId,   NjetName,  "i");  
+
+  if(m_isMC){
+    connectBranchArr(readIn, tree, jetName+"_flavour", flavour,   NjetName,  "i");  
+    connectBranchArr(readIn, tree, jetName+"_flavourCleaned", flavourCleaned,   NjetName,  "i");  
+    connectBranchArr(readIn, tree, jetName+"_partonFlavour", partonFlavour,   NjetName,  "i");  
+    connectBranchArr(readIn, tree, jetName+"_hadronFlavour", hadronFlavour,   NjetName,  "i");  
+    connectBranchArr(readIn, tree, jetName+"_nbHadrons", nbHadrons,   NjetName,  "i");  
+    connectBranchArr(readIn, tree, jetName+"_ncHadrons", ncHadrons,   NjetName,  "i");  
+  }
+
+  connectBranchArr(readIn, tree, jetName+"_looseID", looseID,   NjetName,  "i");  
+  connectBranchArr(readIn, tree, jetName+"_tightID", tightID,   NjetName,  "i");  
+
+  connectBranchArr(readIn, tree, jetName+"_DeepCSVb", DeepCSVb,   NjetName,  "F");  
+  connectBranchArr(readIn, tree, jetName+"_DeepCSVc", DeepCSVc,   NjetName,  "F");  
+  connectBranchArr(readIn, tree, jetName+"_DeepCSVl", DeepCSVl,   NjetName,  "F");  
+  connectBranchArr(readIn, tree, jetName+"_DeepCSVbb", DeepCSVbb,   NjetName,  "F");  
+
+  connectBranchArr(readIn, tree, jetName+"_isTag", isTag,   NjetName,  "i");  
+  connectBranchArr(readIn, tree, jetName+"_isSel", isSel,   NjetName,  "i");  
+
+  //
+  //  Following only supported for reading In
+  //
+  if(readIn){
+
+    //
+    //  only load the track if the variables are availible
+    //
+    if(m_jetDetailLevel.find("Tracks") != std::string::npos){
+      std::cout << "jetData::" << m_name << " loading Tracks" << std::endl;
+      inputBranch(tree, (m_prefix+m_name+"_ntracks"        ).c_str(),         ntracks        );
+      inputBranch(tree, (m_prefix+m_name+"_nseltracks"     ).c_str(),         nseltracks     );
+      int nFirstTrackCode = inputBranch(tree, (m_prefix+m_name+"_nFirstTrack").c_str(),  nFirstTrack);
+      int nLastTrackCode  = inputBranch(tree, (m_prefix+m_name+"_nLastTrack" ).c_str(),  nLastTrack );
+      if(nFirstTrackCode != -1 && nLastTrackCode != -1){
+	trkData = new trackData(m_prefix, tree);
+      }
+    }
+
+    //
+    //  Load the btagging data
+    //
+    if(m_jetDetailLevel.find("btagInputs") != std::string::npos){
+      std::cout << "jetData::" << m_name << " loading btagInputs" << std::endl;
+      btagData = new btaggingData();
+      btagData->initTagVar(m_prefix, tree);  
+
+      inputBranch(tree, (m_prefix+m_name+"_SoftMu"         ).c_str(),         SoftMu         ); 
+      inputBranch(tree, (m_prefix+m_name+"_SoftEl"         ).c_str(),         SoftEl         ); 
+      inputBranch(tree, (m_prefix+m_name+"_nSM"            ).c_str(),         nSM            ); 
+      inputBranch(tree, (m_prefix+m_name+"_nSE"            ).c_str(),         nSE            ); 
+  
+      int nFirstSVCode = inputBranch(tree, (m_prefix+m_name+"_nFirstSV").c_str(),  nFirstSV);
+      int nLastSVCode  = inputBranch(tree, (m_prefix+m_name+"_nLastSV" ).c_str(),  nLastSV );
+      if(nFirstSVCode != -1 && nLastSVCode != -1){
+	btagData->initSecondaryVerticies(m_prefix, tree);
+      }
+
+      int nFirstTrkTagVarCode = inputBranch(tree, (m_prefix+m_name+"_nFirstTrkTagVar").c_str(),  nFirstTrkTagVar);
+      int nLastTrkTagVarCode  = inputBranch(tree, (m_prefix+m_name+"_nLastTrkTagVar" ).c_str(),  nLastTrkTagVar );
+      if(nFirstTrkTagVarCode != -1 && nLastTrkTagVarCode != -1){
+	btagData->initTrkTagVar(m_prefix, tree);
+      }
+    }
+  }
+
+
+  return ;
 }

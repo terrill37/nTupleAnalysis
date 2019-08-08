@@ -127,95 +127,95 @@ btaggingData::btaggingData(){
 }
 
 //access tree
-void btaggingData::initSecondaryVerticies(std::string name, TChain* tree){
+void btaggingData::initSecondaryVerticies(std::string name, TTree* tree){
 
   haveSVs = true;
 
-  initBranch(tree, (name+"nSV"                 ).c_str(),   nSV);
-  initBranch(tree, (name+"SV_x"                ).c_str(),   sv_x                 );
-  initBranch(tree, (name+"SV_y"                ).c_str(),   sv_y                 );
-  initBranch(tree, (name+"SV_z"                ).c_str(),   sv_z                 );
-  initBranch(tree, (name+"SV_ex"               ).c_str(),   sv_ex                );
-  initBranch(tree, (name+"SV_ey"               ).c_str(),   sv_ey                );
-  initBranch(tree, (name+"SV_ez"               ).c_str(),   sv_ez                );
-  initBranch(tree, (name+"SV_chi2"             ).c_str(),   sv_chi2              );
-  initBranch(tree, (name+"SV_ndf"              ).c_str(),   sv_ndf               );
-  initBranch(tree, (name+"SV_flight"           ).c_str(),   sv_flight            );
-  initBranch(tree, (name+"SV_flightErr"        ).c_str(),   sv_flightErr         );
-  initBranch(tree, (name+"SV_deltaR_jet"       ).c_str(),   sv_deltaR_jet        );
-  initBranch(tree, (name+"SV_deltaR_sum_jet"   ).c_str(),   sv_deltaR_sum_jet    );
-  initBranch(tree, (name+"SV_deltaR_sum_dir"   ).c_str(),   sv_deltaR_sum_dir    );
-  initBranch(tree, (name+"SV_vtx_pt"           ).c_str(),   sv_vtx_pt            );
-  initBranch(tree, (name+"SV_flight2D"         ).c_str(),   sv_flight2D          );
-  initBranch(tree, (name+"SV_flight2DErr"      ).c_str(),   sv_flight2DErr       );
-  initBranch(tree, (name+"SV_totCharge"        ).c_str(),   sv_totCharge         );
-  initBranch(tree, (name+"SV_vtxDistJetAxis"   ).c_str(),   sv_vtxDistJetAxis    );
-  initBranch(tree, (name+"SV_nTrk"             ).c_str(),   sv_nTrk              );
-  initBranch(tree, (name+"SV_mass"             ).c_str(),   sv_mass              );
-  initBranch(tree, (name+"SV_vtx_eta"          ).c_str(),   sv_vtx_eta           );
-  initBranch(tree, (name+"SV_vtx_phi"          ).c_str(),   sv_vtx_phi           );
-  initBranch(tree, (name+"SV_EnergyRatio"      ).c_str(),   sv_EnergyRatio       );
-  initBranch(tree, (name+"SV_dir_x"            ).c_str(),   sv_dir_x             );
-  initBranch(tree, (name+"SV_dir_y"            ).c_str(),   sv_dir_y             );
-  initBranch(tree, (name+"SV_dir_z"            ).c_str(),   sv_dir_z             );
+  inputBranch(tree, (name+"nSV"                 ).c_str(),   nSV);
+  inputBranch(tree, (name+"SV_x"                ).c_str(),   sv_x                 );
+  inputBranch(tree, (name+"SV_y"                ).c_str(),   sv_y                 );
+  inputBranch(tree, (name+"SV_z"                ).c_str(),   sv_z                 );
+  inputBranch(tree, (name+"SV_ex"               ).c_str(),   sv_ex                );
+  inputBranch(tree, (name+"SV_ey"               ).c_str(),   sv_ey                );
+  inputBranch(tree, (name+"SV_ez"               ).c_str(),   sv_ez                );
+  inputBranch(tree, (name+"SV_chi2"             ).c_str(),   sv_chi2              );
+  inputBranch(tree, (name+"SV_ndf"              ).c_str(),   sv_ndf               );
+  inputBranch(tree, (name+"SV_flight"           ).c_str(),   sv_flight            );
+  inputBranch(tree, (name+"SV_flightErr"        ).c_str(),   sv_flightErr         );
+  inputBranch(tree, (name+"SV_deltaR_jet"       ).c_str(),   sv_deltaR_jet        );
+  inputBranch(tree, (name+"SV_deltaR_sum_jet"   ).c_str(),   sv_deltaR_sum_jet    );
+  inputBranch(tree, (name+"SV_deltaR_sum_dir"   ).c_str(),   sv_deltaR_sum_dir    );
+  inputBranch(tree, (name+"SV_vtx_pt"           ).c_str(),   sv_vtx_pt            );
+  inputBranch(tree, (name+"SV_flight2D"         ).c_str(),   sv_flight2D          );
+  inputBranch(tree, (name+"SV_flight2DErr"      ).c_str(),   sv_flight2DErr       );
+  inputBranch(tree, (name+"SV_totCharge"        ).c_str(),   sv_totCharge         );
+  inputBranch(tree, (name+"SV_vtxDistJetAxis"   ).c_str(),   sv_vtxDistJetAxis    );
+  inputBranch(tree, (name+"SV_nTrk"             ).c_str(),   sv_nTrk              );
+  inputBranch(tree, (name+"SV_mass"             ).c_str(),   sv_mass              );
+  inputBranch(tree, (name+"SV_vtx_eta"          ).c_str(),   sv_vtx_eta           );
+  inputBranch(tree, (name+"SV_vtx_phi"          ).c_str(),   sv_vtx_phi           );
+  inputBranch(tree, (name+"SV_EnergyRatio"      ).c_str(),   sv_EnergyRatio       );
+  inputBranch(tree, (name+"SV_dir_x"            ).c_str(),   sv_dir_x             );
+  inputBranch(tree, (name+"SV_dir_y"            ).c_str(),   sv_dir_y             );
+  inputBranch(tree, (name+"SV_dir_z"            ).c_str(),   sv_dir_z             );
 
 }
 
 
 //access tree
-void btaggingData::initTrkTagVar(std::string name, TChain* tree){
+void btaggingData::initTrkTagVar(std::string name, TTree* tree){
 
   haveTrkTagVars = true;
 
   //nTrkTagVar : nTrkTagVar/I                                          *
-  initBranch(tree, (name+"TagVar_trackMomentum"        ).c_str(),      trackMomentum    );
-  initBranch(tree, (name+"TagVar_trackEta"             ).c_str(),      trackEta         );
-  initBranch(tree, (name+"TagVar_trackPhi"             ).c_str(),      trackPhi         );
-  initBranch(tree, (name+"TagVar_trackPtRel"           ).c_str(),      trackPtRel       );
-  initBranch(tree, (name+"TagVar_trackPPar"            ).c_str(),      trackPPar        );
-  initBranch(tree, (name+"TagVar_trackEtaRel"          ).c_str(),      trackEtaRel      );
-  initBranch(tree, (name+"TagVar_trackDeltaR"          ).c_str(),      trackDeltaR      );
-  initBranch(tree, (name+"TagVar_trackPtRatio"         ).c_str(),      trackPtRatio     );
-  initBranch(tree, (name+"TagVar_trackPParRatio"       ).c_str(),      trackPParRatio   ); 
-  initBranch(tree, (name+"TagVar_trackSip2dVal"        ).c_str(),      trackSip2dVal    ); 
-  initBranch(tree, (name+"TagVar_trackSip2dSig"        ).c_str(),      trackSip2dSig    ); 
-  initBranch(tree, (name+"TagVar_trackSip3dVal"        ).c_str(),      trackSip3dVal    ); 
-  initBranch(tree, (name+"TagVar_trackSip3dSig"        ).c_str(),      trackSip3dSig    ); 
-  initBranch(tree, (name+"TagVar_trackDecayLenVal"     ).c_str(),      trackDecayLenVal );
-  initBranch(tree, (name+"TagVar_trackDecayLenSig"     ).c_str(),      trackDecayLenSig );
-  initBranch(tree, (name+"TagVar_trackJetDistVal"      ).c_str(),      trackJetDistVal  );
-  initBranch(tree, (name+"TagVar_trackJetDistSig"      ).c_str(),      trackJetDistSig  );
-  initBranch(tree, (name+"TagVar_trackChi2"            ).c_str(),      trackChi2        );
-  initBranch(tree, (name+"TagVar_trackNTotalHits"      ).c_str(),      trackNTotalHits  );
-  initBranch(tree, (name+"TagVar_trackNPixelHits"      ).c_str(),      trackNPixelHits  );
+  inputBranch(tree, (name+"TagVar_trackMomentum"        ).c_str(),      trackMomentum    );
+  inputBranch(tree, (name+"TagVar_trackEta"             ).c_str(),      trackEta         );
+  inputBranch(tree, (name+"TagVar_trackPhi"             ).c_str(),      trackPhi         );
+  inputBranch(tree, (name+"TagVar_trackPtRel"           ).c_str(),      trackPtRel       );
+  inputBranch(tree, (name+"TagVar_trackPPar"            ).c_str(),      trackPPar        );
+  inputBranch(tree, (name+"TagVar_trackEtaRel"          ).c_str(),      trackEtaRel      );
+  inputBranch(tree, (name+"TagVar_trackDeltaR"          ).c_str(),      trackDeltaR      );
+  inputBranch(tree, (name+"TagVar_trackPtRatio"         ).c_str(),      trackPtRatio     );
+  inputBranch(tree, (name+"TagVar_trackPParRatio"       ).c_str(),      trackPParRatio   ); 
+  inputBranch(tree, (name+"TagVar_trackSip2dVal"        ).c_str(),      trackSip2dVal    ); 
+  inputBranch(tree, (name+"TagVar_trackSip2dSig"        ).c_str(),      trackSip2dSig    ); 
+  inputBranch(tree, (name+"TagVar_trackSip3dVal"        ).c_str(),      trackSip3dVal    ); 
+  inputBranch(tree, (name+"TagVar_trackSip3dSig"        ).c_str(),      trackSip3dSig    ); 
+  inputBranch(tree, (name+"TagVar_trackDecayLenVal"     ).c_str(),      trackDecayLenVal );
+  inputBranch(tree, (name+"TagVar_trackDecayLenSig"     ).c_str(),      trackDecayLenSig );
+  inputBranch(tree, (name+"TagVar_trackJetDistVal"      ).c_str(),      trackJetDistVal  );
+  inputBranch(tree, (name+"TagVar_trackJetDistSig"      ).c_str(),      trackJetDistSig  );
+  inputBranch(tree, (name+"TagVar_trackChi2"            ).c_str(),      trackChi2        );
+  inputBranch(tree, (name+"TagVar_trackNTotalHits"      ).c_str(),      trackNTotalHits  );
+  inputBranch(tree, (name+"TagVar_trackNPixelHits"      ).c_str(),      trackNPixelHits  );
     
   
 
 }
 
 //access tree
-void btaggingData::initTagVar(std::string name, TChain* tree){
+void btaggingData::initTagVar(std::string name, TTree* tree){
 
   haveTagVars = true;
 
-  initBranch(tree, (name+"TagVar_jetNTracks"            ).c_str(),    jetNTracks            );
-  initBranch(tree, (name+"TagVar_jetNSecondaryVertices" ).c_str(),    jetNSecondaryVertices );
+  inputBranch(tree, (name+"TagVar_jetNTracks"            ).c_str(),    jetNTracks            );
+  inputBranch(tree, (name+"TagVar_jetNSecondaryVertices" ).c_str(),    jetNSecondaryVertices );
 
-  initBranch(tree, (name+"TagVar_chargedMultiplicity"        ).c_str(), chargedMultiplicity            );
-  initBranch(tree, (name+"TagVar_chargedHadronEnergyFraction").c_str(), chargedHadronEnergyFraction    );
-  initBranch(tree, (name+"TagVar_chargedHadronMultiplicity"  ).c_str(), chargedHadronMultiplicity      );
-  initBranch(tree, (name+"TagVar_chargedEmEnergyFraction"    ).c_str(), chargedEmEnergyFraction        );
-  initBranch(tree, (name+"TagVar_neutralMultiplicity"        ).c_str(), neutralMultiplicity            );
-  initBranch(tree, (name+"TagVar_neutralHadronEnergyFraction").c_str(), neutralHadronEnergyFraction    );
-  initBranch(tree, (name+"TagVar_neutralHadronMultiplicity"  ).c_str(), neutralHadronMultiplicity      );
-  initBranch(tree, (name+"TagVar_neutralEmEnergyFraction"    ).c_str(), neutralEmEnergyFraction        );
-  initBranch(tree, (name+"TagVar_photonEnergyFraction"       ).c_str(), photonEnergyFraction           );
-  initBranch(tree, (name+"TagVar_photonMultiplicity"         ).c_str(), photonMultiplicity             );
-  initBranch(tree, (name+"TagVar_muonEnergyFraction"         ).c_str(), muonEnergyFraction             );
-  initBranch(tree, (name+"TagVar_muonMultiplicity"           ).c_str(), muonMultiplicity               );
-  initBranch(tree, (name+"TagVar_electronEnergyFraction"     ).c_str(), electronEnergyFraction         );
-  initBranch(tree, (name+"TagVar_electronMultiplicity"       ).c_str(), electronMultiplicity           );
-  initBranch(tree, (name+"TagVar_numberOfDaughters"          ).c_str(), numberOfDaughters              );
+  inputBranch(tree, (name+"TagVar_chargedMultiplicity"        ).c_str(), chargedMultiplicity            );
+  inputBranch(tree, (name+"TagVar_chargedHadronEnergyFraction").c_str(), chargedHadronEnergyFraction    );
+  inputBranch(tree, (name+"TagVar_chargedHadronMultiplicity"  ).c_str(), chargedHadronMultiplicity      );
+  inputBranch(tree, (name+"TagVar_chargedEmEnergyFraction"    ).c_str(), chargedEmEnergyFraction        );
+  inputBranch(tree, (name+"TagVar_neutralMultiplicity"        ).c_str(), neutralMultiplicity            );
+  inputBranch(tree, (name+"TagVar_neutralHadronEnergyFraction").c_str(), neutralHadronEnergyFraction    );
+  inputBranch(tree, (name+"TagVar_neutralHadronMultiplicity"  ).c_str(), neutralHadronMultiplicity      );
+  inputBranch(tree, (name+"TagVar_neutralEmEnergyFraction"    ).c_str(), neutralEmEnergyFraction        );
+  inputBranch(tree, (name+"TagVar_photonEnergyFraction"       ).c_str(), photonEnergyFraction           );
+  inputBranch(tree, (name+"TagVar_photonMultiplicity"         ).c_str(), photonMultiplicity             );
+  inputBranch(tree, (name+"TagVar_muonEnergyFraction"         ).c_str(), muonEnergyFraction             );
+  inputBranch(tree, (name+"TagVar_muonMultiplicity"           ).c_str(), muonMultiplicity               );
+  inputBranch(tree, (name+"TagVar_electronEnergyFraction"     ).c_str(), electronEnergyFraction         );
+  inputBranch(tree, (name+"TagVar_electronMultiplicity"       ).c_str(), electronMultiplicity           );
+  inputBranch(tree, (name+"TagVar_numberOfDaughters"          ).c_str(), numberOfDaughters              );
 }
 
 std::vector< std::shared_ptr<secondaryVertex> > btaggingData::getSecondaryVertices(int nFirstSV, int nLastSV, bool debug){

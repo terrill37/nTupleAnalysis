@@ -219,13 +219,13 @@ namespace nTupleAnalysis {
 
     btaggingData(); 
 
-    void initSecondaryVerticies(std::string name, TChain* tree);
+    void initSecondaryVerticies(std::string name, TTree* tree);
     std::vector<svPtr> getSecondaryVertices(int nFirstSV, int nLastSV, bool debug);
 
-    void initTrkTagVar(std::string name, TChain* tree);
+    void initTrkTagVar(std::string name, TTree* tree);
     std::vector<trkTagVarPtr> getTrkTagVars(int nFirstTrkTagVar, int nLastTrkTagVar);
 
-    void initTagVar(std::string name, TChain* tree);
+    void initTagVar(std::string name, TTree* tree);
     tagVarPtr getTagVars(int jetIdx);
 
     ~btaggingData(); 

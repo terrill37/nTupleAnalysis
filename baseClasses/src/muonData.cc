@@ -54,33 +54,33 @@ muonData::muonData(std::string name, TChain* tree, bool isMC, std::string SFName
   m_name = name;
   m_isMC = isMC;
 
-  initBranch(tree, ("n"+name).c_str(), nMuons );
+  inputBranch(tree, ("n"+name).c_str(), nMuons );
 
-  initBranch(tree, (name+"_pt"  ).c_str(), pt );  
-  initBranch(tree, (name+"_eta" ).c_str(), eta );  
-  initBranch(tree, (name+"_phi" ).c_str(), phi );  
-  initBranch(tree, (name+"_mass").c_str(), m );
+  inputBranch(tree, (name+"_pt"  ).c_str(), pt );  
+  inputBranch(tree, (name+"_eta" ).c_str(), eta );  
+  inputBranch(tree, (name+"_phi" ).c_str(), phi );  
+  inputBranch(tree, (name+"_mass").c_str(), m );
 
-  if(initBranch(tree, (name+"_softId"  ).c_str(), softId ) == -1){
+  if(inputBranch(tree, (name+"_softId"  ).c_str(), softId ) == -1){
     std::cout << "\tUsing " << (name+"_isSoftMuon"        ) << " for softId " << std::endl;
-    initBranch(tree, (name+"_isSoftMuon"  ).c_str(), softId );
+    inputBranch(tree, (name+"_isSoftMuon"  ).c_str(), softId );
   }
-  initBranch(tree, (name+"_highPtId").c_str(), highPtId );
+  inputBranch(tree, (name+"_highPtId").c_str(), highPtId );
 
-  if(initBranch(tree, (name+"_mediumId").c_str(), mediumId ) == -1){
+  if(inputBranch(tree, (name+"_mediumId").c_str(), mediumId ) == -1){
     std::cout << "\tUsing " << (name+"_isMediumMuon"        ) << " for mediumId " << std::endl;
-    initBranch(tree, (name+"_isMediumMuon").c_str(), mediumId );
+    inputBranch(tree, (name+"_isMediumMuon").c_str(), mediumId );
   }
 
-  if(initBranch(tree, (name+"_tightId" ).c_str(), tightId ) == -1){
+  if(inputBranch(tree, (name+"_tightId" ).c_str(), tightId ) == -1){
     std::cout << "\tUsing " << (name+"_isTightMuon"        ) << " for tightId " << std::endl;
-    initBranch(tree, (name+"_isTightMuon" ).c_str(), tightId );
+    inputBranch(tree, (name+"_isTightMuon" ).c_str(), tightId );
   }
 
-  initBranch(tree, (name+"_jetIdx").c_str(), jetIdx );
-  initBranch(tree, (name+"_pfRelIso04_all").c_str(), pfRelIso04_all );
-  initBranch(tree, (name+"_iso").c_str(), isolation_corrected );
-  initBranch(tree, (name+"_isoTrackerOnly").c_str(), isolation_trkIsoOnly );
+  inputBranch(tree, (name+"_jetIdx").c_str(), jetIdx );
+  inputBranch(tree, (name+"_pfRelIso04_all").c_str(), pfRelIso04_all );
+  inputBranch(tree, (name+"_iso").c_str(), isolation_corrected );
+  inputBranch(tree, (name+"_isoTrackerOnly").c_str(), isolation_trkIsoOnly );
 
 //  *Br   25 :nPatMuon  : nPatMuon/I                                             *
 //    *Br   34 :PatMuon_IP : PatMuon_IP[nPatMuon]/F                                *
