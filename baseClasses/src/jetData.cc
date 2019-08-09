@@ -428,7 +428,7 @@ void jetData::connectBranches(bool readIn, TTree* tree){
   connectBranchArr(readIn, tree, jetName+"_phi",  phi, NjetName,  "F");
   connectBranchArr(readIn, tree, jetName+"_mass", m,   NjetName,  "F");  
 
-  connectBranchArr(readIn, tree, jetName+"_cleanmask", m,   NjetName,  "B");  
+  connectBranchArr(readIn, tree, jetName+"_cleanmask", m,   NjetName,  "b");  
 
   connectBranchArr(readIn, tree, jetName+"_bRegCorr", bRegCorr,   NjetName,  "F");  
   connectBranchArr(readIn, tree, jetName+"_btagDeepB", deepB,   NjetName,  "F");  
@@ -441,28 +441,28 @@ void jetData::connectBranches(bool readIn, TTree* tree){
 
   connectBranchArr(readIn, tree, jetName+"_btagDeepFlavB", deepFlavB,   NjetName,  "F");  
 
-  connectBranchArr(readIn, tree, jetName+"_puId",  puId,   NjetName,  "i");  
-  connectBranchArr(readIn, tree, jetName+"_jetId", puId,   NjetName,  "i");  
+  connectBranchArr(readIn, tree, jetName+"_puId",  puId,   NjetName,  "I");  
+  connectBranchArr(readIn, tree, jetName+"_jetId", puId,   NjetName,  "I");  
 
   if(m_isMC){
-    connectBranchArr(readIn, tree, jetName+"_flavour", flavour,   NjetName,  "i");  
-    connectBranchArr(readIn, tree, jetName+"_flavourCleaned", flavourCleaned,   NjetName,  "i");  
-    connectBranchArr(readIn, tree, jetName+"_partonFlavour", partonFlavour,   NjetName,  "i");  
-    connectBranchArr(readIn, tree, jetName+"_hadronFlavour", hadronFlavour,   NjetName,  "i");  
-    connectBranchArr(readIn, tree, jetName+"_nbHadrons", nbHadrons,   NjetName,  "i");  
-    connectBranchArr(readIn, tree, jetName+"_ncHadrons", ncHadrons,   NjetName,  "i");  
+    connectBranchArr(readIn, tree, jetName+"_flavour", flavour,   NjetName,  "I");  
+    connectBranchArr(readIn, tree, jetName+"_flavourCleaned", flavourCleaned,   NjetName,  "I");  
+    connectBranchArr(readIn, tree, jetName+"_partonFlavour", partonFlavour,   NjetName,  "I");  
+    connectBranchArr(readIn, tree, jetName+"_hadronFlavour", hadronFlavour,   NjetName,  "I");  
+    connectBranchArr(readIn, tree, jetName+"_nbHadrons", nbHadrons,   NjetName,  "I");  
+    connectBranchArr(readIn, tree, jetName+"_ncHadrons", ncHadrons,   NjetName,  "I");  
   }
 
-  connectBranchArr(readIn, tree, jetName+"_looseID", looseID,   NjetName,  "i");  
-  connectBranchArr(readIn, tree, jetName+"_tightID", tightID,   NjetName,  "i");  
+  connectBranchArr(readIn, tree, jetName+"_looseID", looseID,   NjetName,  "I");  
+  connectBranchArr(readIn, tree, jetName+"_tightID", tightID,   NjetName,  "I");  
 
   connectBranchArr(readIn, tree, jetName+"_DeepCSVb", DeepCSVb,   NjetName,  "F");  
   connectBranchArr(readIn, tree, jetName+"_DeepCSVc", DeepCSVc,   NjetName,  "F");  
   connectBranchArr(readIn, tree, jetName+"_DeepCSVl", DeepCSVl,   NjetName,  "F");  
   connectBranchArr(readIn, tree, jetName+"_DeepCSVbb", DeepCSVbb,   NjetName,  "F");  
 
-  connectBranchArr(readIn, tree, jetName+"_isTag", isTag,   NjetName,  "i");  
-  connectBranchArr(readIn, tree, jetName+"_isSel", isSel,   NjetName,  "i");  
+  connectBranchArr(readIn, tree, jetName+"_isTag", isTag,   NjetName,  "O");  
+  connectBranchArr(readIn, tree, jetName+"_isSel", isSel,   NjetName,  "O");  
 
   //
   //  Following only supported for reading In
