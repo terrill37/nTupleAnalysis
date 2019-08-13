@@ -186,8 +186,8 @@ namespace nTupleAnalysis {
 						float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);
     ~jetData(); 
 
-    BTagCalibrationReader* m_btagCalibrationTool = nullptr;
-    float getSF(float jetEta,  float jetPt,  float jetDeepCSV, int jetHadronFlavour);
+    BTagCalibrationReader* m_btagCalibrationTool = NULL;
+    float getSF(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour);
 
     void writeJets(std::vector< std::shared_ptr<jet> > outputJets) ;
     void connectBranches(bool readIn, TTree* tree);

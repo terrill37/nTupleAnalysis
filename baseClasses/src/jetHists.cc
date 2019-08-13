@@ -76,7 +76,7 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
   
   SoftEl     ->Fill(jet->SoftEl     ,weight);
   nSoftMu    ->Fill(jet->nSE        ,weight);
-  
+
   //
   // track hists
   //

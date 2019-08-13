@@ -251,13 +251,15 @@ jetData::jetData(std::string name, TTree* tree, bool readIn, std::string jetDeta
   //
   if(readIn && m_isMC){
 
-    if(SFName != "2017" && SFName != "2018"){
+    if(SFName != "2017" && SFName != "deepcsv2018" && SFName != "deepjet2018"){
       std::cout << "jetData::Warning no scale factors for " << m_name << std::endl;
     }else{
 
       std::string sfFileName =  "nTupleAnalysis/baseClasses/data/BTagSF2017/DeepCSV_94XSF_V4_B_F.csv";
-      if(SFName == "2018")
-	std::string sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2018/DeepCSV_102XSF_V1.csv";
+      if(SFName == "deepcsv2018")
+	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2018/DeepCSV_102XSF_V1.csv";
+      if(SFName == "deepjet2018")
+	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2018/DeepJet_102XSF_V1.csv";
       
       std::cout << "jetData::Loading SF from " << sfFileName << " For jets " << m_name << std::endl;
       BTagCalibration calib = BTagCalibration("deepcsv", sfFileName);
@@ -341,14 +343,16 @@ jetData::~jetData(){
 }
 
 
-float jetData::getSF(float jetEta,  float jetPt,  float jetDeepCSV, int jetHadronFlavour){ 
+float jetData::getSF(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour){ 
+  if(!m_btagCalibrationTool) return 1;
+
   if(fabs(jetHadronFlavour) == 5){
-    return m_btagCalibrationTool->eval_auto_bounds("central", BTagEntry::FLAV_B, fabs(jetEta), jetPt, jetDeepCSV);
+    return m_btagCalibrationTool->eval_auto_bounds("central", BTagEntry::FLAV_B, fabs(jetEta), jetPt, jetTagScore);
   }else if(fabs(jetHadronFlavour) == 4){
-    return m_btagCalibrationTool->eval_auto_bounds("central", BTagEntry::FLAV_C, fabs(jetEta), jetPt, jetDeepCSV);
+    return m_btagCalibrationTool->eval_auto_bounds("central", BTagEntry::FLAV_C, fabs(jetEta), jetPt, jetTagScore);
   }
 
-  return m_btagCalibrationTool->eval_auto_bounds("central", BTagEntry::FLAV_UDSG, fabs(jetEta), jetPt, jetDeepCSV);
+  return m_btagCalibrationTool->eval_auto_bounds("central", BTagEntry::FLAV_UDSG, fabs(jetEta), jetPt, jetTagScore);
 }
 
 
