@@ -1,3 +1,4 @@
+
 #include "TChain.h"
 
 #include "nTupleAnalysis/baseClasses/interface/jetData.h"
@@ -24,13 +25,11 @@ jet::jet(UInt_t i, jetData* data){
   e = p.E();
 
   bRegCorr = data->bRegCorr[i];
+  appliedBRegression = false;
 
   deepB     = data->deepB[i];
   CSVv2     = data->CSVv2[i];
   deepFlavB = data->deepFlavB[i];
-
-  puId = data->puId[i];
-  jetId = data->jetId[i];
 
   // Normalizize the underflow
   if(CSVv2 < 0) 
@@ -197,7 +196,8 @@ jet::jet(TLorentzVector& vec, float tag){
   m   = p.M();
   e   = p.E();
 
-  bRegCorr = pt;
+  bRegCorr = 1.0;
+  appliedBRegression = false;
 
   deepB = tag;
   CSVv2 = tag;
@@ -205,13 +205,28 @@ jet::jet(TLorentzVector& vec, float tag){
 }
 
 void jet::bRegression(){
-  p  *= bRegCorr;
+  scaleFourVector(bRegCorr);
+  appliedBRegression = true;
+}
+
+
+void jet::scaleFourVector(float scale){
+  p  *= scale;
   pt  = p.Pt();
   eta = p.Eta();
   phi = p.Phi();
   m   = p.M();
   e   = p.E();
 }
+
+
+
+void jet::RotateZ(float dPhi){
+  p.RotateZ(dPhi);
+  phi = p.Phi();
+}
+
+
 
 jet::~jet(){
 }

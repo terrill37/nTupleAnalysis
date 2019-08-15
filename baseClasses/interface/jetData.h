@@ -13,11 +13,13 @@
 
 namespace nTupleAnalysis {
 
-
   //forward declaration for use in jet constructor from tree
   class jetData;
+
+
   //jet object
   class jet {
+
 
   public:
     UChar_t cleanmask;
@@ -30,6 +32,7 @@ namespace nTupleAnalysis {
     TLorentzVector p;
 
     float bRegCorr;
+    bool  appliedBRegression;
 
     float deepB;
     float CSVv2;
@@ -97,6 +100,8 @@ namespace nTupleAnalysis {
     void bRegression();
     ~jet(); 
 
+    void RotateZ(float dPhi);
+    void scaleFourVector(float scale);
     //void dump();
   };
 
@@ -107,6 +112,7 @@ namespace nTupleAnalysis {
   class jetData {
 
   public:
+
     std::string m_name ="";
     bool m_isMC = false;
     std::string m_prefix ="";
