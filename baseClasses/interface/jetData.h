@@ -94,6 +94,9 @@ namespace nTupleAnalysis {
 
     float SF = 1.0; //btagging scale-factor
 
+    Bool_t isTag = false;
+    Bool_t isSel = false;
+
     jet();
     jet(UInt_t, jetData*); 
     jet(TLorentzVector&, float tag = -1); 
@@ -117,6 +120,7 @@ namespace nTupleAnalysis {
     bool m_isMC = false;
     std::string m_prefix ="";
     bool debug = false;
+    std::string m_jetDetailLevel;
     static const unsigned int MAXJETS = 1000;
 
     UInt_t nJets;
@@ -158,6 +162,8 @@ namespace nTupleAnalysis {
     int nbHadrons      [MAXJETS];
     int ncHadrons      [MAXJETS];
 
+    Bool_t isTag[MAXJETS];
+    Bool_t isSel[MAXJETS];
 
     int nFirstTrack[MAXJETS];
     int nLastTrack[MAXJETS];
@@ -172,7 +178,8 @@ namespace nTupleAnalysis {
 
     btaggingData* btagData = nullptr;
 
-    jetData(std::string, TChain*, bool isMC = false, std::string jetDetailLevel = "Tracks.btagInputs", std::string prefix = "", std::string SFName = ""); 
+
+    jetData(std::string, TTree*, bool readIn = true, std::string jetDetailLevel = "Tracks.btagInputs", std::string prefix = "", bool isMC = false, std::string SFName = ""); 
 
     std::vector< std::shared_ptr<jet> > getJets(float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);
     std::vector< std::shared_ptr<jet> > getJets(std::vector< std::shared_ptr<jet> > inputJets, 
@@ -182,6 +189,8 @@ namespace nTupleAnalysis {
     BTagCalibrationReader* m_btagCalibrationTool = NULL;
     float getSF(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour);
 
+    void writeJets(std::vector< std::shared_ptr<jet> > outputJets) ;
+    void connectBranches(bool readIn, TTree* tree);
     //void dump();
   };
 

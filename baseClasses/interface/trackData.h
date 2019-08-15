@@ -137,7 +137,7 @@ namespace nTupleAnalysis {
     int   idxMatchedTP          [100];
 
 
-    trackData(std::string, TChain*); 
+    trackData(std::string, TTree*); 
     std::vector< std::shared_ptr<track> > getTracks(int nFirstTrack, int nLastTrack);
 
     ~trackData(); 

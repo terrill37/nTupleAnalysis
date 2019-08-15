@@ -49,50 +49,17 @@ muon::~muon(){}
 
 
 //access tree
-muonData::muonData(std::string name, TChain* tree, bool isMC, std::string SFName){
+muonData::muonData(std::string name, TTree* tree, bool readIn, bool isMC, std::string SFName){
   
   m_name = name;
   m_isMC = isMC;
 
-  initBranch(tree, ("n"+name).c_str(), nMuons );
-
-  initBranch(tree, (name+"_pt"  ).c_str(), pt );  
-  initBranch(tree, (name+"_eta" ).c_str(), eta );  
-  initBranch(tree, (name+"_phi" ).c_str(), phi );  
-  initBranch(tree, (name+"_mass").c_str(), m );
-
-  if(initBranch(tree, (name+"_softId"  ).c_str(), softId ) == -1){
-    std::cout << "\tUsing " << (name+"_isSoftMuon"        ) << " for softId " << std::endl;
-    initBranch(tree, (name+"_isSoftMuon"  ).c_str(), softId );
-  }
-  initBranch(tree, (name+"_highPtId").c_str(), highPtId );
-
-  if(initBranch(tree, (name+"_mediumId").c_str(), mediumId ) == -1){
-    std::cout << "\tUsing " << (name+"_isMediumMuon"        ) << " for mediumId " << std::endl;
-    initBranch(tree, (name+"_isMediumMuon").c_str(), mediumId );
-  }
-
-  if(initBranch(tree, (name+"_tightId" ).c_str(), tightId ) == -1){
-    std::cout << "\tUsing " << (name+"_isTightMuon"        ) << " for tightId " << std::endl;
-    initBranch(tree, (name+"_isTightMuon" ).c_str(), tightId );
-  }
-
-  initBranch(tree, (name+"_jetIdx").c_str(), jetIdx );
-  initBranch(tree, (name+"_pfRelIso04_all").c_str(), pfRelIso04_all );
-  initBranch(tree, (name+"_iso").c_str(), isolation_corrected );
-  initBranch(tree, (name+"_isoTrackerOnly").c_str(), isolation_trkIsoOnly );
-
-//  *Br   25 :nPatMuon  : nPatMuon/I                                             *
-//    *Br   34 :PatMuon_IP : PatMuon_IP[nPatMuon]/F                                *
-//    *Br   35 :PatMuon_IPsig : PatMuon_IPsig[nPatMuon]/F                          *
-//    *Br   36 :PatMuon_IP2D : PatMuon_IP2D[nPatMuon]/F                            *
-//    *Br   37 :PatMuon_IP2Dsig : PatMuon_IP2Dsig[nPatMuon]/F                      *
-    
+  connectBranches(readIn, tree);
 
   //
   // Load the muon SFs
   //
-  if(m_isMC){
+  if(readIn && m_isMC){
 
     if(SFName != "2017" && SFName != "2018"){
       std::cout << "muonData::Warning no scale factors for " << m_name << std::endl;
@@ -130,9 +97,84 @@ muonData::muonData(std::string name, TChain* tree, bool isMC, std::string SFName
     
   }// isMC
 
-
-
 }
+
+void muonData::connectBranches(bool readIn, TTree* tree){
+
+  std::string muonName =  m_name;
+  std::string NMuonName = "n"+m_name;
+
+  connectBranch(readIn, tree, NMuonName, nMuons, "i" );
+
+  connectBranch(readIn, tree, muonName+"_pt"  , pt  ,"F");  
+  connectBranch(readIn, tree, muonName+"_eta" , eta ,"F");  
+  connectBranch(readIn, tree, muonName+"_phi" , phi ,"F");  
+  connectBranch(readIn, tree, muonName+"_mass", m   ,"F");
+
+  int softIDRes = connectBranch(readIn, tree, muonName+"_softId"  , softId, "O" );
+  if(softIDRes == -1){
+    std::cout << "\tUsing " << muonName+"_isSoftMuon"         << " for softId " << std::endl;
+    connectBranch(readIn, tree, muonName+"_isSoftMuon"  , softId, "O" );
+  }
+  connectBranch(readIn, tree, muonName+"_highPtId", highPtId, "B" );
+
+  int medIDRes = connectBranch(readIn, tree, muonName+"_mediumId", mediumId, "O" );
+  if(medIDRes == -1){
+    std::cout << "\tUsing " << muonName+"_isMediumMuon" << " for mediumId " << std::endl;
+    connectBranch(readIn, tree, muonName+"_isMediumMuon", mediumId, "O" );
+  }
+
+  int tightIDRes = connectBranch(readIn, tree, muonName+"_tightId" , tightId , "O");
+  if(tightIDRes == -1){
+    std::cout << "\tUsing " << muonName+"_isTightMuon"   << " for tightId " << std::endl;
+    connectBranch(readIn, tree, muonName+"_isTightMuon" , tightId, "O" );
+  }
+
+  connectBranch(readIn, tree, muonName+"_jetIdx", jetIdx, "i" );
+  connectBranch(readIn, tree, muonName+"_pfRelIso04_all", pfRelIso04_all, "F" );
+  connectBranch(readIn, tree, muonName+"_iso", isolation_corrected, "F" );
+  connectBranch(readIn, tree, muonName+"_isoTrackerOnly", isolation_trkIsoOnly,"F" );
+
+//  *Br   25 :nPatMuon  : nPatMuon/I                                             *
+//    *Br   34 :PatMuon_IP : PatMuon_IP[nPatMuon]/F                                *
+//    *Br   35 :PatMuon_IPsig : PatMuon_IPsig[nPatMuon]/F                          *
+//    *Br   36 :PatMuon_IP2D : PatMuon_IP2D[nPatMuon]/F                            *
+//    *Br   37 :PatMuon_IP2Dsig : PatMuon_IP2Dsig[nPatMuon]/F                      *
+}    
+
+
+void muonData::writeMuons(std::vector< std::shared_ptr<muon> > outputMuons){
+  
+  int nOutputMuons = outputMuons.size();
+  this->nMuons = outputMuons.size();
+ 
+  for(Int_t i = 0; i < int(this->nMuons); ++i){
+    if(i > int(MAXMUONS-1)) {
+      std::cout  << m_name << "::Warning too many muons! " << nOutputMuons << " muons. Skipping. "<< std::endl;
+      break;
+    }
+
+    const muonPtr& thisMuon = outputMuons.at(i);
+
+    this->pt [i] = 	       thisMuon->pt         ;
+    this->eta[i] = 	       thisMuon->eta        ;
+    this->phi[i] = 	       thisMuon->phi        ;
+    this->m  [i] = 	       thisMuon->m          ;
+    this->softId[i] = 	       thisMuon->softId     ;
+    this->highPtId[i] =        thisMuon->highPtId ; 
+    this->mediumId[i] =        thisMuon->mediumId ; 
+    this->tightId[i] =         thisMuon->tightId  ; 
+    this->jetIdx[i] = 	       thisMuon->jetIdx     ;
+    this->pfRelIso04_all[i] =  thisMuon->isolation; 
+    this->isolation_corrected[i] =    thisMuon->isolation_corrected   ;
+    this->isolation_trkIsoOnly[i] =    thisMuon->isolation_trackerOnly  ;
+
+  }
+
+  return ;
+}
+
+
 
 std::vector<std::shared_ptr<muon>> muonData::getMuons(float ptMin, float etaMax, int tag, bool isolation){
 

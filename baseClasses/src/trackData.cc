@@ -67,53 +67,53 @@ track::~track(){}
 
 
 //access tree
-trackData::trackData(std::string name, TChain* tree){
+trackData::trackData(std::string name, TTree* tree){
 
-  //initBranch(tree, (name+"nTrack").c_str(), nTrack );    
+  //inputBranch(tree, (name+"nTrack").c_str(), nTrack );    
   std::cout << "Creating trackData " << name << std::endl;
-  initBranch(tree, (name+"Track_dxy"                  ).c_str(),          dxy                   );
-  initBranch(tree, (name+"Track_dz"                   ).c_str(),          dz                    );
-  initBranch(tree, (name+"Track_dxyError"             ).c_str(),          dxyError              );
-  initBranch(tree, (name+"Track_dzError"              ).c_str(),          dzError               );
-  initBranch(tree, (name+"Track_sign2D"               ).c_str(),          sign2D                );
-  initBranch(tree, (name+"Track_sign3D"               ).c_str(),          sign3D                );
-  initBranch(tree, (name+"Track_length"               ).c_str(),          length                );
-  initBranch(tree, (name+"Track_dist"                 ).c_str(),          dist                  );
-  initBranch(tree, (name+"Track_IP2D"                 ).c_str(),          IP2D                  );
-  initBranch(tree, (name+"Track_IP2Dsig"              ).c_str(),          IP2Dsig               );
-  initBranch(tree, (name+"Track_IP2Derr"              ).c_str(),          IP2Derr               );
-  initBranch(tree, (name+"Track_IP"                   ).c_str(),          IP                    );
-  initBranch(tree, (name+"Track_IPsig"                ).c_str(),          IPsig                 );
-  initBranch(tree, (name+"Track_IPerr"                ).c_str(),          IPerr                 );
-  initBranch(tree, (name+"Track_Proba"                ).c_str(),          Proba                 );
-  initBranch(tree, (name+"Track_p"                    ).c_str(),          p                     );
-  initBranch(tree, (name+"Track_pt"                   ).c_str(),          pt                    );
-  initBranch(tree, (name+"Track_eta"                  ).c_str(),          eta                   );
-  initBranch(tree, (name+"Track_phi"                  ).c_str(),          phi                   );
-  initBranch(tree, (name+"Track_chi2"                 ).c_str(),          chi2                  );
-  initBranch(tree, (name+"Track_charge"               ).c_str(),          charge                );
-  initBranch(tree, (name+"Track_history"              ).c_str(),          history               );
-  initBranch(tree, (name+"Track_nHitStrip"            ).c_str(),          nHitStrip             );
-  initBranch(tree, (name+"Track_nHitPixel"            ).c_str(),          nHitPixel             );
-  initBranch(tree, (name+"Track_nHitAll"              ).c_str(),          nHitAll               );
-  initBranch(tree, (name+"Track_nHitTIB"              ).c_str(),          nHitTIB               );
-  initBranch(tree, (name+"Track_nHitTID"              ).c_str(),          nHitTID               );
-  initBranch(tree, (name+"Track_nHitTOB"              ).c_str(),          nHitTOB               );
-  initBranch(tree, (name+"Track_nHitTEC"              ).c_str(),          nHitTEC               );
-  initBranch(tree, (name+"Track_nHitPXB"              ).c_str(),          nHitPXB               );
-  initBranch(tree, (name+"Track_nHitPXF"              ).c_str(),          nHitPXF               );
-  initBranch(tree, (name+"Track_isHitL1"              ).c_str(),          isHitL1               );
-  initBranch(tree, (name+"Track_PV"                   ).c_str(),          PV                    );
-  initBranch(tree, (name+"Track_SV"                   ).c_str(),          SV                    );
-  initBranch(tree, (name+"Track_PVweight"             ).c_str(),          PVweight              );
-  initBranch(tree, (name+"Track_SVweight"             ).c_str(),          SVweight              );
-  initBranch(tree, (name+"Track_isfromSV"             ).c_str(),          isfromSV              );
-  initBranch(tree, (name+"Track_isfromV0"             ).c_str(),          isfromV0              );
-  initBranch(tree, (name+"Track_category"             ).c_str(),          category              );
-  initBranch(tree, (name+"Track_algo"                 ).c_str(),          algo                  );
-  initBranch(tree, (name+"Track_originalAlgo"         ).c_str(),          originalAlgo          );
-  initBranch(tree, (name+"Track_TPAssociationQuality" ).c_str(),          TPAssociationQuality  );
-  initBranch(tree, (name+"Track_idxMatchedTP"         ).c_str(),          idxMatchedTP          );
+  inputBranch(tree, (name+"Track_dxy"                  ).c_str(),          dxy                   );
+  inputBranch(tree, (name+"Track_dz"                   ).c_str(),          dz                    );
+  inputBranch(tree, (name+"Track_dxyError"             ).c_str(),          dxyError              );
+  inputBranch(tree, (name+"Track_dzError"              ).c_str(),          dzError               );
+  inputBranch(tree, (name+"Track_sign2D"               ).c_str(),          sign2D                );
+  inputBranch(tree, (name+"Track_sign3D"               ).c_str(),          sign3D                );
+  inputBranch(tree, (name+"Track_length"               ).c_str(),          length                );
+  inputBranch(tree, (name+"Track_dist"                 ).c_str(),          dist                  );
+  inputBranch(tree, (name+"Track_IP2D"                 ).c_str(),          IP2D                  );
+  inputBranch(tree, (name+"Track_IP2Dsig"              ).c_str(),          IP2Dsig               );
+  inputBranch(tree, (name+"Track_IP2Derr"              ).c_str(),          IP2Derr               );
+  inputBranch(tree, (name+"Track_IP"                   ).c_str(),          IP                    );
+  inputBranch(tree, (name+"Track_IPsig"                ).c_str(),          IPsig                 );
+  inputBranch(tree, (name+"Track_IPerr"                ).c_str(),          IPerr                 );
+  inputBranch(tree, (name+"Track_Proba"                ).c_str(),          Proba                 );
+  inputBranch(tree, (name+"Track_p"                    ).c_str(),          p                     );
+  inputBranch(tree, (name+"Track_pt"                   ).c_str(),          pt                    );
+  inputBranch(tree, (name+"Track_eta"                  ).c_str(),          eta                   );
+  inputBranch(tree, (name+"Track_phi"                  ).c_str(),          phi                   );
+  inputBranch(tree, (name+"Track_chi2"                 ).c_str(),          chi2                  );
+  inputBranch(tree, (name+"Track_charge"               ).c_str(),          charge                );
+  inputBranch(tree, (name+"Track_history"              ).c_str(),          history               );
+  inputBranch(tree, (name+"Track_nHitStrip"            ).c_str(),          nHitStrip             );
+  inputBranch(tree, (name+"Track_nHitPixel"            ).c_str(),          nHitPixel             );
+  inputBranch(tree, (name+"Track_nHitAll"              ).c_str(),          nHitAll               );
+  inputBranch(tree, (name+"Track_nHitTIB"              ).c_str(),          nHitTIB               );
+  inputBranch(tree, (name+"Track_nHitTID"              ).c_str(),          nHitTID               );
+  inputBranch(tree, (name+"Track_nHitTOB"              ).c_str(),          nHitTOB               );
+  inputBranch(tree, (name+"Track_nHitTEC"              ).c_str(),          nHitTEC               );
+  inputBranch(tree, (name+"Track_nHitPXB"              ).c_str(),          nHitPXB               );
+  inputBranch(tree, (name+"Track_nHitPXF"              ).c_str(),          nHitPXF               );
+  inputBranch(tree, (name+"Track_isHitL1"              ).c_str(),          isHitL1               );
+  inputBranch(tree, (name+"Track_PV"                   ).c_str(),          PV                    );
+  inputBranch(tree, (name+"Track_SV"                   ).c_str(),          SV                    );
+  inputBranch(tree, (name+"Track_PVweight"             ).c_str(),          PVweight              );
+  inputBranch(tree, (name+"Track_SVweight"             ).c_str(),          SVweight              );
+  inputBranch(tree, (name+"Track_isfromSV"             ).c_str(),          isfromSV              );
+  inputBranch(tree, (name+"Track_isfromV0"             ).c_str(),          isfromV0              );
+  inputBranch(tree, (name+"Track_category"             ).c_str(),          category              );
+  inputBranch(tree, (name+"Track_algo"                 ).c_str(),          algo                  );
+  inputBranch(tree, (name+"Track_originalAlgo"         ).c_str(),          originalAlgo          );
+  inputBranch(tree, (name+"Track_TPAssociationQuality" ).c_str(),          TPAssociationQuality  );
+  inputBranch(tree, (name+"Track_idxMatchedTP"         ).c_str(),          idxMatchedTP          );
     
 
 
