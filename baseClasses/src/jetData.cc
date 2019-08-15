@@ -237,7 +237,7 @@ jet::~jet(){
 //
 //access tree
 //
-jetData::jetData(std::string name, TTree* tree, bool readIn, std::string jetDetailLevel, std::string prefix, bool isMC, std::string SFName){
+jetData::jetData(std::string name, TTree* tree, bool readIn, bool isMC, std::string jetDetailLevel, std::string prefix, std::string SFName){
 
   m_name = name;
   m_prefix = prefix;

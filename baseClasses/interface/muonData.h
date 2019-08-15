@@ -70,7 +70,7 @@ namespace nTupleAnalysis {
     float isolation_corrected[MAXMUONS];
     float isolation_trkIsoOnly[MAXMUONS];
     
-    muonData(std::string, TTree*, bool readIn, bool isMC = false, std::string SFName=""); 
+    muonData(std::string, TTree*, bool readIn = true, bool isMC = false, std::string SFName=""); 
     std::vector<std::shared_ptr<muon>> getMuons(float ptMin = -1e6, float etaMax = 1e6, int tag = -1, bool isolation = false);
     ~muonData(); 
 
