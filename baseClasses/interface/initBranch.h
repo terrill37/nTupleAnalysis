@@ -41,25 +41,25 @@ static inline int outputBranchArr(TTree *tree, std::string name, auto& variable,
 static inline int inputBranch(TTree *tree, std::string name, auto& variable){
   const char *bname = name.c_str();
   if(!tree->FindBranch(bname)){
-    std::cout << "initBranch::WARNING " << bname << " does not exist" << std::endl;
+    std::cout << "inputBranch(TTree *tree, std::string name, auto& variable)::WARNING " << bname << " does not exist" << std::endl;
     return -1;
   }
 
   tree->SetBranchStatus(bname, 1);
   int code = tree->SetBranchAddress(bname, &variable);
-  if(code != 0) std::cout << "initBranch::WARNING " << bname << " " << code << std::endl;
+  if(code != 0) std::cout << "inputBranch(TTree *tree, std::string name, auto& variable)::WARNING " << bname << " " << code << std::endl;
   return code;
 }
 
 static inline int inputBranch(TTree *tree, std::string name, void* add){
   const char *bname = name.c_str();
   if(!tree->FindBranch(bname)){
-    std::cout << "initBranch::WARNING " << bname << " does not exist" << std::endl;
+    std::cout << "inputBranch(TTree *tree, std::string name, void* add)::WARNING " << bname << " does not exist" << std::endl;
     return -1;
   }
   tree->SetBranchStatus(bname, 1);
   int code = tree->SetBranchAddress(bname, add);
-  if(code != 0) std::cout << "initBranch::WARNING " << bname << " " << code << std::endl;
+  if(code != 0) std::cout << "inputBranch(TTree *tree, std::string name, void* add)::WARNING " << bname << " " << code << std::endl;
   return code;
 }
 
