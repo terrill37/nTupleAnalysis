@@ -14,6 +14,8 @@ using namespace nTupleAnalysis;
 jet::jet(){}
 jet::jet(UInt_t i, jetData* data){
 
+  tree_idx = i;
+
   cleanmask = data->cleanmask[i];
 
   pt  = data->pt [i];
@@ -80,8 +82,8 @@ jet::jet(UInt_t i, jetData* data){
   nbHadrons      = data->nbHadrons      [i];
   ncHadrons      = data->ncHadrons      [i];
 
-  isTag          = data->isTag      [i];
-  isSel          = data->isSel      [i];
+  //isTag          = data->isTag      [i];
+  //isSel          = data->isSel      [i];
 
   if(data->trkData){
     nFirstTrack = data->nFirstTrack[i];
@@ -229,6 +231,14 @@ void jet::RotateZ(float dPhi){
   phi = p.Phi();
 }
 
+
+void jet::dump(){
+  std::cout << "jet::dump()" << std::endl;
+  std::cout << "    tree_idx: " << tree_idx << std::endl;
+  std::cout << "    (pt, eta, phi, m, e) = (" << pt << ", " << eta << ", " << phi << ", " << m << ", " << e << ")" << std::endl;
+  std::cout << "    |p| = " << p.P() << std::endl;
+  std::cout << "    appliedBRegression = " << appliedBRegression << ", bRegCorr = "<< bRegCorr << std::endl;
+}
 
 
 jet::~jet(){
@@ -420,7 +430,8 @@ void jetData::writeJets(std::vector< std::shared_ptr<jet> > outputJets){
 
 
 void jetData::connectBranches(bool readIn, TTree* tree){
-  
+  std::cout << "jetData::connectBranches(bool readIn, TTree* tree)" << std::endl;
+
   std::string jetName =  m_prefix+m_name;
   std::string NjetName = m_prefix+"n"+m_name;
 
@@ -432,21 +443,21 @@ void jetData::connectBranches(bool readIn, TTree* tree){
   connectBranchArr(readIn, tree, jetName+"_phi",  phi, NjetName,  "F");
   connectBranchArr(readIn, tree, jetName+"_mass", m,   NjetName,  "F");  
 
-  connectBranchArr(readIn, tree, jetName+"_cleanmask", m,   NjetName,  "b");  
+  connectBranchArr(readIn, tree, jetName+"_cleanmask", cleanmask,   NjetName,  "b");  
 
   connectBranchArr(readIn, tree, jetName+"_bRegCorr", bRegCorr,   NjetName,  "F");  
   connectBranchArr(readIn, tree, jetName+"_btagDeepB", deepB,   NjetName,  "F");  
 
   int CSVRes = connectBranchArr(readIn, tree, jetName+"_btagCSVV2", CSVv2,   NjetName,  "F");  
   if(readIn && CSVRes == -1){
-    std::cout << "\tUsing " << (m_prefix+m_name+"_CombIVF"        ) << " for CSVc2 " << std::endl;
+    std::cout << "\tUsing " << (m_prefix+m_name+"_CombIVF"        ) << " for CSVv2 " << std::endl;
     connectBranchArr(readIn, tree, jetName+"_CombIVF", CSVv2,   NjetName,  "F");  
   }
 
   connectBranchArr(readIn, tree, jetName+"_btagDeepFlavB", deepFlavB,   NjetName,  "F");  
 
-  connectBranchArr(readIn, tree, jetName+"_puId",  puId,   NjetName,  "I");  
-  connectBranchArr(readIn, tree, jetName+"_jetId", puId,   NjetName,  "I");  
+  connectBranchArr(readIn, tree, jetName+"_puId",   puId,   NjetName,  "I");  
+  connectBranchArr(readIn, tree, jetName+"_jetId", jetId,   NjetName,  "I");  
 
   if(m_isMC){
     connectBranchArr(readIn, tree, jetName+"_flavour", flavour,   NjetName,  "I");  
