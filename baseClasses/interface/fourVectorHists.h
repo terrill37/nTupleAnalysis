@@ -21,6 +21,7 @@ namespace nTupleAnalysis {
     TH1F* eta;
     TH1F* phi;
 
+    TH1F* m_s;
     TH1F* m;
     TH1F* m_l;
     TH1F* e;
