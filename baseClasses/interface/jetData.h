@@ -22,6 +22,8 @@ namespace nTupleAnalysis {
 
 
   public:
+    UInt_t tree_idx;
+
     UChar_t cleanmask;
 
     float pt;
@@ -101,6 +103,7 @@ namespace nTupleAnalysis {
     jet(UInt_t, jetData*); 
     jet(TLorentzVector&, float tag = -1); 
     void bRegression();
+    void dump();
     ~jet(); 
 
     void RotateZ(float dPhi);
@@ -121,10 +124,9 @@ namespace nTupleAnalysis {
     std::string m_prefix ="";
     bool debug = false;
     std::string m_jetDetailLevel;
-    static const unsigned int MAXJETS = 1000;
+    static const unsigned int MAXJETS = 1024;
 
     UInt_t nJets;
-    //ULong64_t n;
 
     UChar_t cleanmask[MAXJETS];
 
@@ -167,7 +169,7 @@ namespace nTupleAnalysis {
 
     int nFirstTrack[MAXJETS];
     int nLastTrack[MAXJETS];
-    trackData* trkData = nullptr;
+    trackData* trkData = NULL;
 
 
     int nFirstSV[MAXJETS] = {0};
