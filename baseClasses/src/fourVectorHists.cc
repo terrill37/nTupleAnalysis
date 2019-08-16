@@ -22,7 +22,8 @@ void fourVectorHists::makeHists(std::string name, TFileDirectory& dir, std::stri
     eta = dir.make<TH1F>("eta", (name+"/eta; "+title+" #eta; Entries").c_str(), 100, -5, 5);
     phi = dir.make<TH1F>("phi", (name+"/phi; "+title+" #phi; Entries").c_str(), 64, -3.2, 3.2);
 
-    m   = dir.make<TH1F>("m",   (name+"/m;   "+title+" Mass [GeV]; Entries").c_str(),  100,0, 500);
+    m_s = dir.make<TH1F>("m_s", (name+"/m_s; "+title+" Mass [GeV]; Entries").c_str(),   50,  0,   50);
+    m   = dir.make<TH1F>("m",   (name+"/m;   "+title+" Mass [GeV]; Entries").c_str(),  100,  0,  500);
     m_l = dir.make<TH1F>("m_l", (name+"/m_l; "+title+" Mass [GeV]; Entries").c_str(),  130,100, 1400);
     e = dir.make<TH1F>("e", (name+"/e; "+title+" E [GeV]; Entries").c_str(),  100,0, 500);
 
@@ -40,6 +41,7 @@ void fourVectorHists::Fill(TLorentzVector& p, float weight){
   eta->Fill(p.Eta(), weight);
   phi->Fill(p.Phi(), weight);
 
+  m_s->Fill(p.M(), weight);
   m  ->Fill(p.M(), weight);
   m_l->Fill(p.M(), weight);
   e->Fill(p.E(), weight);
