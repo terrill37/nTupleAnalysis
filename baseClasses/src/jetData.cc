@@ -262,7 +262,7 @@ jetData::jetData(std::string name, TTree* tree, bool readIn, bool isMC, std::str
   if(readIn && m_isMC){
 
     if(SFName != "2017" && SFName != "deepcsv2018" && SFName != "deepjet2018"){
-      std::cout << "jetData::Warning no scale factors for " << m_name << " with SFName " << SFName << astd::endl;
+      std::cout << "jetData::Warning no scale factors for " << m_name << " with SFName " << SFName << std::endl;
     }else{
 
       std::string sfFileName =  "nTupleAnalysis/baseClasses/data/BTagSF2017/DeepCSV_94XSF_V4_B_F.csv";
