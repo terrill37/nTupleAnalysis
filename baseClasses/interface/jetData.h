@@ -38,7 +38,7 @@ namespace nTupleAnalysis {
 
     float deepB;
     float CSVv2;
-    float deepFlavB;
+    float deepFlavB = 0;
     Int_t puId;
     Int_t jetId;
 
@@ -139,7 +139,10 @@ namespace nTupleAnalysis {
 
     float deepB[MAXJETS];
     float CSVv2[MAXJETS];
-    float deepFlavB[MAXJETS];
+    float deepFlavB[MAXJETS] = {0};
+    float deepFlavourB[MAXJETS];
+    float deepFlavourBB[MAXJETS];
+    float deepFlavourLEPB[MAXJETS];
     Int_t puId[MAXJETS];
     Int_t jetId[MAXJETS];
 
