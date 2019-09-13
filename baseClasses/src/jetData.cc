@@ -32,6 +32,10 @@ jet::jet(UInt_t i, jetData* data){
   deepB     = data->deepB[i];
   CSVv2     = data->CSVv2[i];
   deepFlavB = data->deepFlavB[i];
+  float deepFlavB_alt = data->deepFlavourB[i] + data->deepFlavourBB[i] + data->deepFlavourLEPB[i];
+  if(deepFlavB == 0)
+    deepFlavB = deepFlavB_alt;
+
 
   // Normalizize the underflow
   if(CSVv2 < 0) 
@@ -40,7 +44,6 @@ jet::jet(UInt_t i, jetData* data){
   puId = data->puId[i];
   jetId = data->jetId[i];
 
-  deepFlavB = data->deepFlavB[i];
 
   ntracks        = data->ntracks        [i];
   nseltracks     = data->nseltracks     [i];
@@ -390,12 +393,11 @@ void jetData::writeJets(std::vector< std::shared_ptr<jet> > outputJets){
 
     this->deepB[i]	      = thisJet->deepB   ; 
     this->CSVv2[i]	      = thisJet->CSVv2   ; 
-    this->deepFlavB[i]   = thisJet->deepFlavB; 
+    this->deepFlavB[i]        = thisJet->deepFlavB; 
   
     this->puId[i] = thisJet->puId;
     this->jetId[i] = thisJet->jetId;
     
-    this->deepFlavB[i] = thisJet->deepFlavB ;
     
     this->ntracks        [i] = thisJet->ntracks        ;
     this->nseltracks     [i] = thisJet->nseltracks     ; 
@@ -447,6 +449,7 @@ void jetData::connectBranches(bool readIn, TTree* tree){
 
   connectBranchArr(readIn, tree, jetName+"_bRegCorr", bRegCorr,   NjetName,  "F");  
   connectBranchArr(readIn, tree, jetName+"_btagDeepB", deepB,   NjetName,  "F");  
+  
 
   int CSVRes = connectBranchArr(readIn, tree, jetName+"_btagCSVV2", CSVv2,   NjetName,  "F");  
   if(readIn && CSVRes == -1){
@@ -454,7 +457,14 @@ void jetData::connectBranches(bool readIn, TTree* tree){
     connectBranchArr(readIn, tree, jetName+"_CombIVF", CSVv2,   NjetName,  "F");  
   }
 
-  connectBranchArr(readIn, tree, jetName+"_btagDeepFlavB", deepFlavB,   NjetName,  "F");  
+  int DeepFlavBRes = connectBranchArr(readIn, tree, jetName+"_btagDeepFlavB", deepFlavB,   NjetName,  "F");  
+  if(readIn && DeepFlavBRes == -1){
+    std::cout << "\tUsing " << (m_prefix+m_name+"_DeepFlavourB  + "+m_prefix+m_name+"_DeepFlavourBB  + " + m_prefix+m_name+"_DeepFlavourLEPB"       ) << " for " << m_prefix + m_name+ "_btagDeepFlavB " << std::endl;
+    connectBranchArr(readIn, tree, jetName+"_DeepFlavourB",    deepFlavourB,    NjetName,  "F");  
+    connectBranchArr(readIn, tree, jetName+"_DeepFlavourBB",   deepFlavourBB,   NjetName,  "F");  
+    connectBranchArr(readIn, tree, jetName+"_DeepFlavourLEPB", deepFlavourLEPB, NjetName,  "F");  
+  }
+  
 
   connectBranchArr(readIn, tree, jetName+"_puId",   puId,   NjetName,  "I");  
   connectBranchArr(readIn, tree, jetName+"_jetId", jetId,   NjetName,  "I");  
