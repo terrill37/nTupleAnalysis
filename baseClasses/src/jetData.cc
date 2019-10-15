@@ -7,7 +7,7 @@
 #include "CondFormats/BTauObjects/interface/BTagCalibration.h"
 
 using namespace nTupleAnalysis;
-
+using std::cout;  using std::endl;
 
 
 //jet object
@@ -28,6 +28,7 @@ jet::jet(UInt_t i, jetData* data){
 
   bRegCorr = data->bRegCorr[i];
   appliedBRegression = false;
+  pt_wo_bRegCorr = data->pt[i];
 
   deepB     = data->deepB[i];
   CSVv2     = data->CSVv2[i];
@@ -82,8 +83,8 @@ jet::jet(UInt_t i, jetData* data){
   nbHadrons      = data->nbHadrons      [i];
   ncHadrons      = data->ncHadrons      [i];
 
-  //isTag          = data->isTag      [i];
-  //isSel          = data->isSel      [i];
+  isTag          = data->isTag      [i];
+  isSel          = data->isSel      [i];
 
   if(data->trkData){
     nFirstTrack = data->nFirstTrack[i];
@@ -203,6 +204,7 @@ jet::jet(TLorentzVector& vec, float tag){
 
   bRegCorr = 1.0;
   appliedBRegression = false;
+  pt_wo_bRegCorr  = pt;
 
   deepB = tag;
   CSVv2 = tag;
@@ -212,6 +214,14 @@ jet::jet(TLorentzVector& vec, float tag){
 void jet::bRegression(){
   scaleFourVector(bRegCorr);
   appliedBRegression = true;
+}
+
+
+void jet::undo_bRegression(){
+  scaleFourVector(1./bRegCorr);
+  appliedBRegression = false;
+  //cout << "pt is " << pt << " pt_wo_bRegCorr " << pt_wo_bRegCorr << endl;
+  assert(fabs(pt - pt_wo_bRegCorr) < 0.001);
 }
 
 
@@ -328,19 +338,46 @@ std::vector< std::shared_ptr<jet> > jetData::getJets(float ptMin, float ptMax, f
   return outputJets;
 }
 
-std::vector< std::shared_ptr<jet> > jetData::getJets(std::vector< std::shared_ptr<jet> > inputJets, float ptMin, float ptMax, float etaMax, bool clean, float tagMin, std::string tagger, bool antiTag){
-  
+std::vector< std::shared_ptr<jet> > jetData::getJets(std::vector< std::shared_ptr<jet> > inputJets, float ptMin, float ptMax, float etaMax, bool clean, float tagMin, std::string tagger, bool antiTag, bool debug){
+  if(debug) cout << "jetData::getJets " << endl;
   std::vector< std::shared_ptr<jet> > outputJets;
-
+  
   for(auto &jet: inputJets){
-    if(clean && jet->cleanmask == 0) continue;
-    if(         jet->pt   <  ptMin ) continue;
-    if(         jet->pt   >= ptMax ) continue;
-    if(    fabs(jet->eta) > etaMax ) continue;
+    if(debug) cout << "new jet " << endl;
 
-    if(     tagger == "deepFlavB" && antiTag^(jet->deepFlavB < tagMin)) continue;
-    else if(tagger == "deepB"     && antiTag^(jet->deepB     < tagMin)) continue;
-    else if(tagger == "CSVv2"     && antiTag^(jet->CSVv2     < tagMin)) continue;
+    if(clean && jet->cleanmask == 0) {
+      if(debug) cout << "\t fail clean " << endl;
+      continue;
+    }
+
+    if(         jet->pt   <  ptMin ){
+      if(debug) cout << "\t fail ptMin (" << jet->pt << " < " << ptMin << ")" << jet->pt_wo_bRegCorr << endl;
+      if(debug) jet->dump();
+      continue;
+    }
+
+    if(         jet->pt   >= ptMax ) {
+      if(debug) cout << "\t fail ptMax (" << jet->pt << " >= " << ptMax << ")" << endl;
+      continue;
+    }
+
+    if(    fabs(jet->eta) > etaMax ) {
+      if(debug) cout << "\t fail etaMax (" << fabs(jet->eta) << " > " << etaMax << ")" << endl;
+      continue;
+    }
+
+    if(     tagger == "deepFlavB" && antiTag^(jet->deepFlavB < tagMin)) {
+      if(debug) cout << "\t fail deepFlavB " << endl;
+      continue;
+    }else if(tagger == "deepB"     && antiTag^(jet->deepB     < tagMin)) {
+      if(debug) cout << "\t fail deepB " << endl;
+      continue;
+    } else if(tagger == "CSVv2"     && antiTag^(jet->CSVv2     < tagMin)) {
+      if(debug) cout << "\t fail CSVv2 " << endl;
+      continue;
+    }
+    
+    if(debug) cout << "\t pass jet " << endl;
     outputJets.push_back(jet);
   }
 
@@ -430,7 +467,7 @@ void jetData::writeJets(std::vector< std::shared_ptr<jet> > outputJets){
 
 
 void jetData::connectBranches(bool readIn, TTree* tree){
-  std::cout << "jetData::connectBranches(bool readIn, TTree* tree)" << std::endl;
+  if(debug) std::cout << "jetData::connectBranches(bool readIn, TTree* tree)" << std::endl;
 
   std::string jetName =  m_prefix+m_name;
   std::string NjetName = m_prefix+"n"+m_name;

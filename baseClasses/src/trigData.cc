@@ -57,9 +57,9 @@ trigData::trigData(std::string name, TChain* tree){
 
 }
 
-std::vector<std::shared_ptr<trig>> trigData::getTrigs(float ptMin, float etaMax, int objId){
+std::vector<trigPtr> trigData::getTrigs(float ptMin, float etaMax, int objId){
   
-  std::vector< std::shared_ptr<trig> > outputTrigs;
+  std::vector<trigPtr> outputTrigs;
 
   for(UInt_t i = 0; i < nTrigObjs; ++i){
 
@@ -77,5 +77,22 @@ std::vector<std::shared_ptr<trig>> trigData::getTrigs(float ptMin, float etaMax,
 
   return outputTrigs;
 }
+
+
+std::vector<trigPtr> trigData::getTrigs(std::vector<trigPtr> inputTrigs, float ptMin, float etaMax, int objId){
+  
+  std::vector<trigPtr> outputTrigs;
+
+  for(const trigPtr &trig: inputTrigs){
+
+    if(             trig->pt  <  ptMin ) continue;
+    if(       fabs(trig->eta) > etaMax ) continue;
+    if(objId > 0 && (trig->id != objId)  ) continue;
+    outputTrigs.push_back(trig);
+  }
+
+  return outputTrigs;
+}
+
 
 trigData::~trigData(){}

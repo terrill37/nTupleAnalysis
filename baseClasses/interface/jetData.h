@@ -34,7 +34,7 @@ namespace nTupleAnalysis {
     TLorentzVector p;
 
     float bRegCorr;
-    bool  appliedBRegression;
+    float pt_wo_bRegCorr;
 
     float deepB;
     float CSVv2;
@@ -103,12 +103,22 @@ namespace nTupleAnalysis {
     jet(UInt_t, jetData*); 
     jet(TLorentzVector&, float tag = -1); 
     void bRegression();
+    void undo_bRegression();
     void dump();
     ~jet(); 
 
     void RotateZ(float dPhi);
     void scaleFourVector(float scale);
     //void dump();
+
+  private:
+    bool  appliedBRegression = false;
+
+  public:
+    // Accessor
+    bool AppliedBRegression() const {return appliedBRegression;}
+
+
   };
 
   typedef std::shared_ptr<jet> jetPtr;
@@ -185,7 +195,7 @@ namespace nTupleAnalysis {
 
     std::vector< std::shared_ptr<jet> > getJets(float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);
     std::vector< std::shared_ptr<jet> > getJets(std::vector< std::shared_ptr<jet> > inputJets, 
-						float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);
+						float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false, bool debug = false);
     ~jetData(); 
 
     BTagCalibrationReader* m_btagCalibrationTool = NULL;
