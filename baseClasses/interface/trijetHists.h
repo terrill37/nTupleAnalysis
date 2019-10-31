@@ -25,6 +25,10 @@ namespace nTupleAnalysis {
     TH2F* mW_vs_mt;
     TH2F* xW_vs_xt;
 
+    TH1F* deepFlavB_b;
+    TH1F* deepFlavB_j;
+    TH1F* deepFlavB_l;
+
     trijetHists(std::string, fwlite::TFileService&, std::string title = "");
     void Fill(std::shared_ptr<trijet>&, float);
     ~trijetHists(); 
