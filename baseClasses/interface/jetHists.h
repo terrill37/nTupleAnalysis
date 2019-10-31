@@ -33,6 +33,8 @@ namespace nTupleAnalysis {
 
     TH1F*   SoftMu     ;
     TH1F*   nSoftMu        ;
+    TH1F*   pt_wo_bRegCorr;
+    TH1F*   bRegCorr;
 
     TH1F*   SoftEl     ;
     TH1F*   nSoftEl        ;

@@ -17,6 +17,9 @@ namespace nTupleAnalysis {
     std::shared_ptr<jet> b;
     std::shared_ptr<dijet> W;
 
+    std::shared_ptr<jet> jet_j;
+    std::shared_ptr<jet> jet_l;
+
     TLorentzVector p;
     float dR;
     float st;

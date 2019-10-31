@@ -215,6 +215,9 @@ jet::jet(TLorentzVector& vec, float tag){
 }
 
 void jet::bRegression(){
+  if(appliedBRegression)
+    cout << "jetData::ERROR double applying bRegression " << endl;
+
   scaleFourVector(bRegCorr);
   appliedBRegression = true;
 }
