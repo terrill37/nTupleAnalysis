@@ -98,6 +98,8 @@ namespace nTupleAnalysis {
 
     Bool_t isTag = false;
     Bool_t isSel = false;
+    
+    float match_dR_bjet = -99;
 
     jet();
     jet(UInt_t, jetData*); 

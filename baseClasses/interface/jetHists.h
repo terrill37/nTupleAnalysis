@@ -54,6 +54,8 @@ namespace nTupleAnalysis {
     TH1F* matched_dcsv     ;
     TH1F* matched_dDeepcsv ;
 
+    TH1F* matched_dRAll    = NULL ;
+    TH1F* matched_dRBjet   = NULL ;
 
     trackHists* tracks = NULL;
     trackHists* tracks_noV0 = NULL;
