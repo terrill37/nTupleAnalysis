@@ -34,6 +34,8 @@ namespace nTupleAnalysis {
     //void dump();
   };
 
+  typedef std::shared_ptr<trig> trigPtr;
+
   //class for tree access
   class trigData {
 
@@ -55,6 +57,7 @@ namespace nTupleAnalysis {
 
     trigData(std::string, TChain*); 
     std::vector<std::shared_ptr<trig>> getTrigs(float ptMin = -1e6, float etaMax = 1e6, int objId = 0);
+    std::vector<trigPtr> getTrigs(std::vector<trigPtr> inputTrigs, float ptMin = -1e6, float etaMax = 1e6, int objId = 0);
     ~trigData(); 
 
     //void dump();

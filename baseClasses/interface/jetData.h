@@ -34,11 +34,11 @@ namespace nTupleAnalysis {
     TLorentzVector p;
 
     float bRegCorr;
-    bool  appliedBRegression;
+    float pt_wo_bRegCorr;
 
     float deepB;
     float CSVv2;
-    float deepFlavB;
+    float deepFlavB = 0;
     Int_t puId;
     Int_t jetId;
 
@@ -98,17 +98,29 @@ namespace nTupleAnalysis {
 
     Bool_t isTag = false;
     Bool_t isSel = false;
+    
+    float match_dR_bjet = -99;
 
     jet();
     jet(UInt_t, jetData*); 
     jet(TLorentzVector&, float tag = -1); 
     void bRegression();
+    void undo_bRegression();
     void dump();
     ~jet(); 
 
     void RotateZ(float dPhi);
     void scaleFourVector(float scale);
     //void dump();
+
+  private:
+    bool  appliedBRegression = false;
+
+  public:
+    // Accessor
+    bool AppliedBRegression() const {return appliedBRegression;}
+
+
   };
 
   typedef std::shared_ptr<jet> jetPtr;
@@ -139,7 +151,10 @@ namespace nTupleAnalysis {
 
     float deepB[MAXJETS];
     float CSVv2[MAXJETS];
-    float deepFlavB[MAXJETS];
+    float deepFlavB[MAXJETS] = {0};
+    float deepFlavourB[MAXJETS];
+    float deepFlavourBB[MAXJETS];
+    float deepFlavourLEPB[MAXJETS];
     Int_t puId[MAXJETS];
     Int_t jetId[MAXJETS];
 
@@ -185,7 +200,7 @@ namespace nTupleAnalysis {
 
     std::vector< std::shared_ptr<jet> > getJets(float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);
     std::vector< std::shared_ptr<jet> > getJets(std::vector< std::shared_ptr<jet> > inputJets, 
-						float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);
+						float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false, bool debug = false);
     ~jetData(); 
 
     BTagCalibrationReader* m_btagCalibrationTool = NULL;

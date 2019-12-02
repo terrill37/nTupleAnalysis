@@ -115,7 +115,8 @@ elecData::elecData(std::string name, TChain* tree, bool isMC, std::string SFName
       std::string recoSFName  = "nTupleAnalysis/baseClasses/data/ElecSF2017/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root";
       if(SFName == "2018"){
 	tightSFName = "nTupleAnalysis/baseClasses/data/ElecSF2018/2018_ElectronTight.root";
-	recoSFName  = "nTupleAnalysis/baseClasses/data/ElecSF2018/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root";
+	//recoSFName  = "nTupleAnalysis/baseClasses/data/ElecSF2018/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root";
+	recoSFName  = "nTupleAnalysis/baseClasses/data/ElecSF2018/egammaEffi.txt_EGM2D_updatedAll.root";
       }
 
       std::cout << "elecData::Loading SF from files: \n\t" << tightSFName << "\n and \n\t" << recoSFName  << "\n For elecs " << m_name << std::endl;

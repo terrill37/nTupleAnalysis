@@ -33,6 +33,8 @@ namespace nTupleAnalysis {
 
     TH1F*   SoftMu     ;
     TH1F*   nSoftMu        ;
+    TH1F*   pt_wo_bRegCorr;
+    TH1F*   bRegCorr;
 
     TH1F*   SoftEl     ;
     TH1F*   nSoftEl        ;
@@ -52,6 +54,8 @@ namespace nTupleAnalysis {
     TH1F* matched_dcsv     ;
     TH1F* matched_dDeepcsv ;
 
+    TH1F* matched_dRAll    = NULL ;
+    TH1F* matched_dRBjet   = NULL ;
 
     trackHists* tracks = NULL;
     trackHists* tracks_noV0 = NULL;

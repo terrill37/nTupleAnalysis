@@ -20,10 +20,14 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
     deepCSVb_l  = dir.make<TH1F>("DeepCSVb_l",   (name+"/DeepCSVb_l; "   +title+" DeepCSVb; Entries").c_str(), 120,-0.2,1.2);
     deepCSVbb_l = dir.make<TH1F>("DeepCSVbb_l",   (name+"/DeepCSVbb_l; "   +title+" DeepCSVbb; Entries").c_str(), 120,-0.2,1.2);
     SoftMu      = dir.make<TH1F>("SoftMu",      (name+"/SoftMu; "    +title+" SoftMu; Entries").c_str(), 120,-0.2,1.2);
-    nSoftMu     = dir.make<TH1F>("nSoftEl",     (name+"/nSoftEl;    " +title+" Number of Soft El.; Entries").c_str(),  11,-0.5,10.5);
+    nSoftMu     = dir.make<TH1F>("nSoftMu",     (name+"/nSoftMu;    " +title+" Number of Soft Mu.; Entries").c_str(),  11,-0.5,10.5);
     SoftEl      = dir.make<TH1F>("SoftEl",      (name+"/SoftEl; "    +title+" SoftEl; Entries").c_str(), 120,-0.2,1.2);
-    nSoftMu     = dir.make<TH1F>("nSoftMu",     (name+"/nSoftMu;    " +title+" Number of Soft Mu; Entries").c_str(),  11,-0.5,10.5);
+    nSoftEl     = dir.make<TH1F>("nSoftEl",     (name+"/nSoftEl;    " +title+" Number of Soft El; Entries").c_str(),  11,-0.5,10.5);
 
+    pt_wo_bRegCorr = dir.make<TH1F>("pt_wo_bRegCorr", (name+"/pt_wo_bRegCorr; "+title+" p_T (No bRegCorr) [GeV]; Entries").c_str(),  100,0, 500);
+    bRegCorr       = dir.make<TH1F>("bRegCorr", (name+"/bRegCorr; "+title+" bRegCorr; Entries").c_str(),  100,0,2 );
+
+    
     if(jetDetailLevel.find("matched") != std::string::npos){
       matched_dPt      = dir.make<TH1F>("matched_dPt",     (name+"/matched_dPt     ;P_{T}-P_{T}^{matched} [GeV];Entries").c_str()  ,100,-50, 50);
       matched_dEta     = dir.make<TH1F>("matched_dEta",    (name+"/matched_dEta    ;#eta-#eta^{matched};Entries"        ).c_str()  ,100,-0.5,0.5);
@@ -31,6 +35,11 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
       matched_dR       = dir.make<TH1F>("matched_dR",      (name+"/matched_dR      ;#DeltaR(Online,Offline);;Entries"   ).c_str()  ,100, 0,0.45);
       matched_dcsv     = dir.make<TH1F>("matched_dcsv",    (name+"/matched_dcsv;CSV-CSV^{matched};Entries"              ).c_str()  ,100,-1,1);
       matched_dDeepcsv = dir.make<TH1F>("matched_dDeepcsv",(name+"/matched_dDeepcsv;DeepCSV-DeepCSV^{matched};Entries"  ).c_str()  ,100,-1,1);
+    }
+
+    if(jetDetailLevel.find("matchedBJet") != std::string::npos){
+      matched_dRAll        = dir.make<TH1F>("matched_dRAll",      (name+"/matched_dRAll      ;#DeltaR Nearest Jet;;Entries"   ).c_str()  ,100, 0,5.);
+      matched_dRBjet       = dir.make<TH1F>("matched_dRBjet",     (name+"/matched_dRBjet     ;#DeltaR Nearest B-jet Jet;;Entries"   ).c_str()  ,100, 0,5.);
     }
 
     if(jetDetailLevel.find("Tracks") != std::string::npos){
@@ -67,6 +76,7 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
   CSVv2_l  ->Fill(jet->CSVv2, weight);
   deepFlavB->Fill(jet->deepFlavB, weight);
 
+
   deepCSV_l  ->Fill(jet->DeepCSV    ,weight);
   deepCSVb_l  ->Fill(jet->DeepCSVb    ,weight);
   deepCSVbb_l  ->Fill(jet->DeepCSVbb    ,weight);
@@ -75,7 +85,10 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
   nSoftMu    ->Fill(jet->nSM        ,weight);
   
   SoftEl     ->Fill(jet->SoftEl     ,weight);
-  nSoftMu    ->Fill(jet->nSE        ,weight);
+  nSoftEl    ->Fill(jet->nSE        ,weight);
+
+  pt_wo_bRegCorr ->Fill(jet->pt_wo_bRegCorr, weight);
+  bRegCorr ->Fill(jet->bRegCorr, weight);
 
   //
   // track hists
@@ -148,6 +161,11 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
       matched_dcsv     ->Fill(jet->CSVv2 - matchedJet->CSVv2,weight);
       matched_dDeepcsv ->Fill(jet->DeepCSV - matchedJet->DeepCSV,weight);
     }
+  }
+
+  if(matched_dRAll){
+    matched_dRAll       ->Fill(jet->match_dR     ,weight);
+    matched_dRBjet      ->Fill(jet->match_dR_bjet,weight);
   }
 
   return;
