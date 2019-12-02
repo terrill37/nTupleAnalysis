@@ -18,7 +18,7 @@ trijet::trijet(std::shared_ptr<jet> &jet1, std::shared_ptr<jet> &jet2, std::shar
   e   = p.E();
 
   dRbW = W->p.DeltaR(b->p);
-  xt   = (m-mt)/(0.1*m);
+  xt   = (m-mt)/(0.10*m);
   xWt  = sqrt(pow(W->xW, 2) + pow(xt, 2));
   mbW  = (b->p + W->pW).M();
   pbW  = (b->p + W->pW)*(mt/mbW);

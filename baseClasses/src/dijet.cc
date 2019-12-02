@@ -27,9 +27,9 @@ dijet::dijet(std::shared_ptr<jet> &jet1, std::shared_ptr<jet> &jet2){
   pZ  = p*(mZ/m);
   pH  = p*(mH/m);
 
-  xW  = m>0 ? (m-mW)/(0.1*m) : -1;
-  xZ  = m>0 ? (m-mZ)/(0.1*m) : -1;
-  xH  = m>0 ? (m-mH)/(0.1*m) : -1;
+  xW  = m>0 ? (m-mW)/(0.10*m) : -1;
+  xZ  = m>0 ? (m-mZ)/(0.10*m) : -1;
+  xH  = m>0 ? (m-mH)/(0.10*m) : -1;
 
 }
 

@@ -58,8 +58,10 @@ def babySit(commands, execute, maxAttempts=3):
     nJobs = len(commands)
     jobs=[]
     outs=[]
-    for command in commands:
+    for j in range(nJobs):
+        command = commands[j]
         attempts[command] = 1
+        print "# ",j
         jobs.append(watch(command, execute, stdout=subprocess.PIPE))
         outs.append("LAUNCHING")
 
@@ -68,7 +70,7 @@ def babySit(commands, execute, maxAttempts=3):
     done=False
     while not done:
         done=True
-        time.sleep(0.1)
+        time.sleep(0.2)
         failure=False
         for j in range(nJobs):
             code = jobs[j][1].poll()
@@ -93,22 +95,22 @@ def babySit(commands, execute, maxAttempts=3):
                 done=False
                 jobs[j] = watch(jobs[j][0], execute, stdout=subprocess.PIPE)
 
-        nLines = 3
+        nLines = 1+nJobs#3
         print "\033[K"
         for j in range(nJobs):
-            nLines+=4
-            lines=textwrap.wrap("Attempt "+str(attempts[jobs[j][0]])+": "+jobs[j][0], 200)
-            nLines += len(lines)
-            print "\033[K# "+"-"*200
-            for line in lines: print "\033[K#", line
+            #nLines+=1#4
+            #lines=textwrap.wrap("Attempt "+str(attempts[jobs[j][0]])+": "+jobs[j][0], 200)
+            #nLines += len(lines)
+            #print "\033[K# "+"-"*200
+            #for line in lines: print "\033[K#", line
             
             try:          outs[j]=jobs[j][2].get_nowait().replace('\n','').replace('\r','')
             except Empty: outs[j]=outs[j]
-            print "\033[K# "
-            print "\033[K#    >>",outs[j]
-            print "\033[K# "
-        print "\033[K# "+"-"*200
-        print "\033[K"
+            #print "\033[K# "
+            print "\033[K# "+str(j).rjust(2)+" >>",outs[j]
+            #print "\033[K# "
+        #print "\033[K# "+"-"*200
+        #print "\033[K"
         moveCursorUp(nLines)
     moveCursorDown(1000)
             

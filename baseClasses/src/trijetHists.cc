@@ -8,7 +8,7 @@ trijetHists::trijetHists(std::string name, fwlite::TFileService& fs, std::string
     v = new fourVectorHists(name, dir, title);
     W = new dijetHists(name+"/W", fs, "W Candidate");
     dRbW = dir.make<TH1F>("dRbW", (name+"/dRbW; "+title+" #DeltaR(b,W); Entries").c_str(), 50,0,5);
-    mbW  = dir.make<TH1F>("mbW",  (name+"/mbW;  "+title+" m_{b,W};      Entries").c_str(), 50,80,280);
+    mbW  = dir.make<TH1F>("mbW",  (name+"/mbW;  "+title+" m_{b,W};      Entries").c_str(),100,0,500);
     xWt  = dir.make<TH1F>("xWt",  (name+"/xWt; "+title+" X_{Wt};   Entries").c_str(), 60, 0, 12);
 
     mW_vs_mt = dir.make<TH2F>("mW_vs_mt", (name+"/mW_vs_mt; W Candidate Mass [GeV]; Top Candidate Mass [GeV]; Entries").c_str(), 50,0,250, 50,80,280);

@@ -261,7 +261,7 @@ jetData::jetData(std::string name, TTree* tree, bool readIn, bool isMC, std::str
   //
   if(readIn && m_isMC){
 
-    if(SFName != "2017" && SFName != "deepcsv2018" && SFName != "deepjet2018"){
+    if(SFName != "2017" && SFName != "deepcsv2018" && SFName != "deepjet2018" && SFName != "deepjet2017" && SFName != "deepjet2016"){
       std::cout << "jetData::Warning no scale factors for " << m_name << std::endl;
     }else{
 
@@ -270,25 +270,32 @@ jetData::jetData(std::string name, TTree* tree, bool readIn, bool isMC, std::str
 	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2018/DeepCSV_102XSF_V1.csv";
       if(SFName == "deepjet2018")
 	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2018/DeepJet_102XSF_V1.csv";
+      if(SFName == "deepjet2017")
+	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2017/DeepFlavour_94XSF_V3_B_F.csv";
+      if(SFName == "deepjet2016")
+	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2016/DeepJet_2016LegacySF_V1.csv";
       
       std::cout << "jetData::Loading SF from " << sfFileName << " For jets " << m_name << std::endl;
-      BTagCalibration calib = BTagCalibration("deepcsv", sfFileName);
+      BTagCalibration calib = BTagCalibration("", sfFileName);//tagger name only needed for creating csv files
       
       m_btagCalibrationTool = new BTagCalibrationReader(BTagEntry::OP_RESHAPING,              // 0 is for loose op, 1: medium, 2: tight, 3: discr. reshaping
 							"central"      // central systematic type
 							);
 
+      std::cout << "jetData::Load BTagEntry::FLAV_B" << std::endl;
       m_btagCalibrationTool->load(calib, 
 				  BTagEntry::FLAV_B,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
 				  "iterativefit"      // measurement type
 				  );
 
+      std::cout << "jetData::Load BTagEntry::FLAV_C" << std::endl;
       m_btagCalibrationTool->load(calib, 
 				  BTagEntry::FLAV_C,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
 				  "iterativefit"      // measurement type
 				  );
 
 
+      std::cout << "jetData::Load BTagEntry::FLAV_UDSG" << std::endl;
       m_btagCalibrationTool->load(calib, 
 				  BTagEntry::FLAV_UDSG,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
 				  "iterativefit"      // measurement type
