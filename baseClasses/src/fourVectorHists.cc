@@ -17,14 +17,14 @@ void fourVectorHists::makeHists(std::string name, TFileDirectory& dir, std::stri
     pt_m = dir.make<TH1F>("pt_m", (name+"/pt_m; "+title+" p_T [GeV]; Entries").c_str(),  100,0, 500);
     pt_l = dir.make<TH1F>("pt_l", (name+"/pt_l; "+title+" p_T [GeV]; Entries").c_str(),  100,0,1000);
 
-    pz_l = dir.make<TH1F>("pz_l", (name+"/pz_l; "+title+" p_z [GeV]; Entries").c_str(),  100,0,1000);
+    pz_l = dir.make<TH1F>("pz_l", (name+"/pz_l; "+title+" |p_z| [GeV]; Entries").c_str(),  150,0,1500);
 
     eta = dir.make<TH1F>("eta", (name+"/eta; "+title+" #eta; Entries").c_str(), 100, -5, 5);
     phi = dir.make<TH1F>("phi", (name+"/phi; "+title+" #phi; Entries").c_str(), 64, -3.2, 3.2);
 
     m_s = dir.make<TH1F>("m_s", (name+"/m_s; "+title+" Mass [GeV]; Entries").c_str(),   50,  0,   50);
     m   = dir.make<TH1F>("m",   (name+"/m;   "+title+" Mass [GeV]; Entries").c_str(),  100,  0,  500);
-    m_l = dir.make<TH1F>("m_l", (name+"/m_l; "+title+" Mass [GeV]; Entries").c_str(),  130,100, 1400);
+    m_l = dir.make<TH1F>("m_l", (name+"/m_l; "+title+" Mass [GeV]; Entries").c_str(),  140,100, 1500);
     e = dir.make<TH1F>("e", (name+"/e; "+title+" E [GeV]; Entries").c_str(),  100,0, 500);
 
     return;
@@ -36,7 +36,7 @@ void fourVectorHists::Fill(TLorentzVector& p, float weight){
   pt_m->Fill(p.Pt(), weight);
   pt_l->Fill(p.Pt(), weight);
 
-  pz_l->Fill(p.Pz(), weight);
+  pz_l->Fill(fabs(p.Pz()), weight);
 
   eta->Fill(p.Eta(), weight);
   phi->Fill(p.Phi(), weight);
