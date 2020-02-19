@@ -263,7 +263,7 @@ jet::~jet(){
 //
 //access tree
 //
-jetData::jetData(std::string name, TTree* tree, bool readIn, bool isMC, std::string jetDetailLevel, std::string prefix, std::string SFName){
+jetData::jetData(std::string name, TTree* tree, bool readIn, bool isMC, std::string jetDetailLevel, std::string prefix, std::string SFName, std::string btagVariations){
 
   m_name = name;
   m_prefix = prefix;
@@ -293,29 +293,38 @@ jetData::jetData(std::string name, TTree* tree, bool readIn, bool isMC, std::str
       
       std::cout << "jetData::Loading SF from " << sfFileName << " For jets " << m_name << std::endl;
       BTagCalibration calib = BTagCalibration("", sfFileName);//tagger name only needed for creating csv files
-      
-      m_btagCalibrationTool = new BTagCalibrationReader(BTagEntry::OP_RESHAPING,              // 0 is for loose op, 1: medium, 2: tight, 3: discr. reshaping
-							"central"      // central systematic type
-							);
 
-      std::cout << "jetData::Load BTagEntry::FLAV_B" << std::endl;
-      m_btagCalibrationTool->load(calib, 
-				  BTagEntry::FLAV_B,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
-				  "iterativefit"      // measurement type
-				  );
+      // Split btagVariations at spaces into vector of variation names
+      std::stringstream ss(btagVariations);
+      std::istream_iterator<std::string> begin(ss);
+      std::istream_iterator<std::string> end;
+      m_btagVariations = std::vector<std::string>(begin,end);
 
-      std::cout << "jetData::Load BTagEntry::FLAV_C" << std::endl;
-      m_btagCalibrationTool->load(calib, 
-				  BTagEntry::FLAV_C,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
-				  "iterativefit"      // measurement type
-				  );
+      for(auto &variation: m_btagVariations){
+	std::cout<<"Load btag systematic variation: "<<variation<<std::endl;
 
+	m_btagCalibrationTools[variation] = new BTagCalibrationReader(BTagEntry::OP_RESHAPING, // 0 is for loose op, 1: medium, 2: tight, 3: discr. reshaping
+								      variation // systematic type
+								      );
 
-      std::cout << "jetData::Load BTagEntry::FLAV_UDSG" << std::endl;
-      m_btagCalibrationTool->load(calib, 
-				  BTagEntry::FLAV_UDSG,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
-				  "iterativefit"      // measurement type
-				  );
+	std::cout << "jetData::Load BTagEntry::FLAV_B" << std::endl;
+	m_btagCalibrationTools[variation]->load(calib, 
+						BTagEntry::FLAV_B,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
+						"iterativefit"      // measurement type
+						);
+	
+	std::cout << "jetData::Load BTagEntry::FLAV_C" << std::endl;
+	m_btagCalibrationTools[variation]->load(calib, 
+					       BTagEntry::FLAV_C,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
+					       "iterativefit"      // measurement type
+					       );
+
+	std::cout << "jetData::Load BTagEntry::FLAV_UDSG" << std::endl;
+	m_btagCalibrationTools[variation]->load(calib, 
+						BTagEntry::FLAV_UDSG,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
+						"iterativefit"      // measurement type
+						);
+      }
 
     }
 
@@ -332,7 +341,7 @@ std::vector< std::shared_ptr<jet> > jetData::getJets(float ptMin, float ptMax, f
   std::vector< std::shared_ptr<jet> > outputJets;
   float *tag = CSVv2;
   if(tagger == "deepB")     tag = deepB;
-  if(tagger == "deepFlavB") tag = deepFlavB;
+  if(tagger == "deepFlavB" || tagger == "deepjet") tag = deepFlavB;
   if(debug) std::cout << "We have " << nJets << " jets"<< std::endl;
   for(Int_t i = 0; i < int(nJets); ++i){
     if(i > int(MAXJETS-1)) {
@@ -403,16 +412,31 @@ jetData::~jetData(){
 }
 
 
-float jetData::getSF(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour){ 
-  if(!m_btagCalibrationTool) return 1;
+float jetData::getSF(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour, std::string variation){ 
+  if(m_btagCalibrationTools.empty()) 
+    return 1;
+  
+  if(fabs(jetHadronFlavour) == 5)
+    return m_btagCalibrationTools[variation]->eval_auto_bounds(variation, BTagEntry::FLAV_B, fabs(jetEta), jetPt, jetTagScore);
+  
+  if(fabs(jetHadronFlavour) == 4)
+    return m_btagCalibrationTools[variation]->eval_auto_bounds(variation, BTagEntry::FLAV_C, fabs(jetEta), jetPt, jetTagScore);
+  
+  return m_btagCalibrationTools[variation]->eval_auto_bounds(variation, BTagEntry::FLAV_UDSG, fabs(jetEta), jetPt, jetTagScore);
+}
 
-  if(fabs(jetHadronFlavour) == 5){
-    return m_btagCalibrationTool->eval_auto_bounds("central", BTagEntry::FLAV_B, fabs(jetEta), jetPt, jetTagScore);
-  }else if(fabs(jetHadronFlavour) == 4){
-    return m_btagCalibrationTool->eval_auto_bounds("central", BTagEntry::FLAV_C, fabs(jetEta), jetPt, jetTagScore);
+
+void jetData::updateSFs(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour){
+  for(auto &variation: m_btagVariations){
+    m_btagSFs[variation] *= getSF(jetEta, jetPt, jetTagScore, jetHadronFlavour, variation);
   }
+}
 
-  return m_btagCalibrationTool->eval_auto_bounds("central", BTagEntry::FLAV_UDSG, fabs(jetEta), jetPt, jetTagScore);
+
+void jetData::resetSFs(){
+  for(auto &variation: m_btagVariations){
+    m_btagSFs[variation] = 1;
+  }  
 }
 
 

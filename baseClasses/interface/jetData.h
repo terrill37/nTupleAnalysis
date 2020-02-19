@@ -196,7 +196,7 @@ namespace nTupleAnalysis {
     btaggingData* btagData = nullptr;
 
 
-    jetData(std::string, TTree*, bool readIn = true, bool isMC = false, std::string jetDetailLevel = "Tracks.btagInputs", std::string prefix = "", std::string SFName = ""); 
+    jetData(std::string, TTree*, bool readIn = true, bool isMC = false, std::string jetDetailLevel = "Tracks.btagInputs", std::string prefix = "", std::string SFName = "", std::string btagVariations = "central"); 
 
     std::vector< std::shared_ptr<jet> > getJets(float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false);
     std::vector< std::shared_ptr<jet> > getJets(std::vector< std::shared_ptr<jet> > inputJets, 
@@ -204,7 +204,12 @@ namespace nTupleAnalysis {
     ~jetData(); 
 
     BTagCalibrationReader* m_btagCalibrationTool = NULL;
-    float getSF(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour);
+    std::vector<std::string> m_btagVariations;
+    std::map<std::string, BTagCalibrationReader*> m_btagCalibrationTools;
+    std::map<std::string,float> m_btagSFs;
+    float getSF(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour, std::string variation = "central");
+    void updateSFs(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour);
+    void resetSFs();
 
     void writeJets(std::vector< std::shared_ptr<jet> > outputJets) ;
     void connectBranches(bool readIn, TTree* tree);
