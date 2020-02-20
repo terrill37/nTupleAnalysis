@@ -71,7 +71,11 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
   v->Fill(jet->p, weight);
 
   cleanmask->Fill(jet->cleanmask, weight);
-  puId->Fill(jet->puId, weight);
+  if(jet->pt < 50){
+    puId->Fill(jet->puId, weight);
+  }else{
+    puId->Fill(7, weight);
+  }
 
   deepB    ->Fill(jet->deepB, weight);
   CSVv2    ->Fill(jet->CSVv2, weight);
