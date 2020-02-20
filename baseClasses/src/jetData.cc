@@ -281,24 +281,33 @@ jetData::jetData(std::string name, TTree* tree, bool readIn, bool isMC, std::str
       std::cout << "jetData::Warning no scale factors for " << m_name << std::endl;
     }else{
 
-      std::string sfFileName =  "nTupleAnalysis/baseClasses/data/BTagSF2017/DeepCSV_94XSF_V4_B_F.csv";
-      if(SFName == "deepcsv2018")
-	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2018/DeepCSV_102XSF_V1.csv";
-      if(SFName == "deepjet2018")
-	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2018/DeepJet_102XSF_V1.csv";
-      if(SFName == "deepjet2017")
-	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2017/DeepFlavour_94XSF_V3_B_F.csv";
-      if(SFName == "deepjet2016")
-	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2016/DeepJet_2016LegacySF_V1.csv";
-      
-      std::cout << "jetData::Loading SF from " << sfFileName << " For jets " << m_name << std::endl;
-      BTagCalibration calib = BTagCalibration("", sfFileName);//tagger name only needed for creating csv files
-
       // Split btagVariations at spaces into vector of variation names
       std::stringstream ss(btagVariations);
       std::istream_iterator<std::string> begin(ss);
       std::istream_iterator<std::string> end;
       m_btagVariations = std::vector<std::string>(begin,end);
+
+      std::string systTag = "_noSyst";
+      if(m_btagVariations.size()>1){
+	systTag = "";
+	std::cout << "Loading b-tag systematic variations. Will take several miniutes and use a few hundred MB of RAM." << std::endl;	
+      }else{
+	std::cout << "Not loading b-tag systematic variations" << std::endl;
+      }
+      
+      std::string sfFileName =  "nTupleAnalysis/baseClasses/data/BTagSF2017/DeepCSV_94XSF_V4_B_F"+systTag+".csv";
+      if(SFName == "deepcsv2018")
+	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2018/DeepCSV_102XSF_V1"+systTag+".csv";
+      if(SFName == "deepjet2018")
+	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2018/DeepJet_102XSF_V1"+systTag+".csv";
+      if(SFName == "deepjet2017")
+	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2017/DeepFlavour_94XSF_V3_B_F"+systTag+".csv";
+      if(SFName == "deepjet2016")
+	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2016/DeepJet_2016LegacySF_V1"+systTag+".csv";
+      
+      std::cout << "jetData::Loading SF from " << sfFileName << " For jets " << m_name << std::endl;
+      BTagCalibration calib = BTagCalibration("", sfFileName);//tagger name only needed for creating csv files
+
 
       for(auto &variation: m_btagVariations){
 	std::cout<<"Load btag systematic variation: "<<variation<<std::endl;
@@ -336,7 +345,7 @@ jetData::jetData(std::string name, TTree* tree, bool readIn, bool isMC, std::str
 
 
 
-std::vector< std::shared_ptr<jet> > jetData::getJets(float ptMin, float ptMax, float etaMax, bool clean, float tagMin, std::string tagger, bool antiTag){
+std::vector< std::shared_ptr<jet> > jetData::getJets(float ptMin, float ptMax, float etaMax, bool clean, float tagMin, std::string tagger, bool antiTag, int puIdMin){
   
   std::vector< std::shared_ptr<jet> > outputJets;
   float *tag = CSVv2;
@@ -353,6 +362,7 @@ std::vector< std::shared_ptr<jet> > jetData::getJets(float ptMin, float ptMax, f
     if(          pt[i]  <  ptMin ) continue;
     if(          pt[i]  >= ptMax ) continue;
     if(    fabs(eta[i]) > etaMax ) continue;
+    if(       (puId[i]  < puIdMin) && (pt[i] < 50)) continue; // Fail pilup rejection. https://twiki.cern.ch/twiki/bin/viewauth/CMS/PileupJetID
     if(antiTag^(tag[i]  < tagMin)) continue; // antiTag XOR (jet fails tagMin). This way antiTag inverts the tag criteria to select untagged jets
     outputJets.push_back(std::make_shared<jet>(jet(i, this)));
   }
@@ -360,7 +370,7 @@ std::vector< std::shared_ptr<jet> > jetData::getJets(float ptMin, float ptMax, f
   return outputJets;
 }
 
-std::vector< std::shared_ptr<jet> > jetData::getJets(std::vector< std::shared_ptr<jet> > inputJets, float ptMin, float ptMax, float etaMax, bool clean, float tagMin, std::string tagger, bool antiTag, bool debug){
+std::vector< std::shared_ptr<jet> > jetData::getJets(std::vector< std::shared_ptr<jet> > inputJets, float ptMin, float ptMax, float etaMax, bool clean, float tagMin, std::string tagger, bool antiTag, int puIdMin, bool debug){
   if(debug) cout << "jetData::getJets " << endl;
   std::vector< std::shared_ptr<jet> > outputJets;
   
@@ -388,6 +398,12 @@ std::vector< std::shared_ptr<jet> > jetData::getJets(std::vector< std::shared_pt
       continue;
     }
 
+    if((jet->puId < puIdMin) && (jet->pt < 50)){//(bit two = loose, bit one = medium, bit zero = tight so puIdMin = 4, 6, 7 : loose, medium, tight)
+      if(debug) cout << "\t fail pileup rejection" << endl;
+      continue; // Fail pilup rejection. https://twiki.cern.ch/twiki/bin/viewauth/CMS/PileupJetID
+    }
+    
+
     if(     tagger == "deepFlavB" && antiTag^(jet->deepFlavB < tagMin)) {
       if(debug) cout << "\t fail deepFlavB " << endl;
       continue;
@@ -398,7 +414,7 @@ std::vector< std::shared_ptr<jet> > jetData::getJets(std::vector< std::shared_pt
       if(debug) cout << "\t fail CSVv2 " << endl;
       continue;
     }
-    
+
     if(debug) cout << "\t pass jet " << endl;
     outputJets.push_back(jet);
   }
