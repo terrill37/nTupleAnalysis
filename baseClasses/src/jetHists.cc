@@ -51,6 +51,7 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
       tracks      = new trackHists(name+"/tracks",      fs, title);
       tracks_noV0 = new trackHists(name+"/tracks_noV0", fs, title);
     }
+
     if(jetDetailLevel.find("btagInputs") != std::string::npos){
       flavour          = dir.make<TH1F>("flavour",     (name+"/flavour;    " +title+" Flavour; Entries").c_str(),  31,-5.5,25.5);
       flavourCleaned     = dir.make<TH1F>("flavourCleaned",     (name+"/flavourCleaned;    " +title+" Flavour (cleaned); Entries").c_str(),  31,-5.5,25.5);
@@ -63,7 +64,14 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
 
       btags      = new btaggingHists(name+"/btags",      fs, title);
       btags_noV0 = new btaggingHists(name+"/btags_noV0", fs, title);
+
+      if(jetDetailLevel.find("Tracks") != std::string::npos){
+	Delta_nTracks_tracks_btag                    = dir.make<TH1F>("Del_nTracks",     ("#Delta NTracks (trks-btag);    " +title+" Number of Tracks; Entries").c_str(),  11,-5.5,5.5);
+	Delta_nTracks_tracks_btag_noV0               = dir.make<TH1F>("Del_nTracks_noV0",("#Delta NTracks (trks-btag);    " +title+" Number of Tracks; Entries").c_str(),  11,-5.5,5.5);
+      }
+
     }
+
 } 
 
 void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
@@ -96,6 +104,9 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
   pt_wo_bRegCorr ->Fill(jet->pt_wo_bRegCorr, weight);
   bRegCorr ->Fill(jet->bRegCorr, weight);
 
+  unsigned int nTrks_noV0 = 0;
+
+
   //
   // track hists
   //
@@ -110,7 +121,6 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
     //
     // No V0s
     //
-    unsigned int nTrks_noV0 = 0;
     for(const trackPtr& track: jet->tracks) {
       if(!track->isfromV0){
 	++nTrks_noV0;
@@ -155,6 +165,12 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
       }
     }
     btags_noV0->trkTag_nTracks->Fill(nTrkTags_noV0, weight);
+
+    if(tracks){
+      Delta_nTracks_tracks_btag       ->Fill( jet->tracks.size() - jet->trkTagVars.size()  ,weight);
+      Delta_nTracks_tracks_btag_noV0  ->Fill( nTrks_noV0 - nTrkTags_noV0  ,weight);
+    }
+
   }
   
   if(matched_dPt){
