@@ -35,6 +35,7 @@ namespace nTupleAnalysis {
     //  Diff Hits
     TH1F*  dx   ;
     TH1F*  dy   ;
+    TH1F*  dz_s ;
     TH1F*  dz   ;
     TH1F*  dz_l ;
     TH1F*  dex   ;
