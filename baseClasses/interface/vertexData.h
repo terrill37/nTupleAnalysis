@@ -43,7 +43,7 @@ namespace nTupleAnalysis {
     static const unsigned int MAXPVS = 1024;
     bool m_isMC;
     
-    UInt_t nPV;
+    Int_t nPV;
     
     // Following are redudant with data->z[0] and data->ez[0] 
     //float  PVz;

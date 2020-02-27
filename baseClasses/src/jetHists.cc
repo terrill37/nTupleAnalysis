@@ -66,8 +66,10 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
       btags_noV0 = new btaggingHists(name+"/btags_noV0", fs, title);
 
       if(jetDetailLevel.find("Tracks") != std::string::npos){
-	Delta_nTracks_tracks_btag                    = dir.make<TH1F>("Del_nTracks",     ("#Delta NTracks (trks-btag);    " +title+" Number of Tracks; Entries").c_str(),  11,-5.5,5.5);
-	Delta_nTracks_tracks_btag_noV0               = dir.make<TH1F>("Del_nTracks_noV0",("#Delta NTracks (trks-btag);    " +title+" Number of Tracks; Entries").c_str(),  11,-5.5,5.5);
+	Delta_nTracks_tracks_btag                    = dir.make<TH1F>("Del_nTracks",     ("#Delta NTracks (trks-btag);    " +title+" Number of Tracks; Entries").c_str(),  21,-10.5,10.5);
+	Delta_nTracks_tracks_btag_noV0               = dir.make<TH1F>("Del_nTracks_noV0",("#Delta NTracks (trks-btag);    " +title+" Number of Tracks; Entries").c_str(),  21,-10.5,10.5);
+	Delta_nTracks_tracks_btag_l                  = dir.make<TH1F>("Del_nTracks_l",     ("#Delta NTracks (trks-btag);    " +title+" Number of Tracks; Entries").c_str(),  101,-50.5,50.5);
+	Delta_nTracks_tracks_btag_noV0_l             = dir.make<TH1F>("Del_nTracks_noV0_l",("#Delta NTracks (trks-btag);    " +title+" Number of Tracks; Entries").c_str(),  101,-50.5,50.5);
       }
 
     }
@@ -167,8 +169,11 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
     btags_noV0->trkTag_nTracks->Fill(nTrkTags_noV0, weight);
 
     if(tracks){
-      Delta_nTracks_tracks_btag       ->Fill( jet->tracks.size() - jet->trkTagVars.size()  ,weight);
-      Delta_nTracks_tracks_btag_noV0  ->Fill( nTrks_noV0 - nTrkTags_noV0  ,weight);
+      Delta_nTracks_tracks_btag         ->Fill( jet->tracks.size() - jet->trkTagVars.size()  ,weight);
+      Delta_nTracks_tracks_btag_noV0    ->Fill( nTrks_noV0 - nTrkTags_noV0  ,weight);
+
+      Delta_nTracks_tracks_btag_l       ->Fill( jet->tracks.size() - jet->trkTagVars.size()  ,weight);
+      Delta_nTracks_tracks_btag_noV0_l  ->Fill( nTrks_noV0 - nTrkTags_noV0  ,weight);
     }
 
   }
