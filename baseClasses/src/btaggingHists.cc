@@ -76,10 +76,8 @@ void btaggingHists::makeHists(std::string name, TFileDirectory& dir, std::string
   trkTag_nTracks                    = dir.make<TH1F>("nTracks",     ("nTrkTags;    " +title+" Number of Tracks; Entries").c_str(),  20,-0.5,19.5);
   trkTag_isFromV0                    = dir.make<TH1F>("trackIsFromV0"  ,  "IsFromV0;Is from V0;Entries", 2, -0.5,  1.5);  
 
-
-
   tag_jetNTracks                       = dir.make<TH1F>("jetNTracks"                   ,"jetNTracks;Number Tracks"                    ,42, -1.5, 40.5);
-  tag_jetNSecondaryVertices               = dir.make<TH1F>("jetNSecondaryVertices"           ,"jetNSelectedTracks;Number Selected Tracks"            ,42, -1.5, 40.5);
+  tag_jetNSecondaryVertices               = dir.make<TH1F>("jetNSecondaryVertices"           ,"jetNSelectedTracks;Number Secondary Vertices"            ,42, -1.5, 40.5);
 
   tag_chargedMultiplicity               = dir.make<TH1F>("chargedMultiplicity"           ,"chargedMultiplicity;charged multiplicity"            ,42, -1.5, 40.5);
   tag_chargedHadronEnergyFraction       = dir.make<TH1F>("chargedHadronEnergyFraction"         ,"chargedHadronEnergyFraction;charged Hadron energy fraction"          ,100, -0.1,1.5);
@@ -102,7 +100,8 @@ void btaggingHists::makeHists(std::string name, TFileDirectory& dir, std::string
 
   tag_totalMultiplicity                = dir.make<TH1F>("totalMultiplicity"            ,"totalMultiplicity;total multiplicity"             ,62, -1.5, 60.5);
 
-
+  
+  deltaHists = new btaggingDeltaHists("deltaHists", dir, title);
 } 
 
 void btaggingHists::FillSVHists(const svPtr &sv, const jetPtr& jet, float weight){
@@ -136,6 +135,14 @@ void btaggingHists::FillSVHists(const svPtr &sv, const jetPtr& jet, float weight
 
   sv_boostOverSqrtJetPt ->Fill(sv->p.BoostVector().Mag()/ sqrt(jet->p.Pt()), weight);
   sv_massVertexEnergyFraction -> Fill(sv->p.M() / sv->p.E(), weight);
+
+
+  std::shared_ptr<nTupleAnalysis::secondaryVertex> matchedSV = sv->matchedSV.lock();
+  std::shared_ptr<nTupleAnalysis::jet> matchedJet = jet->matchedJet.lock();
+  if(matchedSV && matchedJet){
+    deltaHists->FillSVHists(sv, jet, matchedSV, matchedJet, weight);
+  }
+
 
   return;
 }
@@ -184,15 +191,15 @@ void btaggingHists::FillTrkTagVarHists(const trkTagVarPtr &trkTag, float weight)
 
   trkTag_isFromV0->Fill(trkTag->matchIsFromV0, weight);
 
-//  trackDecayLenSi       = data->trackDecayLenSi  [i];
-
-//  trackJetDistSig       = data->trackJetDistSig  [i];
+  const nTupleAnalysis::trkTagVarPtr trkTagMatch = trkTag->matchedTrkTagVar.lock();
+  if(trkTagMatch)
+    deltaHists->FillTrkTagVarHists(trkTag, trkTagMatch, weight);
 
   return;
 }
 
 
-void btaggingHists::FillTagVarHists(const tagVarPtr &tag, float weight){
+void btaggingHists::FillTagVarHists(const tagVarPtr &tag, const jetPtr& jet, float weight){
   
   tag_jetNTracks                  ->Fill(tag-> jetNTracks                  ,weight);
   tag_jetNSecondaryVertices       ->Fill(tag-> jetNSecondaryVertices       ,weight);
@@ -214,6 +221,10 @@ void btaggingHists::FillTagVarHists(const tagVarPtr &tag, float weight){
   tag_elecMultiplicity            ->Fill(tag-> electronMultiplicity        ,weight);
   tag_totalMultiplicity           ->Fill(tag-> numberOfDaughters           ,weight);
 
+  std::shared_ptr<nTupleAnalysis::jet> matchedJet = jet->matchedJet.lock();
+  if(matchedJet && matchedJet->tagVars){
+    deltaHists->FillTagVarHists(tag, matchedJet->tagVars, weight);
+  }
 
 
 }

@@ -154,7 +154,7 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
       btags->FillTrkTagVarHists(trkTag, weight);
   
     if(jet->tagVars)
-      btags->FillTagVarHists(jet->tagVars, weight);
+      btags->FillTagVarHists(jet->tagVars, jet, weight);
 
     //
     // No V0s

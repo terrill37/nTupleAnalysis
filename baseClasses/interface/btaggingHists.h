@@ -8,6 +8,7 @@
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 #include "nTupleAnalysis/baseClasses/interface/btaggingData.h"
 #include "nTupleAnalysis/baseClasses/interface/jetData.h"
+#include "nTupleAnalysis/baseClasses/interface/btaggingDeltaHists.h"
 
 namespace nTupleAnalysis {
 
@@ -92,16 +93,18 @@ namespace nTupleAnalysis {
     TH1F*   tag_elecEnergyFraction              ;
     TH1F*   tag_totalMultiplicity               ;
 
+    btaggingDeltaHists* deltaHists;
+
 
     btaggingHists(std::string,       TFileDirectory&, std::string title = "");
     btaggingHists(std::string, fwlite::TFileService&, std::string title = "");
 
     void makeHists(std::string, TFileDirectory&, std::string title);
-    void FillSVHists(const svPtr&, const jetPtr&, float);
+    void FillSVHists(const svPtr& sv, const jetPtr& jet, float weight);
 
     void FillTrkTagVarHists(const trkTagVarPtr&, float);
 
-    void FillTagVarHists(const tagVarPtr &, float );
+    void FillTagVarHists(const tagVarPtr& tag, const jetPtr& jet, float weight );
 
     ~btaggingHists(); 
 
