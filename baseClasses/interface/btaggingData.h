@@ -46,6 +46,8 @@ namespace nTupleAnalysis {
     float dir_y             ;
     float dir_z             ;
 
+    std::weak_ptr<secondaryVertex>  matchedSV;
+
     secondaryVertex();
     secondaryVertex(UInt_t, btaggingData*); 
 

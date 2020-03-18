@@ -1,3 +1,4 @@
+#include <sstream>      // std::stringstream, std::stringbuf
 
 #include "TChain.h"
 

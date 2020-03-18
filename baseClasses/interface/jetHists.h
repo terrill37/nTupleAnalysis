@@ -63,6 +63,11 @@ namespace nTupleAnalysis {
 
     btaggingHists* btags = NULL;
     btaggingHists* btags_noV0 = NULL;
+    
+    TH1F* Delta_nTracks_tracks_btag = NULL;
+    TH1F* Delta_nTracks_tracks_btag_noV0 = NULL;
+    TH1F* Delta_nTracks_tracks_btag_l = NULL;
+    TH1F* Delta_nTracks_tracks_btag_noV0_l = NULL;
 
     jetHists(std::string, fwlite::TFileService&, std::string title = "", std::string jetDetailLevel = "");
     void Fill(const std::shared_ptr<jet>&, float);
