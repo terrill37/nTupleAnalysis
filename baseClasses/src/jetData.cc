@@ -264,14 +264,14 @@ jet::~jet(){
 //
 //access tree
 //
-jetData::jetData(std::string name, TTree* tree, bool readIn, bool isMC, std::string jetDetailLevel, std::string prefix, std::string SFName, std::string btagVariations){
+jetData::jetData(std::string name, TTree* tree, bool readIn, bool isMC, std::string jetDetailLevel, std::string prefix, std::string SFName, std::string btagVariations, std::string JECSyst){
 
   m_name = name;
   m_prefix = prefix;
   m_isMC = isMC;
   m_jetDetailLevel = jetDetailLevel;
 
-  connectBranches(readIn, tree);
+  connectBranches(readIn, tree, JECSyst);
 
   //
   // Load the BTagging SFs
@@ -519,19 +519,20 @@ void jetData::writeJets(std::vector< std::shared_ptr<jet> > outputJets){
 }
 
 
-void jetData::connectBranches(bool readIn, TTree* tree){
+void jetData::connectBranches(bool readIn, TTree* tree, std::string JECSyst){
   if(debug) std::cout << "jetData::connectBranches(bool readIn, TTree* tree)" << std::endl;
 
   std::string jetName =  m_prefix+m_name;
   std::string NjetName = m_prefix+"n"+m_name;
 
+  if(JECSyst!="") std::cout << "jetData::connectBranches() Using JEC Systematic " << JECSyst << std::endl;
 
   connectBranch(readIn, tree, NjetName, nJets, "i");
 
-  connectBranchArr(readIn, tree, jetName+"_pt",   pt,  NjetName,  "F");
-  connectBranchArr(readIn, tree, jetName+"_eta",  eta, NjetName,  "F");
-  connectBranchArr(readIn, tree, jetName+"_phi",  phi, NjetName,  "F");
-  connectBranchArr(readIn, tree, jetName+"_mass", m,   NjetName,  "F");  
+  connectBranchArr(readIn, tree, jetName+"_pt"  +JECSyst, pt,  NjetName,  "F");
+  connectBranchArr(readIn, tree, jetName+"_eta",          eta, NjetName,  "F");
+  connectBranchArr(readIn, tree, jetName+"_phi",          phi, NjetName,  "F");
+  connectBranchArr(readIn, tree, jetName+"_mass"+JECSyst, m,   NjetName,  "F");  
 
   connectBranchArr(readIn, tree, jetName+"_cleanmask", cleanmask,   NjetName,  "b");  
 

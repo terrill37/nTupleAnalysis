@@ -25,8 +25,8 @@ def execute(command, execute=True): # use to run command like a normal line of b
     if execute: os.system(command)
 
 
-def watch(command, execute=True, stdout=None): # use to run a command and keep track of the thread, ie to run something when it is done
-    print command
+def watch(command, execute=True, stdout=None, doPrint=True): # use to run a command and keep track of the thread, ie to run something when it is done
+    if doPrint: print command
     if execute:
         p = subprocess.Popen(shlex.split(command), stdout=stdout, universal_newlines=(True if stdout else False), bufsize=1, close_fds=ON_POSIX)
         if stdout:
@@ -53,30 +53,43 @@ def moveCursorDown(N=''):
     print '\r\033['+str(N)+'B',
 
 
-def babySit(commands, execute, maxAttempts=3):
+def babySit(commands, execute, maxAttempts=1, maxJobs=20):
     attempts={}
-    nJobs = len(commands)
+    nCommands = len(commands)
     jobs=[]
     outs=[]
-    for j in range(nJobs):
-        command = commands[j]
+    waiting=[]
+    done=[]
+    for c in range(nCommands):
+        command = commands[c]
         attempts[command] = 1
-        print "# ",j
-        jobs.append(watch(command, execute, stdout=subprocess.PIPE))
-        outs.append("LAUNCHING")
+        done.append(0)
+        print "# ",c
+        if len(jobs)<maxJobs:
+            jobs.append(watch(command, execute, stdout=subprocess.PIPE))
+            outs.append("LAUNCHING")
+        else:
+            print command
+            waiting.append(command)
+            outs.append("IN QUEUE")
 
     if not execute: return
     
-    done=False
-    while not done:
-        done=True
+    nDone = 0
+    while nDone < nCommands:
         time.sleep(0.2)
         failure=False
+        nJobs = len(jobs)
+        nDone = sum(done)
+        nToLaunch = 0
         for j in range(nJobs):
             code = jobs[j][1].poll()
-            if code == None: 
-                done=False
-            elif code:
+            #if code == None: # job is still running
+            #    done=False
+            if code==0: # job finished
+                if done[j]==0: nToLaunch += 1
+                done[j] = 1
+            elif code: # job crashed, try resubmitting
                 moveCursorDown(1000)
                 outs[j] = "CRASHED AT <"+outs[j]+">"
                 crash = ["",
@@ -89,28 +102,31 @@ def babySit(commands, execute, maxAttempts=3):
                          ""]
                 time.sleep(1)
                 for line in crash: print line
-                if attempts[jobs[j][0]] > maxAttempts: continue
+                if attempts[jobs[j][0]] > maxAttempts: 
+                    if done[j]==0: nToLaunch += 1
+                    done[j] = 1
+                    continue # don't resubmit, already tried maxAttempts times
                 attempts[jobs[j][0]] += 1
                 time.sleep(10)
-                done=False
+                #done=False
                 jobs[j] = watch(jobs[j][0], execute, stdout=subprocess.PIPE)
 
-        nLines = 1+nJobs#3
+        nWaiting = len(waiting)
+        for w in range(nJobs, nJobs+min(nToLaunch, nWaiting)):
+            jobs.append(watch(waiting.pop(0), execute, stdout=subprocess.PIPE, doPrint=False))
+            outs[w] = "LAUNCHING"
+
+        nJobs = len(jobs)
+        nLines = 1+nCommands#3
         print "\033[K"
-        for j in range(nJobs):
-            #nLines+=1#4
-            #lines=textwrap.wrap("Attempt "+str(attempts[jobs[j][0]])+": "+jobs[j][0], 200)
-            #nLines += len(lines)
-            #print "\033[K# "+"-"*200
-            #for line in lines: print "\033[K#", line
-            
-            try:          outs[j]=jobs[j][2].get_nowait().replace('\n','').replace('\r','')
-            except Empty: outs[j]=outs[j]
-            #print "\033[K# "
-            print "\033[K# "+str(j).rjust(2)+" >>",outs[j]
-            #print "\033[K# "
-        #print "\033[K# "+"-"*200
-        #print "\033[K"
+        for c in range(nCommands):
+            if c < nJobs:
+                try:          
+                    outs[c]=jobs[c][2].get_nowait().replace('\n','').replace('\r','')
+                except Empty: 
+                    outs[c]=outs[c]
+            print "\033[K# "+str(c).rjust(2)+" >>",outs[c]
+
         moveCursorUp(nLines)
     moveCursorDown(1000)
             

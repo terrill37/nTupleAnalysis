@@ -196,7 +196,8 @@ namespace nTupleAnalysis {
     btaggingData* btagData = nullptr;
 
 
-    jetData(std::string, TTree*, bool readIn = true, bool isMC = false, std::string jetDetailLevel = "Tracks.btagInputs", std::string prefix = "", std::string SFName = "", std::string btagVariations = "central"); 
+    jetData(std::string, TTree*, bool readIn = true, bool isMC = false, std::string jetDetailLevel = "Tracks.btagInputs", std::string prefix = "", std::string SFName = "", std::string btagVariations = "central",
+	    std::string JECSyst = ""); 
 
     std::vector< std::shared_ptr<jet> > getJets(float ptMin = -1e6, float ptMax = 1e6, float etaMax = 1e6, bool clean = false, float tagMin = -1e6, std::string tagger = "CSVv2", bool antiTag = false, int puIdMin = 0);
     std::vector< std::shared_ptr<jet> > getJets(std::vector< std::shared_ptr<jet> > inputJets, 
@@ -212,7 +213,7 @@ namespace nTupleAnalysis {
     void resetSFs();
 
     void writeJets(std::vector< std::shared_ptr<jet> > outputJets) ;
-    void connectBranches(bool readIn, TTree* tree);
+    void connectBranches(bool readIn, TTree* tree, std::string JECSyst = "");
     //void dump();
   };
 
