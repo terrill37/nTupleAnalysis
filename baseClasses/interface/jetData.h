@@ -136,7 +136,7 @@ namespace nTupleAnalysis {
     std::string m_prefix ="";
     bool debug = false;
     std::string m_jetDetailLevel;
-    static const unsigned int MAXJETS = 1024;
+    static const unsigned int MAXJETS = 10000;
 
     UInt_t nJets;
 

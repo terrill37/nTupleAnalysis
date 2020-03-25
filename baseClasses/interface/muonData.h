@@ -49,7 +49,7 @@ namespace nTupleAnalysis {
 
   public:
     std::string m_name;
-    static const unsigned int MAXMUONS = 1000;
+    static const unsigned int MAXMUONS = 10000;
     bool m_isMC;
     
     UInt_t nMuons;

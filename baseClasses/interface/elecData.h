@@ -54,7 +54,7 @@ namespace nTupleAnalysis {
 
   public:
     std::string m_name;
-    static const unsigned int MAXELECS = 10;
+    static const unsigned int MAXELECS = 10000;
     bool m_isMC;
 
     Int_t n;
