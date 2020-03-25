@@ -42,7 +42,7 @@ namespace nTupleAnalysis {
   public:
     UInt_t nTrigObjs;
 
-    static const unsigned int MAXTRIGS = 1000;
+    static const unsigned int MAXTRIGS = 10000;
 
 
     float pt [MAXTRIGS];

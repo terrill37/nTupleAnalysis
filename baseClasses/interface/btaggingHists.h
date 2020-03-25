@@ -53,14 +53,18 @@ namespace nTupleAnalysis {
     TH1F* trkTag_ip2d_err_l;
     TH1F* trkTag_ip2d_err;
     
+    TH1F* trkTag_trackDecayLenVal_vl ;
     TH1F* trkTag_trackDecayLenVal_l ;
     TH1F* trkTag_trackDecayLenVal;
     TH1F* trkTag_trackJetDistVal ;    
+    TH1F* trkTag_trackJetDistVal_l ;    
+    TH1F* trkTag_trackJetDistVal_vl ;    
     TH1F* trkTag_trackJetDistSig ;    
     TH1F* trkTag_trackPt_logx           ;
     TH1F* trkTag_trackMomentum   ;
     TH1F* trkTag_trackPt   ;
     TH1F* trkTag_trackEta           ;       
+    TH1F* trkTag_trackEta_l           ;       
     TH1F* trkTag_trackPhi           ;       
     TH1F* trkTag_trackPtRel      ; 
     TH1F* trkTag_trackDeltaR        ;       

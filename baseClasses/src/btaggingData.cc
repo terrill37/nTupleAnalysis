@@ -222,6 +222,11 @@ std::vector< std::shared_ptr<secondaryVertex> > btaggingData::getSecondaryVertic
   if(debug) std::cout << "btaggingData::getSecondaryVertices " << nFirstSV << " to " << nLastSV << std::endl;  
   std::vector< std::shared_ptr<secondaryVertex> > outputSVs;
   for(int i = nFirstSV; i < nLastSV; ++i){
+    if(i > int(MAXSVS-1)) {
+      std::cout  << "btaggingData::Warning too many SVs! " << nLastSV  << " SVs. Skipping. "<< std::endl;
+      break;
+    }
+
     if(debug) std::cout << "btaggingData::getSecondaryVertices " << i <<  "vs nSVs " << nSV <<  std::endl; 
     outputSVs.push_back(std::make_shared<secondaryVertex>(secondaryVertex(i, this)));
   }
@@ -234,6 +239,11 @@ std::vector<trkTagVarPtr> btaggingData::getTrkTagVars(int nFirstTrkTagVar, int n
   
   std::vector<trkTagVarPtr> outputTrkTagVars;
   for(int i = nFirstTrkTagVar; i < nLastTrkTagVar; ++i){
+    if(i > int(MAXNTRK-1)) {
+      std::cout  << "btaggingData::Warning too many trkTagVars! " << nLastTrkTagVar  << " trkTagVars. Skipping. "<< std::endl;
+      break;
+    }
+    
     if(this->trackDeltaR[i] < 0.3 && fabs(this->trackJetDistVal[i]) < 0.07 && this->trackDecayLenVal[i] < 5 ){
       outputTrkTagVars.push_back(std::make_shared<trkTagVar>(trkTagVar(i, this)));
     }
@@ -244,6 +254,10 @@ std::vector<trkTagVarPtr> btaggingData::getTrkTagVars(int nFirstTrkTagVar, int n
 
 
 tagVarPtr btaggingData::getTagVars(int jetIdx){
+  if(jetIdx > int(MAXNJETS-1)) {
+    std::cout  << "btaggingData::Warning too many tagVar! " << jetIdx  << std::endl;
+  }
+
   return std::make_shared<tagVar>(tagVar(jetIdx, this));
 }
 

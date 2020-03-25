@@ -150,9 +150,15 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
       btags->FillSVHists(sv, jet, weight);
 
     btags->trkTag_nTracks->Fill(jet->trkTagVars.size(), weight);
-    for(const trkTagVarPtr& trkTag: jet->trkTagVars) 
+    for(const trkTagVarPtr& trkTag: jet->trkTagVars) {
+      //float delta_trackDelta = trkTag->trackDeltaR - jet->p.DeltaR(trkTag->p);
+      //if(fabs(delta_trackDelta) < 0.01){
       btags->FillTrkTagVarHists(trkTag, weight);
-  
+      //}else{
+      //	std::cout << "DeltaR comb " << trkTag->trackDeltaR << " vs " << jet->p.DeltaR(trkTag->p) << " eta: " << trkTag->trackEta << " phi: " << trkTag->trackPhi << std::endl; // hltTrack is not in cone of offJet
+      //}
+    }
+
     if(jet->tagVars)
       btags->FillTagVarHists(jet->tagVars, jet, weight);
 

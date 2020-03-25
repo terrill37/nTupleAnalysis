@@ -52,9 +52,12 @@ void btaggingHists::makeHists(std::string name, TFileDirectory& dir, std::string
   trkTag_ip2d_err_l = dir.make<TH1F>("ip2d_err_l","ip2d err;IP2D uncertianty [cm]",100,-0.01,0.1);
   trkTag_ip2d_err   = dir.make<TH1F>("ip2d_err",  "ip2d err;IP2D uncertianty [cm]",100,-0.001,0.01);
     
+  trkTag_trackDecayLenVal_vl        = dir.make<TH1F>("trackDecayLenVal_vl" ,    "trackDecayLenVal;trackDecayLenVal [cm];Entries", 100, -0.1,  60);
   trkTag_trackDecayLenVal_l         = dir.make<TH1F>("trackDecayLenVal_l"  ,    "trackDecayLenVal;trackDecayLenVal [cm];Entries", 100, -0.1,  6);
   trkTag_trackDecayLenVal           = dir.make<TH1F>("trackDecayLenVal"    ,    "trackDecayLenVal;trackDecayLenVal [cm];Entries", 100, -0.1,  0.5);
   trkTag_trackJetDistVal            = dir.make<TH1F>("trackJetDistVal"     ,    "trackJetDistVal;trackJetDistVal [cm];Entries",  100, -0.1,0.01);      
+  trkTag_trackJetDistVal_l          = dir.make<TH1F>("trackJetDistVal_l"   ,    "trackJetDistVal;trackJetDistVal [cm];Entries",  100, -1,0.01);      
+  trkTag_trackJetDistVal_vl         = dir.make<TH1F>("trackJetDistVal_vl"  ,    "trackJetDistVal;trackJetDistVal [cm];Entries",  100, -10,0.01);      
   trkTag_trackPtRel                 = dir.make<TH1F>("trackPtRel"          ,    "trackPtRel;track p_{T} Rel [GeV];Entries", 100, -0.1, 7);          
   trkTag_trackPt                    = dir.make<TH1F>("trackPt"             ,    "trackPt;track pt [GeV];Entries", 20, 0, 20);       
   trkTag_trackMomentum              = dir.make<TH1F>("trackMomentum"       ,    "trackMomentum;track momentum [GeV];Entries", 60, 0, 60);       
@@ -62,6 +65,7 @@ void btaggingHists::makeHists(std::string name, TFileDirectory& dir, std::string
   Double_t binsPt[28] = {0.9, 1.116, 1.3838, 1.716, 2.1278, 2.6385, 3.2717, 4.0569, 5.0306, 6.2379, 7.735, 9.5914, 11.8933, 14.7477, 18.2872, 22.6761, 28.1183, 34.8667, 43.2347, 53.6111, 66.4777, 82.4324, 102.2162, 126.748, 157.1676, 194.8878, 241.6609, 299.6595};
   trkTag_trackPt_logx               = dir.make<TH1F>("trackPt_logx", "trackPt;track p_{T} [GeV];Entries", 27, binsPt);
   trkTag_trackEta                   = dir.make<TH1F>("trackEta"            ,    "trackEta;track #eta;Entries", 100, -2.6, 2.6);            
+  trkTag_trackEta_l                 = dir.make<TH1F>("trackEta_l"          ,    "trackEta;track #eta;Entries", 100, -5, 5);            
   trkTag_trackPhi                   = dir.make<TH1F>("trackPhi"            ,    "trackPhi;track #phi;Entries", 100, -3.2, 3.2);            
   trkTag_trackPPar                  = dir.make<TH1F>("trackPPar"           ,    "trackPPar;track PPar [GeV];Entries",60, 0, 60);           
   trkTag_trackDeltaR                = dir.make<TH1F>("trackDeltaR"         ,    "trackDeltaR;track #DeltaR;Entries", 160, -0.05, 0.35);         
@@ -169,14 +173,18 @@ void btaggingHists::FillTrkTagVarHists(const trkTagVarPtr &trkTag, float weight)
   trkTag_ip2d_err_l->Fill(ip2d_err);
         
 
+  trkTag_trackDecayLenVal_vl  ->Fill(trkTag->trackDecayLenVal,weight );
   trkTag_trackDecayLenVal_l   ->Fill(trkTag->trackDecayLenVal,weight );
   trkTag_trackDecayLenVal     ->Fill(trkTag->trackDecayLenVal,weight );
   trkTag_trackJetDistVal      ->Fill(trkTag->trackJetDistVal ,weight );
+  trkTag_trackJetDistVal_l    ->Fill(trkTag->trackJetDistVal ,weight );
+  trkTag_trackJetDistVal_vl   ->Fill(trkTag->trackJetDistVal ,weight );
   trkTag_trackPtRel           ->Fill(trkTag->trackPtRel      ,weight );
   trkTag_trackMomentum        ->Fill(trkTag->trackMomentum   ,weight ); 
   trkTag_trackPt              ->Fill(trkTag->pt   ,weight ); 
   trkTag_trackPt_logx         ->Fill(trkTag->pt   ,weight ); 
   trkTag_trackEta             ->Fill(trkTag->trackEta        ,weight );
+  trkTag_trackEta_l           ->Fill(trkTag->trackEta        ,weight );
   trkTag_trackPhi             ->Fill(trkTag->trackPhi        ,weight );
   trkTag_trackPPar            ->Fill(trkTag->trackPPar       ,weight );
   trkTag_trackDeltaR          ->Fill(trkTag->trackDeltaR         ,weight );
