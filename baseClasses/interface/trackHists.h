@@ -101,6 +101,16 @@ namespace nTupleAnalysis {
     TH1F* SVweight  ;
 
     //
+    // Eta/Phi Maps
+    //
+    TH2F* nTrackMap;
+    TH2F* pixHitMap;
+    TH2F* stripHitMap;
+    TH2F* totHitMap;
+    TH2F* innerPixHitMap;
+
+
+    //
     // For Algo study
     //
     const unsigned int nAlgos = 30;
