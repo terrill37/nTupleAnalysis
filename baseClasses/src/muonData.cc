@@ -115,7 +115,7 @@ void muonData::connectBranches(bool readIn, TTree* tree){
   connectBranch(readIn, tree, muonName+"_eta"    , eta    ,"F");  
   connectBranch(readIn, tree, muonName+"_phi"    , phi    ,"F");  
   connectBranch(readIn, tree, muonName+"_mass"   , m      ,"F");
-  connectBranch(readIn, tree, "Muon_ip3d"   , ip3d   ,"F");
+  connectBranch(readIn, tree, muonName+"_ip3d"   , ip3d   ,"F");
   connectBranch(readIn, tree, muonName+"_sip3d"  , sip3d  ,"F");
   connectBranch(readIn, tree, muonName+"_dxy"    , dxy    ,"F");
   connectBranch(readIn, tree, muonName+"_dxyErr" , dxyErr ,"F");
@@ -165,10 +165,15 @@ void muonData::writeMuons(std::vector< std::shared_ptr<muon> > outputMuons){
 
     const muonPtr& thisMuon = outputMuons.at(i);
 
-    this->pt [i] = 	       thisMuon->pt         ;
-    this->eta[i] = 	       thisMuon->eta        ;
-    this->phi[i] = 	       thisMuon->phi        ;
-    this->m  [i] = 	       thisMuon->m          ;
+    this->pt    [i] = thisMuon->pt         ;
+    this->eta   [i] = thisMuon->eta        ;
+    this->phi   [i] = thisMuon->phi        ;
+    this->m     [i] = thisMuon->m          ;
+    this->ip3d  [i] = thisMuon->ip3d       ;
+    this->sip3d [i] = thisMuon->sip3d	   ;
+    this->dxy   [i] = thisMuon->dxy	   ;
+    this->dxyErr[i] = thisMuon->dxyErr     ;
+
     this->softId[i] = 	       thisMuon->softId     ;
     this->highPtId[i] =        thisMuon->highPtId ; 
     this->mediumId[i] =        thisMuon->mediumId ; 

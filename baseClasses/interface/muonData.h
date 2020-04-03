@@ -88,11 +88,8 @@ namespace nTupleAnalysis {
     TH2D*  m_SFHistTight = nullptr;
     TH2D*  m_SFHistIso = nullptr;
 
-    //TFile* m_SFFileID = nulHLT_Mu7_IP4_part01ptr;
-
   private:
 
-    //    TFile* m_SFFileID = nulHLT_Mu7_IP4_part0lptr;
     TFile* m_SFFileID = nullptr;
     TFile* m_SFFileIso = nullptr;
 
