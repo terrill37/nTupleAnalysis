@@ -114,10 +114,11 @@ namespace nTupleAnalysis {
     //void dump();
 
   private:
-    bool  appliedBRegression = false;
+    //    bool  appliedBRegression = false;
 
   public:
     // Accessor
+    bool  appliedBRegression = false;
     bool AppliedBRegression() const {return appliedBRegression;}
 
 
