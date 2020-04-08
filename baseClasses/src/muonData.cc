@@ -111,38 +111,38 @@ void muonData::connectBranches(bool readIn, TTree* tree){
 
   connectBranch(readIn, tree, NMuonName, nMuons, "i" );
 
-  connectBranch(readIn, tree, muonName+"_pt"     , pt     ,"F");  
-  connectBranch(readIn, tree, muonName+"_eta"    , eta    ,"F");  
-  connectBranch(readIn, tree, muonName+"_phi"    , phi    ,"F");  
-  connectBranch(readIn, tree, muonName+"_mass"   , m      ,"F");
-  connectBranch(readIn, tree, muonName+"_ip3d"   , ip3d   ,"F");
-  connectBranch(readIn, tree, muonName+"_sip3d"  , sip3d  ,"F");
-  connectBranch(readIn, tree, muonName+"_dxy"    , dxy    ,"F");
-  connectBranch(readIn, tree, muonName+"_dxyErr" , dxyErr ,"F");
+  connectBranchArr(readIn, tree, muonName+"_pt"     , pt     ,NMuonName, "F");  
+  connectBranchArr(readIn, tree, muonName+"_eta"    , eta    ,NMuonName, "F");  
+  connectBranchArr(readIn, tree, muonName+"_phi"    , phi    ,NMuonName, "F");  
+  connectBranchArr(readIn, tree, muonName+"_mass"   , m      ,NMuonName, "F");
+  connectBranchArr(readIn, tree, muonName+"_ip3d"   , ip3d   ,NMuonName, "F");
+  connectBranchArr(readIn, tree, muonName+"_sip3d"  , sip3d  ,NMuonName, "F");
+  connectBranchArr(readIn, tree, muonName+"_dxy"    , dxy    ,NMuonName, "F");
+  connectBranchArr(readIn, tree, muonName+"_dxyErr" , dxyErr ,NMuonName, "F");
 
-  int softIDRes = connectBranch(readIn, tree, muonName+"_softId"  , softId, "O" );
+  int softIDRes = connectBranchArr(readIn, tree, muonName+"_softId"  , softId, NMuonName, "O" );
   if(softIDRes == -1){
     std::cout << "\tUsing " << muonName+"_isSoftMuon"         << " for softId " << std::endl;
-    connectBranch(readIn, tree, muonName+"_isSoftMuon"  , softId, "O" );
+    connectBranchArr(readIn, tree, muonName+"_isSoftMuon"  , softId, NMuonName, "O" );
   }
-  connectBranch(readIn, tree, muonName+"_highPtId", highPtId, "B" );
+  connectBranchArr(readIn, tree, muonName+"_highPtId", highPtId, NMuonName, "B" );
   //load othr vars here
-  int medIDRes = connectBranch(readIn, tree, muonName+"_mediumId", mediumId, "O" );
+  int medIDRes = connectBranchArr(readIn, tree, muonName+"_mediumId", mediumId, NMuonName, "O" );
   if(medIDRes == -1){
     std::cout << "\tUsing " << muonName+"_isMediumMuon" << " for mediumId " << std::endl;
-    connectBranch(readIn, tree, muonName+"_isMediumMuon", mediumId, "O" );
+    connectBranchArr(readIn, tree, muonName+"_isMediumMuon", mediumId, NMuonName, "O" );
   }
 
-  int tightIDRes = connectBranch(readIn, tree, muonName+"_tightId" , tightId , "O");
+  int tightIDRes = connectBranchArr(readIn, tree, muonName+"_tightId" , tightId , NMuonName, "O");
   if(tightIDRes == -1){
     std::cout << "\tUsing " << muonName+"_isTightMuon"   << " for tightId " << std::endl;
-    connectBranch(readIn, tree, muonName+"_isTightMuon" , tightId, "O" );
+    connectBranchArr(readIn, tree, muonName+"_isTightMuon" , tightId, NMuonName, "O" );
   }
 
-  connectBranch(readIn, tree, muonName+"_jetIdx", jetIdx, "i" );
-  connectBranch(readIn, tree, muonName+"_pfRelIso04_all", pfRelIso04_all, "F" );
-  connectBranch(readIn, tree, muonName+"_iso", isolation_corrected, "F" );
-  connectBranch(readIn, tree, muonName+"_isoTrackerOnly", isolation_trkIsoOnly,"F" );
+  connectBranchArr(readIn, tree, muonName+"_jetIdx",         jetIdx,              NMuonName, "i" );
+  connectBranchArr(readIn, tree, muonName+"_pfRelIso04_all", pfRelIso04_all,      NMuonName, "F" );
+  connectBranchArr(readIn, tree, muonName+"_iso",            isolation_corrected, NMuonName, "F" );
+  connectBranchArr(readIn, tree, muonName+"_isoTrackerOnly", isolation_trkIsoOnly,NMuonName, "F" );
 
 //  *Br   25 :nPatMuon  : nPatMuon/I                                             *
 //    *Br   34 :PatMuon_IP : PatMuon_IP[nPatMuon]/F                                *
