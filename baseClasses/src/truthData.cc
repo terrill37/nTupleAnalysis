@@ -8,7 +8,7 @@ truthData::truthData(TChain* t, bool d){
   tree  = t;
   debug = d;
 
-  truthParticles  = new truthParticle("GenPart",  tree);
+  truthParticles  = new truthParticle("GenPart",  tree, true);
 } 
 
 void truthData::update(){

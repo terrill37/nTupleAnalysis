@@ -41,17 +41,44 @@ void truthParticle::connectBranches(bool readIn, TTree* tree){
 
   connectBranch(readIn, tree, NTruthName, nTruth, "i" );
 
-  connectBranch(readIn, tree, truthName+"_pt"  , pt  , "F");  
-  connectBranch(readIn, tree, truthName+"_eta" , eta , "F");  
-  connectBranch(readIn, tree, truthName+"_phi" , phi , "F");  
-  connectBranch(readIn, tree, truthName+"_mass", m   , "F");  
+  connectBranchArr(readIn, tree, truthName+"_pt"  , pt  , NTruthName, "F");  
+  connectBranchArr(readIn, tree, truthName+"_eta" , eta , NTruthName, "F");  
+  connectBranchArr(readIn, tree, truthName+"_phi" , phi , NTruthName, "F");  
+  connectBranchArr(readIn, tree, truthName+"_mass", m   , NTruthName, "F");  
 
-  connectBranch(readIn, tree, truthName+"_genPartIdxMother", genPartIdxMother, "I" );
-  connectBranch(readIn, tree, truthName+"_pdgId", pdgId, "I" );
+  connectBranchArr(readIn, tree, truthName+"_genPartIdxMother", genPartIdxMother, NTruthName, "I" );
+  connectBranchArr(readIn, tree, truthName+"_pdgId", pdgId, NTruthName, "I" );
   //inputBranch(tree, (name+"_").c_str(),  );
 
 
 }
+
+
+void truthParticle::writeTruth(std::vector< std::shared_ptr<particle> > outputTruth){
+  
+  int nOutputTruth = outputTruth.size();
+  this->nTruth = outputTruth.size();
+ 
+  for(Int_t i = 0; i < int(this->nTruth); ++i){
+    if(i > int(MAXTRUTH-1)) {
+      std::cout  << m_name << "::Warning too much truth! " << nOutputTruth << " particles. Skipping. "<< std::endl;
+      break;
+    }
+
+    const particlePtr& thisParticle = outputTruth.at(i);
+
+    this->pt    [i] = thisParticle->pt         ;
+    this->eta   [i] = thisParticle->eta        ;
+    this->phi   [i] = thisParticle->phi        ;
+    this->m     [i] = thisParticle->m          ;
+    this->genPartIdxMother  [i] = thisParticle->genPartIdxMother       ;
+    this->pdgId [i] = thisParticle->pdgId	   ;
+
+  }
+
+  return ;
+}
+
 
 std::vector< std::shared_ptr<particle> > truthParticle::getParticles(Int_t absPDG, Int_t absMomPDG){
   

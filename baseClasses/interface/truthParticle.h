@@ -30,6 +30,8 @@ namespace nTupleAnalysis {
     //void dump();
   };
 
+  typedef std::shared_ptr<particle> particlePtr;
+
   //class for tree access
   class truthParticle {
 
@@ -48,6 +50,7 @@ namespace nTupleAnalysis {
 
     truthParticle(std::string name, TTree* tree, bool readIn = true); 
     void connectBranches(bool readIn, TTree* tree);
+    void writeTruth(std::vector< std::shared_ptr<particle> > outputTruth);
 
     std::vector< std::shared_ptr<particle> > getParticles(Int_t absPDG = -1, Int_t absMomPDG = -1);
     ~truthParticle(); 
