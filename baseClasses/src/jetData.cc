@@ -281,7 +281,7 @@ jetData::jetData(std::string name, TTree* tree, bool readIn, bool isMC, std::str
   if(readIn && m_isMC){
 
     if(SFName != "2017" && SFName != "deepcsv2018" && SFName != "deepjet2018" && SFName != "deepjet2017" && SFName != "deepjet2016"){
-      std::cout << "jetData::Warning no scale factors for " << m_name << std::endl;
+      std::cout << "jetData::Warning no scale factors for " << m_name << " and SFName " << SFName << std::endl;
     }else{
 
       // Split btagVariations at spaces into vector of variation names
@@ -449,8 +449,12 @@ float jetData::getSF(float jetEta,  float jetPt,  float jetTagScore, int jetHadr
 }
 
 
-void jetData::updateSFs(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour){
+void jetData::updateSFs(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour,bool debug){
   for(auto &variation: m_btagVariations){
+    if(debug)
+      cout << "jetPt/jetEta/jetTagScore/jetHadronFlavour/SF" 
+	   << jetPt << "/" << jetEta << "/" << jetTagScore << "/" << jetHadronFlavour << "/" << getSF(jetEta, jetPt, jetTagScore, jetHadronFlavour, variation) << endl;
+      
     m_btagSFs[variation] *= getSF(jetEta, jetPt, jetTagScore, jetHadronFlavour, variation);
   }
 }

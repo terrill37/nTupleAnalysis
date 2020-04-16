@@ -14,6 +14,11 @@ muon::muon(UInt_t i, muonData* data){
   eta = data->eta[i];
   phi = data->phi[i];
   m   = data->m  [i];
+  ip3d   = data->ip3d[i];
+  sip3d  = data->sip3d[i];
+  dxy    = data->dxy[i];
+  dxyErr = data->dxyErr[i];
+
   if(m < 0.10) m = 0.1057;
     
   p = TLorentzVector();
@@ -106,34 +111,38 @@ void muonData::connectBranches(bool readIn, TTree* tree){
 
   connectBranch(readIn, tree, NMuonName, nMuons, "i" );
 
-  connectBranch(readIn, tree, muonName+"_pt"  , pt  ,"F");  
-  connectBranch(readIn, tree, muonName+"_eta" , eta ,"F");  
-  connectBranch(readIn, tree, muonName+"_phi" , phi ,"F");  
-  connectBranch(readIn, tree, muonName+"_mass", m   ,"F");
+  connectBranchArr(readIn, tree, muonName+"_pt"     , pt     ,NMuonName, "F");  
+  connectBranchArr(readIn, tree, muonName+"_eta"    , eta    ,NMuonName, "F");  
+  connectBranchArr(readIn, tree, muonName+"_phi"    , phi    ,NMuonName, "F");  
+  connectBranchArr(readIn, tree, muonName+"_mass"   , m      ,NMuonName, "F");
+  connectBranchArr(readIn, tree, muonName+"_ip3d"   , ip3d   ,NMuonName, "F");
+  connectBranchArr(readIn, tree, muonName+"_sip3d"  , sip3d  ,NMuonName, "F");
+  connectBranchArr(readIn, tree, muonName+"_dxy"    , dxy    ,NMuonName, "F");
+  connectBranchArr(readIn, tree, muonName+"_dxyErr" , dxyErr ,NMuonName, "F");
 
-  int softIDRes = connectBranch(readIn, tree, muonName+"_softId"  , softId, "O" );
+  int softIDRes = connectBranchArr(readIn, tree, muonName+"_softId"  , softId, NMuonName, "O" );
   if(softIDRes == -1){
     std::cout << "\tUsing " << muonName+"_isSoftMuon"         << " for softId " << std::endl;
-    connectBranch(readIn, tree, muonName+"_isSoftMuon"  , softId, "O" );
+    connectBranchArr(readIn, tree, muonName+"_isSoftMuon"  , softId, NMuonName, "O" );
   }
-  connectBranch(readIn, tree, muonName+"_highPtId", highPtId, "B" );
-
-  int medIDRes = connectBranch(readIn, tree, muonName+"_mediumId", mediumId, "O" );
+  connectBranchArr(readIn, tree, muonName+"_highPtId", highPtId, NMuonName, "B" );
+  //load othr vars here
+  int medIDRes = connectBranchArr(readIn, tree, muonName+"_mediumId", mediumId, NMuonName, "O" );
   if(medIDRes == -1){
     std::cout << "\tUsing " << muonName+"_isMediumMuon" << " for mediumId " << std::endl;
-    connectBranch(readIn, tree, muonName+"_isMediumMuon", mediumId, "O" );
+    connectBranchArr(readIn, tree, muonName+"_isMediumMuon", mediumId, NMuonName, "O" );
   }
 
-  int tightIDRes = connectBranch(readIn, tree, muonName+"_tightId" , tightId , "O");
+  int tightIDRes = connectBranchArr(readIn, tree, muonName+"_tightId" , tightId , NMuonName, "O");
   if(tightIDRes == -1){
     std::cout << "\tUsing " << muonName+"_isTightMuon"   << " for tightId " << std::endl;
-    connectBranch(readIn, tree, muonName+"_isTightMuon" , tightId, "O" );
+    connectBranchArr(readIn, tree, muonName+"_isTightMuon" , tightId, NMuonName, "O" );
   }
 
-  connectBranch(readIn, tree, muonName+"_jetIdx", jetIdx, "i" );
-  connectBranch(readIn, tree, muonName+"_pfRelIso04_all", pfRelIso04_all, "F" );
-  connectBranch(readIn, tree, muonName+"_iso", isolation_corrected, "F" );
-  connectBranch(readIn, tree, muonName+"_isoTrackerOnly", isolation_trkIsoOnly,"F" );
+  connectBranchArr(readIn, tree, muonName+"_jetIdx",         jetIdx,              NMuonName, "i" );
+  connectBranchArr(readIn, tree, muonName+"_pfRelIso04_all", pfRelIso04_all,      NMuonName, "F" );
+  connectBranchArr(readIn, tree, muonName+"_iso",            isolation_corrected, NMuonName, "F" );
+  connectBranchArr(readIn, tree, muonName+"_isoTrackerOnly", isolation_trkIsoOnly,NMuonName, "F" );
 
 //  *Br   25 :nPatMuon  : nPatMuon/I                                             *
 //    *Br   34 :PatMuon_IP : PatMuon_IP[nPatMuon]/F                                *
@@ -156,10 +165,15 @@ void muonData::writeMuons(std::vector< std::shared_ptr<muon> > outputMuons){
 
     const muonPtr& thisMuon = outputMuons.at(i);
 
-    this->pt [i] = 	       thisMuon->pt         ;
-    this->eta[i] = 	       thisMuon->eta        ;
-    this->phi[i] = 	       thisMuon->phi        ;
-    this->m  [i] = 	       thisMuon->m          ;
+    this->pt    [i] = thisMuon->pt         ;
+    this->eta   [i] = thisMuon->eta        ;
+    this->phi   [i] = thisMuon->phi        ;
+    this->m     [i] = thisMuon->m          ;
+    this->ip3d  [i] = thisMuon->ip3d       ;
+    this->sip3d [i] = thisMuon->sip3d	   ;
+    this->dxy   [i] = thisMuon->dxy	   ;
+    this->dxyErr[i] = thisMuon->dxyErr     ;
+
     this->softId[i] = 	       thisMuon->softId     ;
     this->highPtId[i] =        thisMuon->highPtId ; 
     this->mediumId[i] =        thisMuon->mediumId ; 

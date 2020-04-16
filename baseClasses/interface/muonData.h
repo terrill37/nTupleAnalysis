@@ -18,6 +18,10 @@ namespace nTupleAnalysis {
     float eta;
     float phi;
     float m;
+    float ip3d;
+    float sip3d;
+    float dxy;
+    float dxyErr;
     TLorentzVector p;
 
     bool    softId;
@@ -57,7 +61,11 @@ namespace nTupleAnalysis {
     float pt [MAXMUONS];
     float eta[MAXMUONS];
     float phi[MAXMUONS];
-    float m  [MAXMUONS] = {0};
+    float m  [MAXMUONS];
+    float ip3d [MAXMUONS];
+    float sip3d [MAXMUONS];
+    float dxy [MAXMUONS];
+    float dxyErr [MAXMUONS];
 
     Bool_t  softId[MAXMUONS];
     UChar_t highPtId[MAXMUONS];

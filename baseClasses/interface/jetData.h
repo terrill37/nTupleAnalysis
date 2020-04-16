@@ -211,7 +211,7 @@ namespace nTupleAnalysis {
     std::map<std::string, BTagCalibrationReader*> m_btagCalibrationTools;
     std::map<std::string,float> m_btagSFs;
     float getSF(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour, std::string variation = "central");
-    void updateSFs(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour);
+    void updateSFs(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour, bool debug = false );
     void resetSFs();
 
     void writeJets(std::vector< std::shared_ptr<jet> > outputJets) ;

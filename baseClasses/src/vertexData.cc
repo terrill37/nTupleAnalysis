@@ -48,16 +48,16 @@ void vertexData::connectBranches(bool readIn, TTree* tree){
   //connectBranch(readIn, tree, "PVz", PVz, "F" ); 
   //connectBranch(readIn, tree, "PVez", PVez, "F" );
 
-  connectBranch(readIn, tree, vtxName+"_x"     , x,        "F"); 
-  connectBranch(readIn, tree, vtxName+"_y"     , y,        "F"); 
-  connectBranch(readIn, tree, vtxName+"_z"     , z,        "F");  
-  connectBranch(readIn, tree, vtxName+"_ex"    , ex,       "F");
-  connectBranch(readIn, tree, vtxName+"_ey"    , ey,       "F");
-  connectBranch(readIn, tree, vtxName+"_ez"    , ez,       "F");
-  connectBranch(readIn, tree, vtxName+"_chi2"  , chi2,     "F");
-  connectBranch(readIn, tree, vtxName+"_ndf"   , ndf,      "F");
-  connectBranch(readIn, tree, vtxName+"_isgood", isgood,   "I");
-  connectBranch(readIn, tree, vtxName+"_isfake", isfake,   "I");
+  connectBranchArr(readIn, tree, vtxName+"_x"     , x,      NPVName,   "F"); 
+  connectBranchArr(readIn, tree, vtxName+"_y"     , y,      NPVName,   "F"); 
+  connectBranchArr(readIn, tree, vtxName+"_z"     , z,      NPVName,   "F");  
+  connectBranchArr(readIn, tree, vtxName+"_ex"    , ex,     NPVName,   "F");
+  connectBranchArr(readIn, tree, vtxName+"_ey"    , ey,     NPVName,   "F");
+  connectBranchArr(readIn, tree, vtxName+"_ez"    , ez,     NPVName,   "F");
+  connectBranchArr(readIn, tree, vtxName+"_chi2"  , chi2,   NPVName,   "F");
+  connectBranchArr(readIn, tree, vtxName+"_ndf"   , ndf,    NPVName,   "F");
+  connectBranchArr(readIn, tree, vtxName+"_isgood", isgood, NPVName,   "I");
+  connectBranchArr(readIn, tree, vtxName+"_isfake", isfake, NPVName,   "I");
 
 }    
 
