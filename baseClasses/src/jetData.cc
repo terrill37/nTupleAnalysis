@@ -34,15 +34,16 @@ jet::jet(UInt_t i, jetData* data){
   deepB     = data->deepB[i];
   CSVv2     = data->CSVv2[i];
   deepFlavB = data->deepFlavB[i];
+  probB = data->probB[i];
   float deepFlavB_alt = data->deepFlavourB[i] + data->deepFlavourBB[i] + data->deepFlavourLEPB[i];
   if(deepFlavB == 0)
     deepFlavB = deepFlavB_alt;
 
 
   // Normalizize the underflow
-  if(CSVv2 < 0) 
-    CSVv2 = -0.1; 
-  
+  if(CSVv2 < 0)
+    CSVv2 = -0.1;
+
   puId = data->puId[i];
   jetId = data->jetId[i];
 
@@ -52,12 +53,12 @@ jet::jet(UInt_t i, jetData* data){
 
   //CombIVF_N      = data->CombIVF_N      [i];
   SoftMu         = data->SoftMu         [i];
-  if(SoftMu < 0) 
-    SoftMu = -0.1; 
+  if(SoftMu < 0)
+    SoftMu = -0.1;
 
   SoftEl         = data->SoftEl         [i];
-  if(SoftEl < 0) 
-    SoftEl = -0.1; 
+  if(SoftEl < 0)
+    SoftEl = -0.1;
 
 
   nSM            = data->nSM            [i];
@@ -146,11 +147,11 @@ jet::jet(UInt_t i, jetData* data){
       if(data->debug)  std::cout << data->m_name << " Getting SVs " << data->nFirstSV[i] << " " << data->nLastSV[i] << std::endl;
       svs = data->btagData->getSecondaryVertices(data->nFirstSV[i],data->nLastSV[i], data->debug);
     }
-    
+
     if(data->btagData->haveTrkTagVars){
       trkTagVars = data->btagData->getTrkTagVars(data->nFirstTrkTagVar[i],data->nLastTrkTagVar[i]);
     }
-    
+
     if(data->btagData->haveTagVars){
       tagVars = data->btagData->getTagVars(i);
     }
@@ -169,7 +170,7 @@ jet::jet(UInt_t i, jetData* data){
   	trkTagVar->e = p.E();
   	break;
       }
-      
+
     }
   }
 
@@ -177,7 +178,7 @@ jet::jet(UInt_t i, jetData* data){
   for(const trkTagVarPtr& trkTagVar: trkTagVars){
     //std::cout << "Matching " << trkTagVar->trackEta << " " << trkTagVar->pt << std::endl;
     for(const trackPtr& track: tracks){
-      
+
       if(track->p.DeltaR(trkTagVar->p) < 0.01){
 	trkTagVar->hasTrackMatch = true;
 	trkTagVar->matchIsFromV0 = track->isfromV0;
@@ -213,6 +214,7 @@ jet::jet(TLorentzVector& vec, float tag){
   deepB = tag;
   CSVv2 = tag;
   deepFlavB = tag;
+  probB = tag;
 }
 
 void jet::bRegression(){
@@ -291,11 +293,11 @@ jetData::jetData(std::string name, TTree* tree, bool readIn, bool isMC, std::str
       std::string systTag = "_noSyst";
       if(m_btagVariations.size()>1){
 	systTag = "";
-	std::cout << "Loading b-tag systematic variations. Will take several miniutes and use a few hundred MB of RAM." << std::endl;	
+	std::cout << "Loading b-tag systematic variations. Will take several miniutes and use a few hundred MB of RAM." << std::endl;
       }else{
 	std::cout << "Not loading b-tag systematic variations" << std::endl;
       }
-      
+
       std::string sfFileName =  "nTupleAnalysis/baseClasses/data/BTagSF2017/DeepCSV_94XSF_V4_B_F"+systTag+".csv";
       if(SFName == "deepcsv2018")
 	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2018/DeepCSV_102XSF_V1"+systTag+".csv";
@@ -305,7 +307,7 @@ jetData::jetData(std::string name, TTree* tree, bool readIn, bool isMC, std::str
 	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2017/DeepFlavour_94XSF_V3_B_F"+systTag+".csv";
       if(SFName == "deepjet2016")
 	sfFileName = "nTupleAnalysis/baseClasses/data/BTagSF2016/DeepJet_2016LegacySF_V1"+systTag+".csv";
-      
+
       std::cout << "jetData::Loading SF from " << sfFileName << " For jets " << m_name << std::endl;
       BTagCalibration calib = BTagCalibration("", sfFileName);//tagger name only needed for creating csv files
 
@@ -318,19 +320,19 @@ jetData::jetData(std::string name, TTree* tree, bool readIn, bool isMC, std::str
 								      );
 
 	std::cout << "jetData::Load BTagEntry::FLAV_B" << std::endl;
-	m_btagCalibrationTools[variation]->load(calib, 
+	m_btagCalibrationTools[variation]->load(calib,
 						BTagEntry::FLAV_B,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
 						"iterativefit"      // measurement type
 						);
-	
+
 	std::cout << "jetData::Load BTagEntry::FLAV_C" << std::endl;
-	m_btagCalibrationTools[variation]->load(calib, 
+	m_btagCalibrationTools[variation]->load(calib,
 					       BTagEntry::FLAV_C,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
 					       "iterativefit"      // measurement type
 					       );
 
 	std::cout << "jetData::Load BTagEntry::FLAV_UDSG" << std::endl;
-	m_btagCalibrationTools[variation]->load(calib, 
+	m_btagCalibrationTools[variation]->load(calib,
 						BTagEntry::FLAV_UDSG,   // 0 is for b flavour, 1: FLAV_C, 2: FLAV_UDSG
 						"iterativefit"      // measurement type
 						);
@@ -347,18 +349,19 @@ jetData::jetData(std::string name, TTree* tree, bool readIn, bool isMC, std::str
 
 
 std::vector< std::shared_ptr<jet> > jetData::getJets(float ptMin, float ptMax, float etaMax, bool clean, float tagMin, std::string tagger, bool antiTag, int puIdMin){
-  
+
   std::vector< std::shared_ptr<jet> > outputJets;
   float *tag = CSVv2;
   if(tagger == "deepB")     tag = deepB;
   if(tagger == "deepFlavB" || tagger == "deepjet") tag = deepFlavB;
+  if(tagger == "probB") tag =probB;
   if(debug) std::cout << "We have " << nJets << " jets"<< std::endl;
   for(Int_t i = 0; i < int(nJets); ++i){
     if(i > int(MAXJETS-1)) {
       std::cout  << m_name << "::Warning too many jets! " << nJets << " jets. Skipping. "<< std::endl;
       break;
     }
-      
+
     if(clean && cleanmask[i] == 0) continue;
     if(          pt[i]  <  ptMin ) continue;
     if(          pt[i]  >= ptMax ) continue;
@@ -374,7 +377,7 @@ std::vector< std::shared_ptr<jet> > jetData::getJets(float ptMin, float ptMax, f
 std::vector< std::shared_ptr<jet> > jetData::getJets(std::vector< std::shared_ptr<jet> > inputJets, float ptMin, float ptMax, float etaMax, bool clean, float tagMin, std::string tagger, bool antiTag, int puIdMin, bool debug){
   if(debug) cout << "jetData::getJets " << endl;
   std::vector< std::shared_ptr<jet> > outputJets;
-  
+
   for(auto &jet: inputJets){
     if(debug) cout << "new jet " << endl;
 
@@ -403,7 +406,7 @@ std::vector< std::shared_ptr<jet> > jetData::getJets(std::vector< std::shared_pt
       if(debug) cout << "\t fail pileup rejection" << endl;
       continue; // Fail pilup rejection. https://twiki.cern.ch/twiki/bin/viewauth/CMS/PileupJetID
     }
-    
+
 
     if(     tagger == "deepFlavB" && antiTag^(jet->deepFlavB < tagMin)) {
       if(debug) cout << "\t fail deepFlavB " << endl;
@@ -413,6 +416,9 @@ std::vector< std::shared_ptr<jet> > jetData::getJets(std::vector< std::shared_pt
       continue;
     } else if(tagger == "CSVv2"     && antiTag^(jet->CSVv2     < tagMin)) {
       if(debug) cout << "\t fail CSVv2 " << endl;
+      continue;
+  } else if(tagger == "probB"     && antiTag^(jet->probB     < tagMin)) {
+      if(debug) cout << "\t fail probB " << endl;
       continue;
     }
 
@@ -424,21 +430,21 @@ std::vector< std::shared_ptr<jet> > jetData::getJets(std::vector< std::shared_pt
 }
 
 
-jetData::~jetData(){ 
+jetData::~jetData(){
   std::cout << "jetData::destroyed " << std::endl;
 }
 
 
-float jetData::getSF(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour, std::string variation){ 
-  if(m_btagCalibrationTools.empty()) 
+float jetData::getSF(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour, std::string variation){
+  if(m_btagCalibrationTools.empty())
     return 1;
-  
+
   if(fabs(jetHadronFlavour) == 5)
     return m_btagCalibrationTools[variation]->eval_auto_bounds(variation, BTagEntry::FLAV_B, fabs(jetEta), jetPt, jetTagScore);
-  
+
   if(fabs(jetHadronFlavour) == 4)
     return m_btagCalibrationTools[variation]->eval_auto_bounds(variation, BTagEntry::FLAV_C, fabs(jetEta), jetPt, jetTagScore);
-  
+
   return m_btagCalibrationTools[variation]->eval_auto_bounds(variation, BTagEntry::FLAV_UDSG, fabs(jetEta), jetPt, jetTagScore);
 }
 
@@ -453,12 +459,12 @@ void jetData::updateSFs(float jetEta,  float jetPt,  float jetTagScore, int jetH
 void jetData::resetSFs(){
   for(auto &variation: m_btagVariations){
     m_btagSFs[variation] = 1;
-  }  
+  }
 }
 
 
 void jetData::writeJets(std::vector< std::shared_ptr<jet> > outputJets){
-  
+
   int nOutputJets = outputJets.size();
   this->nJets = outputJets.size();
 
@@ -479,21 +485,22 @@ void jetData::writeJets(std::vector< std::shared_ptr<jet> > outputJets){
 
     this->bRegCorr[i] =  thisJet-> bRegCorr;
 
-    this->deepB[i]	      = thisJet->deepB   ; 
-    this->CSVv2[i]	      = thisJet->CSVv2   ; 
-    this->deepFlavB[i]        = thisJet->deepFlavB; 
-  
+    this->deepB[i]	      = thisJet->deepB   ;
+    this->CSVv2[i]	      = thisJet->CSVv2   ;
+    this->deepFlavB[i]        = thisJet->deepFlavB;
+    this->probB[i]        = thisJet->probB;
+
     this->puId[i] = thisJet->puId;
     this->jetId[i] = thisJet->jetId;
-    
-    
+
+
     this->ntracks        [i] = thisJet->ntracks        ;
-    this->nseltracks     [i] = thisJet->nseltracks     ; 
-    
+    this->nseltracks     [i] = thisJet->nseltracks     ;
+
       //CombIVF_N      = this->CombIVF_N      [i];
     this->SoftMu         [i] =     thisJet->SoftMu          ;
     this->SoftEl         [i] =     thisJet->SoftEl          ;
-    
+
     this->nSM            [i] =      thisJet->nSM            ;
     this->nSE            [i] =      thisJet->nSE            ;
     this->looseID        [i] =      thisJet->looseID        ;
@@ -502,7 +509,7 @@ void jetData::writeJets(std::vector< std::shared_ptr<jet> > outputJets){
     this->DeepCSVc       [i] =      thisJet->DeepCSVc       ;
     this->DeepCSVl       [i] =      thisJet->DeepCSVl       ;
     this->DeepCSVbb      [i] =      thisJet->DeepCSVbb      ;
-    
+
     this->flavour        [i] =     thisJet->flavour        ;
     this->flavourCleaned [i] =     thisJet->flavourCleaned ;
     this->partonFlavour  [i] =     thisJet->partonFlavour  ;
@@ -532,51 +539,53 @@ void jetData::connectBranches(bool readIn, TTree* tree, std::string JECSyst){
   connectBranchArr(readIn, tree, jetName+"_pt"  +JECSyst, pt,  NjetName,  "F");
   connectBranchArr(readIn, tree, jetName+"_eta",          eta, NjetName,  "F");
   connectBranchArr(readIn, tree, jetName+"_phi",          phi, NjetName,  "F");
-  connectBranchArr(readIn, tree, jetName+"_mass"+JECSyst, m,   NjetName,  "F");  
+  connectBranchArr(readIn, tree, jetName+"_mass"+JECSyst, m,   NjetName,  "F");
 
-  connectBranchArr(readIn, tree, jetName+"_cleanmask", cleanmask,   NjetName,  "b");  
+  connectBranchArr(readIn, tree, jetName+"_cleanmask", cleanmask,   NjetName,  "b");
 
-  connectBranchArr(readIn, tree, jetName+"_bRegCorr", bRegCorr,   NjetName,  "F");  
-  connectBranchArr(readIn, tree, jetName+"_btagDeepB", deepB,   NjetName,  "F");  
-  
+  connectBranchArr(readIn, tree, jetName+"_bRegCorr", bRegCorr,   NjetName,  "F");
+  connectBranchArr(readIn, tree, jetName+"_btagDeepB", deepB,   NjetName,  "F");
 
-  int CSVRes = connectBranchArr(readIn, tree, jetName+"_btagCSVV2", CSVv2,   NjetName,  "F");  
+
+  int CSVRes = connectBranchArr(readIn, tree, jetName+"_btagCSVV2", CSVv2,   NjetName,  "F");
   if(readIn && CSVRes == -1){
     std::cout << "\tUsing " << (m_prefix+m_name+"_CombIVF"        ) << " for CSVv2 " << std::endl;
-    connectBranchArr(readIn, tree, jetName+"_CombIVF", CSVv2,   NjetName,  "F");  
+    connectBranchArr(readIn, tree, jetName+"_CombIVF", CSVv2,   NjetName,  "F");
   }
 
-  int DeepFlavBRes = connectBranchArr(readIn, tree, jetName+"_btagDeepFlavB", deepFlavB,   NjetName,  "F");  
+  int DeepFlavBRes = connectBranchArr(readIn, tree, jetName+"_btagDeepFlavB", deepFlavB,   NjetName,  "F");
   if(readIn && DeepFlavBRes == -1){
     std::cout << "\tUsing " << (m_prefix+m_name+"_DeepFlavourB  + "+m_prefix+m_name+"_DeepFlavourBB  + " + m_prefix+m_name+"_DeepFlavourLEPB"       ) << " for " << m_prefix + m_name+ "_btagDeepFlavB " << std::endl;
-    connectBranchArr(readIn, tree, jetName+"_DeepFlavourB",    deepFlavourB,    NjetName,  "F");  
-    connectBranchArr(readIn, tree, jetName+"_DeepFlavourBB",   deepFlavourBB,   NjetName,  "F");  
-    connectBranchArr(readIn, tree, jetName+"_DeepFlavourLEPB", deepFlavourLEPB, NjetName,  "F");  
+    connectBranchArr(readIn, tree, jetName+"_DeepFlavourB",    deepFlavourB,    NjetName,  "F");
+    connectBranchArr(readIn, tree, jetName+"_DeepFlavourBB",   deepFlavourBB,   NjetName,  "F");
+    connectBranchArr(readIn, tree, jetName+"_DeepFlavourLEPB", deepFlavourLEPB, NjetName,  "F");
   }
-  
 
-  connectBranchArr(readIn, tree, jetName+"_puId",   puId,   NjetName,  "I");  
-  connectBranchArr(readIn, tree, jetName+"_jetId", jetId,   NjetName,  "I");  
+
+  connectBranchArr(readIn, tree, jetName+"_puId",   puId,   NjetName,  "I");
+  connectBranchArr(readIn, tree, jetName+"_jetId", jetId,   NjetName,  "I");
 
   if(m_isMC){
-    connectBranchArr(readIn, tree, jetName+"_flavour", flavour,   NjetName,  "I");  
-    connectBranchArr(readIn, tree, jetName+"_flavourCleaned", flavourCleaned,   NjetName,  "I");  
-    connectBranchArr(readIn, tree, jetName+"_partonFlavour", partonFlavour,   NjetName,  "I");  
-    connectBranchArr(readIn, tree, jetName+"_hadronFlavour", hadronFlavour,   NjetName,  "I");  
-    connectBranchArr(readIn, tree, jetName+"_nbHadrons", nbHadrons,   NjetName,  "I");  
-    connectBranchArr(readIn, tree, jetName+"_ncHadrons", ncHadrons,   NjetName,  "I");  
+    connectBranchArr(readIn, tree, jetName+"_flavour", flavour,   NjetName,  "I");
+    connectBranchArr(readIn, tree, jetName+"_flavourCleaned", flavourCleaned,   NjetName,  "I");
+    connectBranchArr(readIn, tree, jetName+"_partonFlavour", partonFlavour,   NjetName,  "I");
+    connectBranchArr(readIn, tree, jetName+"_hadronFlavour", hadronFlavour,   NjetName,  "I");
+    connectBranchArr(readIn, tree, jetName+"_nbHadrons", nbHadrons,   NjetName,  "I");
+    connectBranchArr(readIn, tree, jetName+"_ncHadrons", ncHadrons,   NjetName,  "I");
   }
 
-  connectBranchArr(readIn, tree, jetName+"_looseID", looseID,   NjetName,  "I");  
-  connectBranchArr(readIn, tree, jetName+"_tightID", tightID,   NjetName,  "I");  
+  connectBranchArr(readIn, tree, jetName+"_looseID", looseID,   NjetName,  "I");
+  connectBranchArr(readIn, tree, jetName+"_tightID", tightID,   NjetName,  "I");
 
-  connectBranchArr(readIn, tree, jetName+"_DeepCSVb", DeepCSVb,   NjetName,  "F");  
-  connectBranchArr(readIn, tree, jetName+"_DeepCSVc", DeepCSVc,   NjetName,  "F");  
-  connectBranchArr(readIn, tree, jetName+"_DeepCSVl", DeepCSVl,   NjetName,  "F");  
-  connectBranchArr(readIn, tree, jetName+"_DeepCSVbb", DeepCSVbb,   NjetName,  "F");  
+  connectBranchArr(readIn, tree, jetName+"_DeepCSVb", DeepCSVb,   NjetName,  "F");
+  connectBranchArr(readIn, tree, jetName+"_DeepCSVc", DeepCSVc,   NjetName,  "F");
+  connectBranchArr(readIn, tree, jetName+"_DeepCSVl", DeepCSVl,   NjetName,  "F");
+  connectBranchArr(readIn, tree, jetName+"_DeepCSVbb", DeepCSVbb,   NjetName,  "F");
 
-  connectBranchArr(readIn, tree, jetName+"_isTag", isTag,   NjetName,  "O");  
-  connectBranchArr(readIn, tree, jetName+"_isSel", isSel,   NjetName,  "O");  
+  connectBranchArr(readIn, tree, jetName+"_Bprob", probB,   NjetName,  "F");  
+
+  connectBranchArr(readIn, tree, jetName+"_isTag", isTag,   NjetName,  "O");
+  connectBranchArr(readIn, tree, jetName+"_isSel", isSel,   NjetName,  "O");
 
   //
   //  Following only supported for reading In
@@ -603,13 +612,13 @@ void jetData::connectBranches(bool readIn, TTree* tree, std::string JECSyst){
     if(m_jetDetailLevel.find("btagInputs") != std::string::npos){
       std::cout << "jetData::" << m_name << " loading btagInputs" << std::endl;
       btagData = new btaggingData();
-      btagData->initTagVar(m_prefix, tree);  
+      btagData->initTagVar(m_prefix, tree);
 
-      inputBranch(tree, (m_prefix+m_name+"_SoftMu"         ).c_str(),         SoftMu         ); 
-      inputBranch(tree, (m_prefix+m_name+"_SoftEl"         ).c_str(),         SoftEl         ); 
-      inputBranch(tree, (m_prefix+m_name+"_nSM"            ).c_str(),         nSM            ); 
-      inputBranch(tree, (m_prefix+m_name+"_nSE"            ).c_str(),         nSE            ); 
-  
+      inputBranch(tree, (m_prefix+m_name+"_SoftMu"         ).c_str(),         SoftMu         );
+      inputBranch(tree, (m_prefix+m_name+"_SoftEl"         ).c_str(),         SoftEl         );
+      inputBranch(tree, (m_prefix+m_name+"_nSM"            ).c_str(),         nSM            );
+      inputBranch(tree, (m_prefix+m_name+"_nSE"            ).c_str(),         nSE            );
+
       int nFirstSVCode = inputBranch(tree, (m_prefix+m_name+"_nFirstSV").c_str(),  nFirstSV);
       int nLastSVCode  = inputBranch(tree, (m_prefix+m_name+"_nLastSV" ).c_str(),  nLastSV );
       if(nFirstSVCode != -1 && nLastSVCode != -1){

@@ -14,6 +14,7 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
     deepB     = dir.make<TH1F>("deepB",     (name+"/deepB; "    +title+" Deep B; Entries").c_str(), 100,0,1);
     CSVv2     = dir.make<TH1F>("CSVv2",     (name+"/CSVv2; "    +title+" CSV v2; Entries").c_str(), 100,0,1);
     deepFlavB = dir.make<TH1F>("deepFlavB", (name+"/deepFlavB; "+title+" Deep (Jet) Flavour B; Entries").c_str(), 100,0,1);
+    probB = dir.make<TH1F>("probB", (name+"/probB; "+title+" proba B; Entries").c_str(), 500,0,5);
     nJets     = dir.make<TH1F>("nJets",     (name+"/nJets;    " +title+" Number of Jets; Entries").c_str(),  10,-0.5,9.5);
 
     CSVv2_l     = dir.make<TH1F>("CSVv2_l",     (name+"/CSVv2_l; "   +title+" CSV v2; Entries").c_str(), 120,-0.2,1.2);
@@ -28,7 +29,7 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
     pt_wo_bRegCorr = dir.make<TH1F>("pt_wo_bRegCorr", (name+"/pt_wo_bRegCorr; "+title+" p_T (No bRegCorr) [GeV]; Entries").c_str(),  100,0, 500);
     bRegCorr       = dir.make<TH1F>("bRegCorr", (name+"/bRegCorr; "+title+" bRegCorr; Entries").c_str(),  100,0,2 );
 
-    
+
     if(jetDetailLevel.find("matched") != std::string::npos){
       matched_dPt      = dir.make<TH1F>("matched_dPt",     (name+"/matched_dPt     ;P_{T}-P_{T}^{matched} [GeV];Entries").c_str()  ,100,-50, 50);
       matched_dEta     = dir.make<TH1F>("matched_dEta",    (name+"/matched_dEta    ;#eta-#eta^{matched};Entries"        ).c_str()  ,100,-0.5,0.5);
@@ -36,6 +37,7 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
       matched_dR       = dir.make<TH1F>("matched_dR",      (name+"/matched_dR      ;#DeltaR(Online,Offline);;Entries"   ).c_str()  ,100, 0,0.45);
       matched_dcsv     = dir.make<TH1F>("matched_dcsv",    (name+"/matched_dcsv;CSV-CSV^{matched};Entries"              ).c_str()  ,100,-1,1);
       matched_dDeepcsv = dir.make<TH1F>("matched_dDeepcsv",(name+"/matched_dDeepcsv;DeepCSV-DeepCSV^{matched};Entries"  ).c_str()  ,100,-1,1);
+      matched_dprobB = dir.make<TH1F>("matched_dprobB",(name+"/matched_dprobB;probB-probB^{matched};Entries"  ).c_str()  ,100,-1,1);
     }
 
     if(jetDetailLevel.find("matchedBJet") != std::string::npos){
@@ -74,7 +76,7 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
 
     }
 
-} 
+}
 
 void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
 
@@ -91,6 +93,7 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
   CSVv2    ->Fill(jet->CSVv2, weight);
   CSVv2_l  ->Fill(jet->CSVv2, weight);
   deepFlavB->Fill(jet->deepFlavB, weight);
+  probB->Fill(jet->probB, weight);
 
 
   deepCSV_l  ->Fill(jet->DeepCSV    ,weight);
@@ -99,7 +102,7 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
 
   SoftMu     ->Fill(jet->SoftMu     ,weight);
   nSoftMu    ->Fill(jet->nSM        ,weight);
-  
+
   SoftEl     ->Fill(jet->SoftEl     ,weight);
   nSoftEl    ->Fill(jet->nSE        ,weight);
 
@@ -117,7 +120,7 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
     nseltracks ->Fill(jet->nseltracks ,weight);
     nTrksExpected->Fill(jet->nLastTrack-jet->nFirstTrack,weight);
     tracks->nTracks->Fill(jet->tracks.size(), weight);
-    for(const trackPtr& track: jet->tracks) 
+    for(const trackPtr& track: jet->tracks)
       tracks->Fill(track, weight);
 
     //
@@ -129,7 +132,7 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
 	tracks_noV0->Fill(track, weight);
       }
     }
-    tracks_noV0->nTracks->Fill(nTrks_noV0, weight);  
+    tracks_noV0->nTracks->Fill(nTrks_noV0, weight);
   }
 
   //
@@ -146,7 +149,7 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
     SF               ->Fill(jet->SF      , weight);
 
     btags->sv_nSVs->Fill(jet->svs.size(), weight);
-    for(const svPtr& sv: jet->svs) 
+    for(const svPtr& sv: jet->svs)
       btags->FillSVHists(sv, jet, weight);
 
     btags->trkTag_nTracks->Fill(jet->trkTagVars.size(), weight);
@@ -183,7 +186,7 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
     }
 
   }
-  
+
   if(matched_dPt){
     std::shared_ptr<nTupleAnalysis::jet> matchedJet = jet->matchedJet.lock();
     if(matchedJet){
@@ -193,6 +196,7 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
       matched_dR       ->Fill(jet->p.DeltaR(matchedJet->p),weight);
       matched_dcsv     ->Fill(jet->CSVv2 - matchedJet->CSVv2,weight);
       matched_dDeepcsv ->Fill(jet->DeepCSV - matchedJet->DeepCSV,weight);
+      matched_dprobB ->Fill(jet->probB - matchedJet->probB,weight);
     }
   }
 
@@ -204,4 +208,4 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
   return;
 }
 
-jetHists::~jetHists(){} 
+jetHists::~jetHists(){}
