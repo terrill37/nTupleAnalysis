@@ -108,6 +108,17 @@ void trackHists::makeHists(std::string name, TFileDirectory& dir, std::string ti
   PVweight        = dir.make<TH1F>("PVweight"  ,  "PVweight;PVweight", 40, -0.1,  1.1);  
   SV              = dir.make<TH1F>("SV"  ,  "SV;SV", 10, -0.5,  9.5);  
   SVweight        = dir.make<TH1F>("SVweight"  ,  "SVweight;SVweight", 40, -0.1,  1.1);  
+
+  //
+  // Eta/Phi Maps
+  //
+  nTrackMap       = dir.make<TH2F>("nTrackMap"     , (name+"/nTrackMap; "+title+" Eta; Phi; nTracks").c_str(),  50,-3, 3, 50, -3.3, 3.3);
+  pixHitMap       = dir.make<TH2F>("pixHitMap"     , (name+"/pixHitMap; "+title+" Eta; Phi; PixelHits").c_str(),  50,-3, 3, 50, -3.3, 3.3);
+  stripHitMap     = dir.make<TH2F>("stripHitMap"   , (name+"/stripHitMap; "+title+" Eta; Phi; Strips").c_str(),  50,-3, 3, 50, -3.3, 3.3);
+  totHitMap       = dir.make<TH2F>("totHitMap"     , (name+"/totHitMap; "+title+" Eta; Phi; TotalHitMap").c_str(),  50,-3, 3, 50, -3.3, 3.3);
+  innerPixHitMap  = dir.make<TH2F>("innerPixHitMap", (name+"/innerPixHitMap; "+title+" Eta; Phi; hasInnerPix").c_str(),  50,-3, 3, 50, -3.3, 3.3);
+
+
 } 
 
 void trackHists::Fill(const std::shared_ptr<track> &track, float weight){
@@ -173,6 +184,19 @@ void trackHists::Fill(const std::shared_ptr<track> &track, float weight){
   SVweight             ->Fill(track->SVweight,weight);
 
 
+
+  //
+  // Eta/Phi Maps
+  //
+  nTrackMap       ->Fill(eta, phi,  1.0);
+  pixHitMap       ->Fill(eta, phi,  track->nHitPixel);
+  stripHitMap     ->Fill(eta, phi,  track->nHitStrip);
+  totHitMap       ->Fill(eta, phi,  track->nHitAll);
+  innerPixHitMap  ->Fill(eta, phi,  track->isHitL1);
+
+
+
+
   const nTupleAnalysis::trackPtr trackMatchedTrack = track->matchedTrack.lock();
   if(trackMatchedTrack){
     track_matched_dip2d       ->Fill(            track->IP2D  - trackMatchedTrack->IP2D,weight);
@@ -232,4 +256,5 @@ trackHists::FillMatchStats (const std::shared_ptr<track> &track, float weight){
 }
 
 
-trackHists::~trackHists(){} 
+trackHists::~trackHists(){
+} 

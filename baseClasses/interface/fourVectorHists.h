@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <TH1F.h>
+#include <TH2F.h>
 #include <TLorentzVector.h>
 #include "PhysicsTools/FWLite/interface/TFileService.h"
 
@@ -25,6 +26,9 @@ namespace nTupleAnalysis {
     TH1F* m;
     TH1F* m_l;
     TH1F* e;
+
+    TH2F* etaPhi;
+
 
     fourVectorHists(std::string,       TFileDirectory&, std::string title = "");
     fourVectorHists(std::string, fwlite::TFileService&, std::string title = "");
