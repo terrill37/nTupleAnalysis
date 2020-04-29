@@ -21,12 +21,16 @@ secondaryVertex::secondaryVertex(UInt_t i, btaggingData* data){
   ndf                  = data->sv_ndf               [i];
   flight               = data->sv_flight            [i];
   flightErr            = data->sv_flightErr         [i];
+  flightSig            = flightErr ? flight/flightErr : -1;
+
   deltaR_jet           = data->sv_deltaR_jet        [i];
   deltaR_sum_jet       = data->sv_deltaR_sum_jet    [i];
   deltaR_sum_dir       = data->sv_deltaR_sum_dir    [i];
   vtx_pt               = data->sv_vtx_pt            [i];
   flight2D             = data->sv_flight2D          [i];
   flight2DErr          = data->sv_flight2DErr       [i];
+  flight2DSig          = flight2DErr ? flight2D/flight2DErr : -1;
+
   totCharge            = data->sv_totCharge         [i];
   vtxDistJetAxis       = data->sv_vtxDistJetAxis    [i];
   nTrk                 = data->sv_nTrk              [i];
@@ -107,7 +111,6 @@ tagVar::tagVar(UInt_t i, btaggingData* data){
 
   photonEnergyFraction  = data-> photonEnergyFraction     [i];
   photonMultiplicity    = data-> photonMultiplicity       [i];
-
   muonEnergyFraction    = data-> muonEnergyFraction       [i];
   muonMultiplicity      = data-> muonMultiplicity         [i];
 
@@ -115,6 +118,33 @@ tagVar::tagVar(UInt_t i, btaggingData* data){
   electronMultiplicity  = data-> electronMultiplicity     [i];
 
   numberOfDaughters     = data-> numberOfDaughters        [i];
+
+  
+  trackJetPt                 = data->trackJetPt              [i];     
+  jetNTracksCSV              = data->jetNTracksCSV           [i];     
+  jetNTracksEtaRel           = data->jetNTracksEtaRel        [i];
+  trackSumJetEtRatio         = data->trackSumJetEtRatio      [i];
+  trackSumJetDeltaR          = data->trackSumJetDeltaR       [i];
+  trackSip2dValAboveCharm    = data->trackSip2dValAboveCharm [i];
+  trackSip2dSigAboveCharm    = data->trackSip2dSigAboveCharm [i];
+  trackSip3dValAboveCharm    = data->trackSip3dValAboveCharm [i];
+  trackSip3dSigAboveCharm    = data->trackSip3dSigAboveCharm [i];
+  vertexCategory             = data->vertexCategory          [i];
+  jetNSecondaryVerticesCSV   = data->jetNSecondaryVerticesCSV[i];
+  vertexMass                 = data->vertexMass              [i];
+  vertexNTracks              = data->vertexNTracks           [i];
+  vertexEnergyRatio          = data->vertexEnergyRatio       [i];
+  vertexJetDeltaR            = data->vertexJetDeltaR         [i];
+  flightDistance2dVal        = data->flightDistance2dVal     [i];
+  flightDistance2dSig        = data->flightDistance2dSig     [i];
+  flightDistance3dVal        = data->flightDistance3dVal     [i];
+  flightDistance3dSig        = data->flightDistance3dSig     [i];
+
+  float nFirstTrkEtaRelTagVarCSV = data->Jet_nFirstTrkEtaRelTagVarCSV[i];
+  float nLastTrkEtaRelTagVarCSV = data->Jet_nLastTrkEtaRelTagVarCSV[i];
+  for(int iTrkEtaRel = nFirstTrkEtaRelTagVarCSV; iTrkEtaRel < nLastTrkEtaRelTagVarCSV; ++iTrkEtaRel){
+    TagVarCSV_trackEtaRel.push_back(data->TagVarCSV_trackEtaRel[iTrkEtaRel]);
+  }
 
 }
 
@@ -216,6 +246,33 @@ void btaggingData::initTagVar(std::string name, TTree* tree){
   inputBranch(tree, (name+"TagVar_electronEnergyFraction"     ).c_str(), electronEnergyFraction         );
   inputBranch(tree, (name+"TagVar_electronMultiplicity"       ).c_str(), electronMultiplicity           );
   inputBranch(tree, (name+"TagVar_numberOfDaughters"          ).c_str(), numberOfDaughters              );
+
+  inputBranch(tree, (name+"TagVarCSV_trackJetPt"              ).c_str(), trackJetPt              );
+  inputBranch(tree, (name+"TagVarCSV_jetNTracks"              ).c_str(), jetNTracksCSV           );
+  inputBranch(tree, (name+"TagVarCSV_jetNTracksEtaRel"        ).c_str(), jetNTracksEtaRel        );
+  inputBranch(tree, (name+"TagVarCSV_trackSumJetEtRatio"      ).c_str(), trackSumJetEtRatio      );
+  inputBranch(tree, (name+"TagVarCSV_trackSumJetDeltaR"       ).c_str(), trackSumJetDeltaR       );
+  inputBranch(tree, (name+"TagVarCSV_trackSip2dValAboveCharm" ).c_str(), trackSip2dValAboveCharm );
+  inputBranch(tree, (name+"TagVarCSV_trackSip2dSigAboveCharm" ).c_str(), trackSip2dSigAboveCharm );
+  inputBranch(tree, (name+"TagVarCSV_trackSip3dValAboveCharm" ).c_str(), trackSip3dValAboveCharm );
+  inputBranch(tree, (name+"TagVarCSV_trackSip3dSigAboveCharm" ).c_str(), trackSip3dSigAboveCharm );
+  inputBranch(tree, (name+"TagVarCSV_vertexCategory"          ).c_str(), vertexCategory          );
+  inputBranch(tree, (name+"TagVarCSV_jetNSecondaryVertices"   ).c_str(), jetNSecondaryVerticesCSV);
+  inputBranch(tree, (name+"TagVarCSV_vertexMass"              ).c_str(), vertexMass              );
+  inputBranch(tree, (name+"TagVarCSV_vertexNTracks"           ).c_str(), vertexNTracks           );
+  inputBranch(tree, (name+"TagVarCSV_vertexEnergyRatio"       ).c_str(), vertexEnergyRatio       );
+  inputBranch(tree, (name+"TagVarCSV_vertexJetDeltaR"         ).c_str(), vertexJetDeltaR         );
+  inputBranch(tree, (name+"TagVarCSV_flightDistance2dVal"     ).c_str(), flightDistance2dVal     );
+  inputBranch(tree, (name+"TagVarCSV_flightDistance2dSig"     ).c_str(), flightDistance2dSig     );
+  inputBranch(tree, (name+"TagVarCSV_flightDistance3dVal"     ).c_str(), flightDistance3dVal     );
+  inputBranch(tree, (name+"TagVarCSV_flightDistance3dSig"     ).c_str(), flightDistance3dSig     );
+
+  //inputBranch(tree, (name+"nTrkEtaRelTagVarCSV"                 ).c_str(),   nTrkEtaRelTagVarCSV         );
+  inputBranch(tree, (name+"Jet_nFirstTrkEtaRelTagVarCSV"        ).c_str(),   Jet_nFirstTrkEtaRelTagVarCSV);
+  inputBranch(tree, (name+"Jet_nLastTrkEtaRelTagVarCSV"         ).c_str(),   Jet_nLastTrkEtaRelTagVarCSV );
+  inputBranch(tree, (name+"TagVarCSV_trackEtaRel"               ).c_str(),   TagVarCSV_trackEtaRel       );
+
+
 }
 
 std::vector< std::shared_ptr<secondaryVertex> > btaggingData::getSecondaryVertices(int nFirstSV, int nLastSV, bool debug){
