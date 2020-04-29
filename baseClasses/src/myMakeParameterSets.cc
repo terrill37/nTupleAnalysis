@@ -1,3 +1,8 @@
+// Uncomment for SLC6
+#define NTUPLEANALYSIS_SLC6 1
+
+#if defined NTUPLEANALYSIS_SLC6
+
 #include "nTupleAnalysis/baseClasses/interface/myMakeParameterSets.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
@@ -66,3 +71,6 @@ namespace edm {
     }
   } // namespace boost_python
 } // namespace edm
+
+
+#endif
