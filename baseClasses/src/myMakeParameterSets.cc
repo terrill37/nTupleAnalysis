@@ -1,5 +1,5 @@
 // Uncomment for SLC6
-//#define NTUPLEANALYSIS_SLC6 1
+#define NTUPLEANALYSIS_SLC6 1
 
 #if defined NTUPLEANALYSIS_SLC6
 
