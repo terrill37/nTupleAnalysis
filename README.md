@@ -34,6 +34,7 @@ This makes a skimmed nTuple called ZH4b2018/picoAOD.root and a ROOT file with hi
 
 # Quickstart example slc7
 
+```bash
 cmsrel CMSSW_11_1_0_pre6
 cd CMSSW_11_1_0_pre6/src/
 cmsenv 
@@ -41,11 +42,14 @@ git cms-init
 git cms-merge-topic patrickbryant:MakePyBind11ParameterSetsIncludingCommandLineArguments
 git clone -b CMSSW_11  git@github.com:patrickbryant/nTupleAnalysis.git
 git clone -b CMSSW_11  git@github.com:johnalison/TriggerStudies.git
+```
 
-
-# Edit 
-# nTupleAnalysis/baseClasses/src/myParameterSetReader.cc
-# nTupleAnalysis/baseClasses/src/myMakeParameterSets.cc
-# to make sure that line
-   `#define NTUPLEANALYSIS_SLC6 1` is commented OUT
+> Edit 
+> nTupleAnalysis/baseClasses/src/myParameterSetReader.cc
+> nTupleAnalysis/baseClasses/src/myMakeParameterSets.cc
+> to make sure that line
+>
+>   `#define NTUPLEANALYSIS_SLC6 1` 
+>
+> is commented OUT
 
