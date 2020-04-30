@@ -127,12 +127,10 @@ void btaggingHists::FillSVHists(const svPtr &sv, const jetPtr& jet, float weight
   sv_NDF              ->Fill(sv->ndf, weight);
 
   sv_Flight           ->Fill(sv->flight, weight);
-  float flightSig = sv->flightErr ? sv->flight/sv->flightErr : -1;
-  sv_FlightSig        ->Fill(flightSig, weight);
+  sv_FlightSig        ->Fill(sv->flightSig, weight);
 
   sv_Flight2D           ->Fill(sv->flight2D, weight);
-  float flightSig2D = sv->flight2DErr ? sv->flight2D/sv->flight2DErr : -1;
-  sv_FlightSig2D        ->Fill(flightSig2D, weight);
+  sv_FlightSig2D        ->Fill(sv->flight2DSig, weight);
 
   sv_Pt                ->Fill(sv->vtx_pt, weight);
   sv_Eta               ->Fill(sv->vtx_eta, weight);

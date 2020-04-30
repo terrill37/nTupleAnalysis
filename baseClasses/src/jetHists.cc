@@ -76,7 +76,15 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
 
     }
 
+
+    if(jetDetailLevel.find("reCalcDeepCSV") != std::string::npos){
+      deepCSV_reCalc   = dir.make<TH1F>("DeepCSV_reCalc",   (name+"/DeepCSV_reCalc; "   +title+" DeepCSV; Entries").c_str(), 120,-0.2,1.2);
+      delta_deepCSV    = dir.make<TH1F>("delta_DeepCSV",   (name+"/delta_DeepCSV; "   +title+" #Detla DeepCSV (nom-recalc); Entries").c_str(), 100,-1.2,1.2);
+    }
+
+
 }
+
 
 void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
 
@@ -203,6 +211,12 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
   if(matched_dRAll){
     matched_dRAll       ->Fill(jet->match_dR     ,weight);
     matched_dRBjet      ->Fill(jet->match_dR_bjet,weight);
+  }
+
+
+  if(deepCSV_reCalc){
+    deepCSV_reCalc   ->Fill(jet->DeepCSV_reCalc);
+    delta_deepCSV    ->Fill(jet->DeepCSV - jet->DeepCSV_reCalc);
   }
 
   return;

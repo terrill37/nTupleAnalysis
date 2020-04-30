@@ -60,6 +60,9 @@ namespace nTupleAnalysis {
     TH1F* matched_dRAll    = NULL ;
     TH1F* matched_dRBjet   = NULL ;
 
+    TH1F*   deepCSV_reCalc    ;
+    TH1F*   delta_deepCSV    ;
+
     trackHists* tracks = NULL;
     trackHists* tracks_noV0 = NULL;
 

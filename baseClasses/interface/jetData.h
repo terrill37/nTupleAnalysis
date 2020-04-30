@@ -52,6 +52,7 @@ namespace nTupleAnalysis {
     int looseID        ;
     int tightID        ;
     float DeepCSV      ;
+    float DeepCSV_reCalc = -2;
     float DeepCSVb     ;
     float DeepCSVc     ;
     float DeepCSVl     ;

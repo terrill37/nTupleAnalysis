@@ -29,12 +29,14 @@ namespace nTupleAnalysis {
     float ndf               ;
     float flight            ;
     float flightErr         ;
+    float flightSig         ;
     float deltaR_jet        ;
     float deltaR_sum_jet    ;
     float deltaR_sum_dir    ;
     float vtx_pt            ;
     float flight2D          ;
     float flight2DErr       ;
+    float flight2DSig       ;
     float totCharge         ;
     float vtxDistJetAxis    ;
     float nTrk              ;
@@ -129,6 +131,27 @@ namespace nTupleAnalysis {
     int   electronMultiplicity        ;   
     int   numberOfDaughters           ;   
 
+    float trackJetPt                 ;   
+    float jetNTracksCSV              ;
+    float jetNTracksEtaRel           ;
+    float trackSumJetEtRatio         ;   
+    float trackSumJetDeltaR          ;   
+    float trackSip2dValAboveCharm    ;   
+    float trackSip2dSigAboveCharm    ;   
+    float trackSip3dValAboveCharm    ;   
+    float trackSip3dSigAboveCharm    ;   
+    float vertexCategory             ;   
+    float jetNSecondaryVerticesCSV   ;
+    float vertexMass                 ;
+    float vertexNTracks              ;
+    float vertexEnergyRatio          ;   
+    float vertexJetDeltaR            ;   
+    float flightDistance2dVal        ;
+    float flightDistance2dSig        ;
+    float flightDistance3dVal        ;
+    float flightDistance3dSig        ;
+    std::vector<float> TagVarCSV_trackEtaRel;
+
 
     tagVar();
     tagVar(UInt_t, btaggingData*); 
@@ -220,6 +243,31 @@ namespace nTupleAnalysis {
     float electronEnergyFraction      [MAXNJETS];   
     int   electronMultiplicity        [MAXNJETS];   
     int   numberOfDaughters           [MAXNJETS];   
+
+    float trackJetPt                  [MAXNJETS];   
+    float jetNTracksCSV               [MAXNJETS];   
+    float jetNTracksEtaRel            [MAXNJETS];
+    float trackSumJetEtRatio          [MAXNJETS];   
+    float trackSumJetDeltaR           [MAXNJETS];   
+    float trackSip2dValAboveCharm     [MAXNJETS];   
+    float trackSip2dSigAboveCharm     [MAXNJETS];   
+    float trackSip3dValAboveCharm     [MAXNJETS];   
+    float trackSip3dSigAboveCharm     [MAXNJETS];   
+    float vertexCategory              [MAXNJETS];   
+    float jetNSecondaryVerticesCSV    [MAXNJETS];
+    float vertexMass                  [MAXNJETS];
+    float vertexNTracks               [MAXNJETS];
+    float vertexEnergyRatio           [MAXNJETS];   
+    float vertexJetDeltaR             [MAXNJETS];   
+    float flightDistance2dVal         [MAXNJETS];
+    float flightDistance2dSig         [MAXNJETS];
+    float flightDistance3dVal         [MAXNJETS];
+    float flightDistance3dSig         [MAXNJETS];
+    //int nTrkEtaRelTagVarCSV           [MAXNJETS];
+    int Jet_nFirstTrkEtaRelTagVarCSV  [MAXNJETS];
+    int Jet_nLastTrkEtaRelTagVarCSV   [MAXNJETS];  
+    float TagVarCSV_trackEtaRel       [4*MAXNJETS]; 
+
 
 
     btaggingData(); 
