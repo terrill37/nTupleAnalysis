@@ -16,7 +16,8 @@ trackHists::trackHists(std::string name, TFileDirectory& dir, std::string title)
 void trackHists::makeHists(std::string name, TFileDirectory& dir, std::string title) {
   v = new fourVectorHists(name, dir, title);
 
-  ip3d_l = dir.make<TH1F>("ip3d_l","ip3d;IP3D [cm]",100,-0.2,0.2);
+  // ip3d_l = dir.make<TH1F>("ip3d_l","ip3d;IP3D [cm]",100,-0.2,0.2);
+  ip3d_l = dir.make<TH1F>("ip3d_l","ip3d;IP3D [cm]",300,-0.5,0.5);
   ip3d   = dir.make<TH1F>("ip3d",  "ip3d;IP3D [cm]",100,-0.05,0.05);
 
   ip3d_sig_l = dir.make<TH1F>("ip3d_sig_l","ip3d sig;IP3D significance",100,-100,100);
