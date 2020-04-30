@@ -15,6 +15,9 @@ namespace nTupleAnalysis {
   class dijet {
 
   public:
+    TLorentzVector p1;
+    TLorentzVector p2;
+
     std::shared_ptr<jet> lead;
     std::shared_ptr<jet> subl;
 
@@ -36,7 +39,7 @@ namespace nTupleAnalysis {
     float xH;
 
     //dijet();
-    dijet(std::shared_ptr<jet>&, std::shared_ptr<jet>&); 
+    dijet(std::shared_ptr<jet>&, std::shared_ptr<jet>&, bool undo_bJES=false); 
     ~dijet(); 
 
     //void dump();

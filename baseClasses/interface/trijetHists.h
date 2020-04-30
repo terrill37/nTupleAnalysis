@@ -16,14 +16,19 @@ namespace nTupleAnalysis {
   public:
     TFileDirectory dir;
     
-    fourVectorHists* v;
+    fourVectorHists* t;
+    fourVectorHists* b;
     dijetHists* W;
     TH1F* dRbW;
     TH1F* mbW;
     TH1F* xWt;
+    TH1F* xWbW;
+    TH1F* rWbW;
 
     TH2F* mW_vs_mt;
+    TH2F* mW_vs_mbW;
     TH2F* xW_vs_xt;
+    TH2F* xW_vs_xbW;
 
     TH1F* deepFlavB_b;
     TH1F* deepFlavB_j;

@@ -225,6 +225,7 @@ void jet::bRegression(){
 
 
 void jet::undo_bRegression(){
+  assert(!appliedBRegression);
   scaleFourVector(1./bRegCorr);
   appliedBRegression = false;
   //cout << "pt is " << pt << " pt_wo_bRegCorr " << pt_wo_bRegCorr << endl;

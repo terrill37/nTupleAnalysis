@@ -31,10 +31,13 @@ namespace nTupleAnalysis {
 
     float dRbW;
     float xt;
+    float xbW;
     float xWt;
+    float xWbW;
     float mbW;
+    float rWbW;
 
-    TLorentzVector pbW;
+    //TLorentzVector pbW;
 
     //trijet();
     trijet(std::shared_ptr<jet>&, std::shared_ptr<jet>&, std::shared_ptr<jet>&); 

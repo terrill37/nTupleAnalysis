@@ -4,7 +4,14 @@ using namespace nTupleAnalysis;
 
 //dijet object
 //dijet::dijet(){}
-dijet::dijet(std::shared_ptr<jet> &jet1, std::shared_ptr<jet> &jet2){
+dijet::dijet(std::shared_ptr<jet> &jet1, std::shared_ptr<jet> &jet2, bool undo_bJES){
+
+  p1 = jet1->p;
+  p2 = jet2->p;
+  if(undo_bJES){
+    if(jet1->AppliedBRegression()) p1 = p1 * (1.0/jet1->bRegCorr);
+    if(jet2->AppliedBRegression()) p2 = p2 * (1.0/jet2->bRegCorr);
+  }
 
   if(jet1->pt > jet2->pt){
     lead = jet1;
@@ -14,9 +21,9 @@ dijet::dijet(std::shared_ptr<jet> &jet1, std::shared_ptr<jet> &jet2){
     subl = jet1;
   }
 
-  dR  = jet1->p.DeltaR(jet2->p);
-  st  = jet1->pt + jet2->pt;
-  p   = jet1->p  + jet2->p;
+  dR  = p1.DeltaR(p2);
+  st  = p1.Pt() + p2.Pt();
+  p   = p1 + p2;
   pt  = p.Pt();
   eta = p.Eta();
   phi = p.Phi();
