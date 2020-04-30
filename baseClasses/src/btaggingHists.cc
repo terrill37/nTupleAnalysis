@@ -15,31 +15,31 @@ btaggingHists::btaggingHists(std::string name, TFileDirectory& dir, std::string 
 
 void btaggingHists::makeHists(std::string name, TFileDirectory& dir, std::string title) {
 
-  sv_NTracks                    = dir.make<TH1F>("sv_NTracks"                ,"vertexNTracks;nVertex Tracks;Entries"                 ,22, -2.5, 19.5);
-  sv_Mass                       = dir.make<TH1F>("sv_Mass"                   ,"vertexMass;Vertex Mass [GeV]"                    ,100, -0.5, 10);
-  sv_JetDeltaR                  = dir.make<TH1F>("sv_JetDeltaR"              ,"vertexJetDeltaR;Vertex-Jet #Delta R"               ,100, -0.01, 0.4);
+  sv_NTracks                    = dir.make<TH1F>("sv_NTracks"                ,"vertexNTracks;nSecondary Vertex Tracks;Entries"                 ,22, -2.5, 19.5);
+  sv_Mass                       = dir.make<TH1F>("sv_Mass"                   ,"vertexMass;Secondary Vertex Mass [GeV]"                    ,100, -0.5, 10);
+  sv_JetDeltaR                  = dir.make<TH1F>("sv_JetDeltaR"              ,"vertexJetDeltaR;Secondary Vertex-Jet #Delta R"               ,100, -0.01, 0.4);
   //FitProb                    = dir.make<TH1F>("sv_FitProb"                ,"vertexFitProb;Vertex Fit Prob"                 ,100, -50, 50);
-  sv_EnergyRatio                = dir.make<TH1F>("sv_EnergyRatio"            ,"vertexEnergyRatio;Vertex Energy Fraction "             ,100, -0.1, 3);
-  sv_R              = dir.make<TH1F>("sv_R          "            ,"R          ;Vertex R           "             ,100, -0.1, 5);
-  sv_Z              = dir.make<TH1F>("sv_Z          "            ,"Z          ;Vertex Z           "             ,100, -20, 20);
-  sv_Chi2           = dir.make<TH1F>("sv_Chi2       "            ,"Chi2       ;Vertex Chi2        "             ,100, -0.1, 10);
-  sv_NDF            = dir.make<TH1F>("sv_NDF        "            ,"NDF        ;Vertex NDF         "             ,20, -0.5, 19.5);
-  sv_Flight         = dir.make<TH1F>("sv_Flight     "            ,"Flight     ;Vertex Flight      "             ,100, -0.1, 5);
-  sv_FlightSig      = dir.make<TH1F>("sv_FlightSig  "            ,"FlightSig  ;Vertex FlightSig   "             ,100, -0.1, 30);
-  sv_Flight2D       = dir.make<TH1F>("sv_Flight2D   "            ,"Flight2D   ;Vertex Flight2D    "             ,100, -0.1, 5);
-  sv_FlightSig2D    = dir.make<TH1F>("sv_FlightSig2D"            ,"FlightSig2D;Vertex FlightSig2D "             ,100, -0.1, 30);
-  sv_Pt             = dir.make<TH1F>("sv_Pt         "            ,"Pt         ;Vertex Pt          "             ,100, -0.1, 100);
-  // sv_Eta            = dir.make<TH1F>("sv_Eta        "            ,"Eta        ;Vertex Eta         "             ,100, -2.5, 2.5);
-  sv_Eta            = dir.make<TH1F>("sv_Eta        "            ,"Eta        ;Vertex Eta         "             ,200, -4.5, 4.5);
-  sv_Phi            = dir.make<TH1F>("sv_Phi        "            ,"Phi        ;Vertex Phi         "             ,100, -3.2, 3.2);
-  sv_DistJetAxis    = dir.make<TH1F>("sv_DistJetAxis"            ,"DistJetAxis;Vertex DistJetAxis "             ,100, -0.1, 4e-3);
+  sv_EnergyRatio                = dir.make<TH1F>("sv_EnergyRatio"            ,"vertexEnergyRatio;Secondary Vertex Energy Fraction "             ,100, -0.1, 3);
+  sv_R              = dir.make<TH1F>("sv_R          "            ,"R          ;Secondary Vertex R           "             ,100, -0.1, 5);
+  sv_Z              = dir.make<TH1F>("sv_Z          "            ,"Z          ;Secondary Vertex Z           "             ,100, -20, 20);
+  sv_Chi2           = dir.make<TH1F>("sv_Chi2       "            ,"Chi2       ;Secondary Vertex Chi2        "             ,100, -0.1, 10);
+  sv_NDF            = dir.make<TH1F>("sv_NDF        "            ,"NDF        ;Secondary Vertex NDF         "             ,20, -0.5, 19.5);
+  sv_Flight         = dir.make<TH1F>("sv_Flight     "            ,"Flight     ;Secondary Vertex Flight      "             ,100, -0.1, 5);
+  sv_FlightSig      = dir.make<TH1F>("sv_FlightSig  "            ,"FlightSig  ;Secondary Vertex FlightSig   "             ,100, -0.1, 30);
+  sv_Flight2D       = dir.make<TH1F>("sv_Flight2D   "            ,"Flight2D   ;Secondary Vertex Flight2D    "             ,100, -0.1, 5);
+  sv_FlightSig2D    = dir.make<TH1F>("sv_FlightSig2D"            ,"FlightSig2D;Secondary Vertex FlightSig2D "             ,100, -0.1, 30);
+  sv_Pt             = dir.make<TH1F>("sv_Pt         "            ,"Pt         ;Secondary Vertex Pt          "             ,100, -0.1, 100);
+  // sv_Eta            = dir.make<TH1F>("sv_Eta        "            ,"Eta        ;Secondary Vertex Eta         "             ,100, -2.5, 2.5);
+  sv_Eta            = dir.make<TH1F>("sv_Eta        "            ,"Eta        ;Secondary Vertex Eta         "             ,200, -4.5, 4.5);
+  sv_Phi            = dir.make<TH1F>("sv_Phi        "            ,"Phi        ;Secondary Vertex Phi         "             ,100, -3.2, 3.2);
+  sv_DistJetAxis    = dir.make<TH1F>("sv_DistJetAxis"            ,"DistJetAxis;Secondary Vertex DistJetAxis "             ,100, -0.1, 4e-3);
   sv_nSVs           = dir.make<TH1F>("sv_nSVs",     ("nSVs;    " +title+" Number of Sec. Verticies; Entries").c_str(),  10,-0.5,9.5);
-  sv_boostOverSqrtJetPt         = dir.make<TH1F>("sv_BoostOverSqrtJetPt"     ,"vertexBoostOverSqrtJetPt;Vertex Boost/#sqrt{jet P_{T}}"      ,100, -0.1, 1.1);
-  sv_massVertexEnergyFraction   = dir.make<TH1F>("sv_massVertexEnergyFraction"     ,"massVertexEnergyFraction;massVertexEnergyFraction"      ,100, -0.1,2.5);
+  sv_boostOverSqrtJetPt         = dir.make<TH1F>("sv_BoostOverSqrtJetPt"     ,"vertexBoostOverSqrtJetPt;Secondary Vertex Boost/#sqrt{jet P_{T}}"      ,100, -0.1, 1.1);
+  sv_massVertexEnergyFraction   = dir.make<TH1F>("sv_massVertexEnergyFraction"     ,"massVertexEnergyFraction;massSecondary VertexEnergyFraction"      ,100, -0.1,2.5);
   sv_totCharge   = dir.make<TH1F>("sv_totCharge"     ,"totCharge;totCharge"      ,11, -5.5,5.5);
 
 
-  trkTag_ip3d_l = dir.make<TH1F>("ip3d_l","ip3d;IP3D [cm]",100,-0.2,0.2);
+  trkTag_ip3d_l = dir.make<TH1F>("ip3d_l","ip3d;IP3D [cm]",300,-0.5,0.5);
   trkTag_ip3d   = dir.make<TH1F>("ip3d",  "ip3d;IP3D [cm]",100,-0.05,0.05);
   trkTag_ip3d_sig_l = dir.make<TH1F>("ip3d_sig_l","ip3d sig;IP3D significance",100,-100,100);
   trkTag_ip3d_sig   = dir.make<TH1F>("ip3d_sig",  "ip3d sig;IP3D significance",100,-10,10);
