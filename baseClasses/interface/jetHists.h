@@ -14,6 +14,7 @@ namespace nTupleAnalysis {
 
   class jetHists {
   public:
+    bool debug;
     TFileDirectory dir;
     
     fourVectorHists* v;
@@ -58,7 +59,7 @@ namespace nTupleAnalysis {
     TH1F* matched_dRAll    = NULL ;
     TH1F* matched_dRBjet   = NULL ;
 
-    TH1F*   deepCSV_reCalc    ;
+    TH1F*   deepCSV_reCalc = NULL;
     TH1F*   delta_deepCSV    ;
 
     trackHists* tracks = NULL;
@@ -72,7 +73,10 @@ namespace nTupleAnalysis {
     TH1F* Delta_nTracks_tracks_btag_l = NULL;
     TH1F* Delta_nTracks_tracks_btag_noV0_l = NULL;
 
-    jetHists(std::string, fwlite::TFileService&, std::string title = "", std::string jetDetailLevel = "");
+    std::string name;
+    std::string title;
+
+    jetHists(std::string, fwlite::TFileService&, std::string _title = "", std::string jetDetailLevel = "", bool _debug = false);
     void Fill(const std::shared_ptr<jet>&, float);
     ~jetHists(); 
 
