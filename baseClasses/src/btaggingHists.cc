@@ -104,6 +104,26 @@ void btaggingHists::makeHists(std::string name, TFileDirectory& dir, std::string
 
   tag_totalMultiplicity                = dir.make<TH1F>("totalMultiplicity"            ,"totalMultiplicity;total multiplicity"             ,62, -1.5, 60.5);
 
+  //
+  //  DeepCSV NN inputs
+  //
+  tag_trackSumJetEtRatio               = dir.make<TH1F>("trackSumJetEtRatio"           ,"trackSumJetEtRatio;Track-jet/Jet E_{T} Ratio"            ,100, -0.1,1.5);
+  tag_trackSumJetDeltaR                = dir.make<TH1F>("trackSumJetDeltaR"            ,"trackSumJetDeltaR; Track-Jet - Jet #Delta R"             ,100, -0.1, 0.35);
+  tag_vertexCategory                   = dir.make<TH1F>("vertexCategory"               ,"vertexCategory;Vertex Category"                ,4 ,-1.5,2.5);
+  tag_trackSip2dValAboveCharm          = dir.make<TH1F>("trackSip2dValAboveCharm"      ,"trackSip2dValAboveCharm;trackSip2dValAboveCharm"       ,100, -0.2, 0.2);
+  tag_trackSip2dSigAboveCharm          = dir.make<TH1F>("trackSip2dSigAboveCharm"      ,"trackSip3dSigAboveCharm;trackSip2SiglAboveCharm"       ,100, -50, 50);
+  tag_trackSip3dValAboveCharm          = dir.make<TH1F>("trackSip3dValAboveCharm"      ,"trackSip3dValAboveCharm;trackSip3dValAboveCharm"       ,100, -0.2, 0.2); 
+  tag_trackSip3dSigAboveCharm          = dir.make<TH1F>("trackSip3dSigAboveCharm"      ,"trackSip3dSigAboveCharm;trackSip3dSigAboveCharm"       ,100, -50, 50);
+  tag_jetNTracksEtaRel                 = dir.make<TH1F>("jetNTracksEtaRel"             ,"jetNTracksEtaRel;Number Tracks for eta rel"                    ,42, -1.5, 40.5);
+  tag_vertexMass                       = dir.make<TH1F>("vertexMass"                   ,"vertexMass;Vertex Mass [GeV]"                    ,100, -0.5, 50);
+  tag_vertexNTracks                    = dir.make<TH1F>("vertexNTracks"                ,"vertexNTracks;nVertex Tracks;Entries"                 ,22, -2.5, 19.5);
+  tag_vertexJetDeltaR                  = dir.make<TH1F>("vertexJetDeltaR"              ,"vertexJetDeltaR;Vertex-Jet #Delta R"               ,100, -0.01, 0.4);
+  tag_vertexEnergyRatio                = dir.make<TH1F>("vertexEnergyRatio"            ,"vertexEnergyRatio;Vertex Energy Fraction "             ,100, -0.1, 3);
+  tag_flightDistance2dSig              = dir.make<TH1F>("flightDistance2dSig"          ,"flightDistance2dSig;flightDistance2dSig"           ,100, -10, 150);
+  tag_flightDistance2dVal              = dir.make<TH1F>("flightDistance2dVal"          ,"flightDistance2dVal;flightDistance2dVal"           ,100, -0.1, 5);
+  tag_flightDistance3dSig              = dir.make<TH1F>("flightDistance3dSig"          ,"flightDistance3dSig;flightDistance3dSig"           ,100, -10, 150);
+  tag_flightDistance3dVal              = dir.make<TH1F>("flightDistance3dVal"          ,"flightDistance3dVal;flightDistance3dVal"           ,100, -0.1, 5);
+  tag_trackEtaRel                      = dir.make<TH1F>("etaRel"                       ,"etaRel;etaRel"                                     ,100,  0, 7);
   
   deltaHists = new btaggingDeltaHists("deltaHists", dir, title);
 } 
@@ -201,6 +221,7 @@ void btaggingHists::FillTrkTagVarHists(const trkTagVarPtr &trkTag, float weight)
   if(trkTagMatch)
     deltaHists->FillTrkTagVarHists(trkTag, trkTagMatch, weight);
 
+
   return;
 }
 
@@ -230,6 +251,32 @@ void btaggingHists::FillTagVarHists(const tagVarPtr &tag, const jetPtr& jet, flo
   std::shared_ptr<nTupleAnalysis::jet> matchedJet = jet->matchedJet.lock();
   if(matchedJet && matchedJet->tagVars){
     deltaHists->FillTagVarHists(tag, matchedJet->tagVars, weight);
+  }
+
+  //
+  //  DeepCSV NN inputs
+  //
+  tag_trackSumJetEtRatio     ->Fill(tag->trackSumJetEtRatio,  weight);
+  tag_trackSumJetDeltaR      ->Fill(tag->trackSumJetDeltaR,  weight);
+  tag_vertexCategory         ->Fill(tag->vertexCategory,  weight);
+  tag_trackSip2dValAboveCharm->Fill(tag->trackSip2dValAboveCharm,  weight);
+  tag_trackSip2dSigAboveCharm->Fill(tag->trackSip2dSigAboveCharm,  weight);
+  tag_trackSip3dValAboveCharm->Fill(tag->trackSip3dValAboveCharm,  weight);
+  tag_trackSip3dSigAboveCharm->Fill(tag->trackSip3dSigAboveCharm,  weight);
+  tag_vertexEnergyRatio      ->Fill(tag->vertexEnergyRatio,  weight);
+  tag_jetNTracksEtaRel       ->Fill(tag->jetNTracksEtaRel,  weight);
+  tag_vertexMass             ->Fill(tag->vertexMass,  weight);
+  tag_vertexNTracks          ->Fill(tag->vertexNTracks,  weight);
+  tag_vertexJetDeltaR        ->Fill(tag->vertexJetDeltaR,  weight);
+  tag_flightDistance2dVal    ->Fill(tag->flightDistance2dVal,  weight);
+  tag_flightDistance2dSig    ->Fill(tag->flightDistance2dSig,  weight);
+  tag_flightDistance3dVal    ->Fill(tag->flightDistance3dVal,  weight);
+  tag_flightDistance3dSig    ->Fill(tag->flightDistance3dSig,  weight);
+
+  for(unsigned int trkEtaRelItr = 0; trkEtaRelItr < 4; ++trkEtaRelItr){
+    if(trkEtaRelItr < tag->TagVarCSV_trackEtaRel.size()){
+      tag_trackEtaRel->Fill(tag->TagVarCSV_trackEtaRel.at(trkEtaRelItr));
+    }
   }
 
 
