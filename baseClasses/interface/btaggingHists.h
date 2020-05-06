@@ -97,6 +97,24 @@ namespace nTupleAnalysis {
     TH1F*   tag_elecEnergyFraction              ;
     TH1F*   tag_totalMultiplicity               ;
 
+    TH1F* tag_trackSumJetEtRatio       ;
+    TH1F* tag_trackSumJetDeltaR        ;
+    TH1F* tag_vertexCategory           ;
+    TH1F* tag_trackSip2dValAboveCharm  ;
+    TH1F* tag_trackSip2dSigAboveCharm  ;
+    TH1F* tag_trackSip3dValAboveCharm  ;
+    TH1F* tag_trackSip3dSigAboveCharm  ;
+    TH1F* tag_jetNTracksEtaRel         ;
+    TH1F* tag_vertexMass               ;
+    TH1F* tag_vertexNTracks            ;
+    TH1F* tag_vertexJetDeltaR          ;
+    TH1F* tag_vertexEnergyRatio        ;
+    TH1F* tag_flightDistance2dSig      ;
+    TH1F* tag_flightDistance2dVal      ;
+    TH1F* tag_flightDistance3dSig      ;
+    TH1F* tag_flightDistance3dVal      ;
+    TH1F* tag_trackEtaRel              ;
+
     btaggingDeltaHists* deltaHists;
 
 

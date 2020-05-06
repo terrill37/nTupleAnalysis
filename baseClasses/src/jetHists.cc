@@ -3,8 +3,10 @@
 
 using namespace nTupleAnalysis;
 
-jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title, std::string jetDetailLevel) {
-
+jetHists::jetHists(std::string _name, fwlite::TFileService& fs, std::string _title, std::string jetDetailLevel, bool _debug) {
+    debug = _debug;
+    name  = _name;
+    title = _title;
     dir = fs.mkdir(name);
     v = new fourVectorHists(name, dir, title);
 
@@ -87,7 +89,7 @@ jetHists::jetHists(std::string name, fwlite::TFileService& fs, std::string title
 
 
 void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
-
+  if(debug) std::cout << "jetHists::Fill " << name << " " << title << std::endl;
   v->Fill(jet->p, weight);
 
   cleanmask->Fill(jet->cleanmask, weight);
@@ -219,6 +221,7 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
     delta_deepCSV    ->Fill(jet->DeepCSV - jet->DeepCSV_reCalc);
   }
 
+  if(debug) std::cout << "jetHists::Fill " << name << " " << title << " done" << std::endl;
   return;
 }
 
