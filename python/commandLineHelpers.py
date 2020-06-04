@@ -13,10 +13,14 @@ except ImportError:
 
 ON_POSIX = 'posix' in sys.builtin_module_names
 
-def enqueue_output(out, queue):
+
+def enqueue_output(out, queue, logFile):
     for line in iter(out.readline, b''):
+        if logFile: logFile.write(line)
         queue.put(line)
         if queue.qsize()>1: queue.get_nowait()
+
+        
     out.close()
 
 
@@ -25,13 +29,13 @@ def execute(command, execute=True): # use to run command like a normal line of b
     if execute: os.system(command)
 
 
-def watch(command, execute=True, stdout=None, doPrint=True): # use to run a command and keep track of the thread, ie to run something when it is done
+def watch(command, execute=True, stdout=None, doPrint=True, logFile=None): # use to run a command and keep track of the thread, ie to run something when it is done
     if doPrint: print command
     if execute:
         p = subprocess.Popen(shlex.split(command), stdout=stdout, universal_newlines=(True if stdout else False), bufsize=1, close_fds=ON_POSIX)
         if stdout:
             q = Queue()
-            t = Thread(target=enqueue_output, args=(p.stdout, q))
+            t = Thread(target=enqueue_output, args=(p.stdout, q, logFile))
             t.daemon = True
             t.start()
             return (command, p, q)
@@ -53,12 +57,14 @@ def moveCursorDown(N=''):
     print '\r\033['+str(N)+'B',
 
 
-def babySit(commands, execute, maxAttempts=1, maxJobs=20):
+def babySit(commands, execute, maxAttempts=1, maxJobs=20, logFiles=None):
     attempts={}
     nCommands = len(commands)
     jobs=[]
+    logs=[]
     outs=[]
     waiting=[]
+    waitinglogs=[]
     done=[]
     for c in range(nCommands):
         command = commands[c]
@@ -66,11 +72,14 @@ def babySit(commands, execute, maxAttempts=1, maxJobs=20):
         done.append(0)
         print "# ",c
         if len(jobs)<maxJobs:
-            jobs.append(watch(command, execute, stdout=subprocess.PIPE))
+            logs.append(open(logFiles[c],"w") if (logFiles and execute) else None)
+            jobs.append(watch(command, execute, stdout=subprocess.PIPE,logFile=logs[-1]))
+                
             outs.append("LAUNCHING")
         else:
             print command
             waiting.append(command)
+            waitinglogs.append(open(logFiles[c],"w") if (logFiles and execute) else None)
             outs.append("IN QUEUE")
 
     if not execute: return
@@ -109,11 +118,11 @@ def babySit(commands, execute, maxAttempts=1, maxJobs=20):
                 attempts[jobs[j][0]] += 1
                 time.sleep(10)
                 #done=False
-                jobs[j] = watch(jobs[j][0], execute, stdout=subprocess.PIPE)
+                jobs[j] = watch(jobs[j][0], execute, stdout=subprocess.PIPE, logFile=logs[j])
 
         nWaiting = len(waiting)
         for w in range(nJobs, nJobs+min(nToLaunch, nWaiting)):
-            jobs.append(watch(waiting.pop(0), execute, stdout=subprocess.PIPE, doPrint=False))
+            jobs.append(watch(waiting.pop(0), execute, stdout=subprocess.PIPE, doPrint=False,logFile=waitinglogs.pop(0)))
             outs[w] = "LAUNCHING"
 
         nJobs = len(jobs)
