@@ -1,5 +1,5 @@
 // Uncomment for SLC6
-#define NTUPLEANALYSIS_SLC6 1
+// #define NTUPLEANALYSIS_SLC6 1
 
 #if defined NTUPLEANALYSIS_SLC6
 
@@ -44,17 +44,17 @@ makePSetsFromString(std::string const& module, boost::python::object& mainNamesp
 
 namespace edm {
   namespace boost_python {
-        
+
     std::unique_ptr<edm::ParameterSet>
     readPSetsFrom(std::string const& module, int argc, char* argv[]) {
       python::initializeModule();
-      
+
       boost::python::object mainModule = object(handle<>(borrowed(PyImport_AddModule(const_cast<char*>("__main__")))));
-      
+
       boost::python::object mainNamespace = mainModule.attr("__dict__");
       PythonParameterSet theProcessPSet;
       mainNamespace["topPSet"] = ptr(&theProcessPSet);
-      
+
       try {
 	// if it ends with py, it's a file
 	if(module.substr(module.size()-3) == ".py") {
