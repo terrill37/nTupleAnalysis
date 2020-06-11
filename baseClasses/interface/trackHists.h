@@ -45,6 +45,8 @@ namespace nTupleAnalysis {
     TH1F* trackJetDistVal ;    
     TH1F* trackPtRel      ; 
     TH1F* trackMomentum   ;
+    TH1F* trackPt   ;
+    TH1F* trackPt_l   ;
     
     TH1F* trackPt_logx           ;
 

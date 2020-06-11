@@ -117,7 +117,7 @@ jet::jet(UInt_t i, jetData* data){
 
 
       float invariantMass = (tracks[iTrk1]->p + tracks[iTrk2]->p).M();
-      if (std::abs(invariantMass - reco::ParticleMasses::k0) < 0.05){
+      if (std::abs(invariantMass - reco::ParticleMasses::k0) < 0.03){
 	tracks[iTrk1]->isfromV0 = true;
 	tracks[iTrk2]->isfromV0 = true;
       }
@@ -161,16 +161,32 @@ jet::jet(UInt_t i, jetData* data){
   //
   for(const trkTagVarPtr& trkTagVar: trkTagVars){
     //std::cout << "Matching " << trkTagVar->trackEta << " " << trkTagVar->pt << std::endl;
+    //bool foundMatch = false;
+
     for(const trackPtr& track: tracks){
       //std::cout << "\t " << track->eta << " " << track->pt << std::endl;
-      if(fabs(track->eta - trkTagVar->trackEta) < 0.001 && fabs(track->pt - trkTagVar->pt) < 0.001){
+      if(fabs(track->IP2D - trkTagVar->trackSip2dVal) < 1e-6 && fabs(track->IP - trkTagVar->trackSip3dVal) < 1e-6){
   	trkTagVar->trackPhi = track->phi;
   	trkTagVar->p.SetPtEtaPhiM(trkTagVar->pt, trkTagVar->trackEta, trkTagVar->trackPhi, trkTagVar->m);
   	trkTagVar->e = p.E();
+	//foundMatch = true;
   	break;
       }
-      
     }
+
+    //if(!foundMatch){
+    //  cout << "Did not find trkTag --> track match for track  eta: " << trkTagVar->trackEta << " pt "  << trkTagVar->pt 
+    //	   << "  trackSip2dVal: " << trkTagVar->trackSip2dVal
+    //	   << "  trackSip3dVal: " << trkTagVar->trackSip3dVal
+    //	   << "  trackMomentum: " << trkTagVar->trackMomentum
+    //	   << " dR " << trkTagVar->trackDeltaR << endl;
+    //  cout << "We have tracks " << endl;
+    //
+    //  for(const trackPtr& track: tracks){
+    //	cout << "\t eta : " <<  track->eta << " phi:  " << track->phi << " pt : " << track->pt << "  IP2D: " << track->IP2D << " IP: " << track->IP << endl;
+    //  }
+    //}
+
   }
 
 
