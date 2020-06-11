@@ -59,7 +59,8 @@ void btaggingHists::makeHists(std::string name, TFileDirectory& dir, std::string
   trkTag_trackJetDistVal_l          = dir.make<TH1F>("trackJetDistVal_l"   ,    "trackJetDistVal;trackJetDistVal [cm];Entries",  100, -1,0.01);      
   trkTag_trackJetDistVal_vl         = dir.make<TH1F>("trackJetDistVal_vl"  ,    "trackJetDistVal;trackJetDistVal [cm];Entries",  100, -10,0.01);      
   trkTag_trackPtRel                 = dir.make<TH1F>("trackPtRel"          ,    "trackPtRel;track p_{T} Rel [GeV];Entries", 100, -0.1, 7);          
-  trkTag_trackPt                    = dir.make<TH1F>("trackPt"             ,    "trackPt;track pt [GeV];Entries", 20, 0, 20);       
+  trkTag_trackPt                    = dir.make<TH1F>("trackPt"             ,    "trackPt;track pt [GeV];Entries", 100, 0, 20);       
+  trkTag_trackPt_l                  = dir.make<TH1F>("trackPt_l"           ,    "trackPt;track pt [GeV];Entries", 100, 0, 200);       
   trkTag_trackMomentum              = dir.make<TH1F>("trackMomentum"       ,    "trackMomentum;track momentum [GeV];Entries", 60, 0, 60);       
 
   Double_t binsPt[28] = {0.9, 1.116, 1.3838, 1.716, 2.1278, 2.6385, 3.2717, 4.0569, 5.0306, 6.2379, 7.735, 9.5914, 11.8933, 14.7477, 18.2872, 22.6761, 28.1183, 34.8667, 43.2347, 53.6111, 66.4777, 82.4324, 102.2162, 126.748, 157.1676, 194.8878, 241.6609, 299.6595};
@@ -200,6 +201,7 @@ void btaggingHists::FillTrkTagVarHists(const trkTagVarPtr &trkTag, float weight)
   trkTag_trackPtRel           ->Fill(trkTag->trackPtRel      ,weight );
   trkTag_trackMomentum        ->Fill(trkTag->trackMomentum   ,weight ); 
   trkTag_trackPt              ->Fill(trkTag->pt   ,weight ); 
+  trkTag_trackPt_l            ->Fill(trkTag->pt   ,weight ); 
   trkTag_trackPt_logx         ->Fill(trkTag->pt   ,weight ); 
   trkTag_trackEta             ->Fill(trkTag->trackEta        ,weight );
   trkTag_trackEta_l           ->Fill(trkTag->trackEta        ,weight );

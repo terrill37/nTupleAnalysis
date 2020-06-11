@@ -1,6 +1,7 @@
 #include "TChain.h"
 
 #include "nTupleAnalysis/baseClasses/interface/btaggingData.h"
+#include "DataFormats/BTauReco/interface/ParticleMasses.h"
 #include <math.h>
 using namespace nTupleAnalysis;
 
@@ -62,7 +63,7 @@ trkTagVar::trkTagVar(UInt_t i, btaggingData* data){
   trackMomentum	        = data->trackMomentum	 [i];
   pt                    = trackMomentum/cosh(trackEta);
   trackPhi	        = data->trackPhi	 [i];
-  m   = 0.140;
+  m   = reco::ParticleMasses::piPlus;
   p = TLorentzVector();
   p.SetPtEtaPhiM(pt, trackEta, trackPhi, m);
   e = p.E();
