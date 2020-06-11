@@ -118,7 +118,7 @@ jet::jet(UInt_t i, jetData* data){
 
 
       float invariantMass = (tracks[iTrk1]->p + tracks[iTrk2]->p).M();
-      if (std::abs(invariantMass - reco::ParticleMasses::k0) < 0.05){
+      if (std::abs(invariantMass - reco::ParticleMasses::k0) < 0.03){
 	tracks[iTrk1]->isfromV0 = true;
 	tracks[iTrk2]->isfromV0 = true;
       }
@@ -453,9 +453,9 @@ float jetData::getSF(float jetEta,  float jetPt,  float jetTagScore, int jetHadr
 void jetData::updateSFs(float jetEta,  float jetPt,  float jetTagScore, int jetHadronFlavour,bool debug){
   for(auto &variation: m_btagVariations){
     if(debug)
-      cout << "jetPt/jetEta/jetTagScore/jetHadronFlavour/SF" 
+      cout << "jetPt/jetEta/jetTagScore/jetHadronFlavour/SF"
 	   << jetPt << "/" << jetEta << "/" << jetTagScore << "/" << jetHadronFlavour << "/" << getSF(jetEta, jetPt, jetTagScore, jetHadronFlavour, variation) << endl;
-      
+
     m_btagSFs[variation] *= getSF(jetEta, jetPt, jetTagScore, jetHadronFlavour, variation);
   }
 }
@@ -587,7 +587,7 @@ void jetData::connectBranches(bool readIn, TTree* tree, std::string JECSyst){
   connectBranchArr(readIn, tree, jetName+"_DeepCSVl", DeepCSVl,   NjetName,  "F");
   connectBranchArr(readIn, tree, jetName+"_DeepCSVbb", DeepCSVbb,   NjetName,  "F");
 
-  connectBranchArr(readIn, tree, jetName+"_Bprob", probB,   NjetName,  "F");  
+  connectBranchArr(readIn, tree, jetName+"_Bprob", probB,   NjetName,  "F");
 
   connectBranchArr(readIn, tree, jetName+"_isTag", isTag,   NjetName,  "O");
   connectBranchArr(readIn, tree, jetName+"_isSel", isSel,   NjetName,  "O");
