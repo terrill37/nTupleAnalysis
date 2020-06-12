@@ -363,11 +363,11 @@ std::vector< std::shared_ptr<jet> > jetData::getJets(float ptMin, float ptMax, f
       break;
     }
 
-    if(clean && cleanmask[i] == 0) continue;
+    // if(clean && cleanmask[i] == 0) continue;
     if(          pt[i]  <  ptMin ) continue;
     if(          pt[i]  >= ptMax ) continue;
     if(    fabs(eta[i]) > etaMax ) continue;
-    if(       (puId[i]  < puIdMin) && (pt[i] < 50)) continue; // Fail pilup rejection. https://twiki.cern.ch/twiki/bin/viewauth/CMS/PileupJetID
+    // if(       (puId[i]  < puIdMin) && (pt[i] < 50)) continue; // Fail pilup rejection. https://twiki.cern.ch/twiki/bin/viewauth/CMS/PileupJetID
     if(antiTag^(tag[i]  < tagMin)) continue; // antiTag XOR (jet fails tagMin). This way antiTag inverts the tag criteria to select untagged jets
     outputJets.push_back(std::make_shared<jet>(jet(i, this)));
   }
@@ -382,10 +382,10 @@ std::vector< std::shared_ptr<jet> > jetData::getJets(std::vector< std::shared_pt
   for(auto &jet: inputJets){
     if(debug) cout << "new jet " << endl;
 
-    if(clean && jet->cleanmask == 0) {
-      if(debug) cout << "\t fail clean " << endl;
-      continue;
-    }
+    // if(clean && jet->cleanmask == 0) {
+    //   if(debug) cout << "\t fail clean " << endl;
+    //   continue;
+    // }
 
     if(         jet->pt   <  ptMin ){
       if(debug) cout << "\t fail ptMin (" << jet->pt << " < " << ptMin << ")" << jet->pt_wo_bRegCorr << endl;
@@ -403,10 +403,10 @@ std::vector< std::shared_ptr<jet> > jetData::getJets(std::vector< std::shared_pt
       continue;
     }
 
-    if((jet->puId < puIdMin) && (jet->pt < 50)){//(bit two = loose, bit one = medium, bit zero = tight so puIdMin = 4, 6, 7 : loose, medium, tight)
-      if(debug) cout << "\t fail pileup rejection" << endl;
-      continue; // Fail pilup rejection. https://twiki.cern.ch/twiki/bin/viewauth/CMS/PileupJetID
-    }
+    // if((jet->puId < puIdMin) && (jet->pt < 50)){//(bit two = loose, bit one = medium, bit zero = tight so puIdMin = 4, 6, 7 : loose, medium, tight)
+    //   if(debug) cout << "\t fail pileup rejection" << endl;
+    //   continue; // Fail pilup rejection. https://twiki.cern.ch/twiki/bin/viewauth/CMS/PileupJetID
+    // }
 
 
     if(     tagger == "deepFlavB" && antiTag^(jet->deepFlavB < tagMin)) {
@@ -480,7 +480,7 @@ void jetData::writeJets(std::vector< std::shared_ptr<jet> > outputJets){
     }
 
     const jetPtr& thisJet = outputJets.at(i);
-    this->cleanmask[i] = thisJet->cleanmask;
+    // this->cleanmask[i] = thisJet->cleanmask;
 
     this->pt [i] = thisJet->pt  ;
     this->eta[i] = thisJet->eta ;
@@ -546,17 +546,17 @@ void jetData::connectBranches(bool readIn, TTree* tree, std::string JECSyst){
   connectBranchArr(readIn, tree, jetName+"_phi",          phi, NjetName,  "F");
   connectBranchArr(readIn, tree, jetName+"_mass"+JECSyst, m,   NjetName,  "F");
 
-  connectBranchArr(readIn, tree, jetName+"_cleanmask", cleanmask,   NjetName,  "b");
+  // connectBranchArr(readIn, tree, jetName+"_cleanmask", cleanmask,   NjetName,  "b");
 
-  connectBranchArr(readIn, tree, jetName+"_bRegCorr", bRegCorr,   NjetName,  "F");
+  // connectBranchArr(readIn, tree, jetName+"_bRegCorr", bRegCorr,   NjetName,  "F");
   connectBranchArr(readIn, tree, jetName+"_btagDeepB", deepB,   NjetName,  "F");
 
 
-  int CSVRes = connectBranchArr(readIn, tree, jetName+"_btagCSVV2", CSVv2,   NjetName,  "F");
-  if(readIn && CSVRes == -1){
-    std::cout << "\tUsing " << (m_prefix+m_name+"_CombIVF"        ) << " for CSVv2 " << std::endl;
-    connectBranchArr(readIn, tree, jetName+"_CombIVF", CSVv2,   NjetName,  "F");
-  }
+  // int CSVRes = connectBranchArr(readIn, tree, jetName+"_btagCSVV2", CSVv2,   NjetName,  "F");
+  // if(readIn && CSVRes == -1){
+  //   std::cout << "\tUsing " << (m_prefix+m_name+"_CombIVF"        ) << " for CSVv2 " << std::endl;
+  //   connectBranchArr(readIn, tree, jetName+"_CombIVF", CSVv2,   NjetName,  "F");
+  // }
 
   int DeepFlavBRes = connectBranchArr(readIn, tree, jetName+"_btagDeepFlavB", deepFlavB,   NjetName,  "F");
   if(readIn && DeepFlavBRes == -1){
@@ -567,8 +567,8 @@ void jetData::connectBranches(bool readIn, TTree* tree, std::string JECSyst){
   }
 
 
-  connectBranchArr(readIn, tree, jetName+"_puId",   puId,   NjetName,  "I");
-  connectBranchArr(readIn, tree, jetName+"_jetId", jetId,   NjetName,  "I");
+  // connectBranchArr(readIn, tree, jetName+"_puId",   puId,   NjetName,  "I");
+  // connectBranchArr(readIn, tree, jetName+"_jetId", jetId,   NjetName,  "I");
 
   if(m_isMC){
     connectBranchArr(readIn, tree, jetName+"_flavour", flavour,   NjetName,  "I");
@@ -579,18 +579,18 @@ void jetData::connectBranches(bool readIn, TTree* tree, std::string JECSyst){
     connectBranchArr(readIn, tree, jetName+"_ncHadrons", ncHadrons,   NjetName,  "I");
   }
 
-  connectBranchArr(readIn, tree, jetName+"_looseID", looseID,   NjetName,  "I");
-  connectBranchArr(readIn, tree, jetName+"_tightID", tightID,   NjetName,  "I");
+  // connectBranchArr(readIn, tree, jetName+"_looseID", looseID,   NjetName,  "I");
+  // connectBranchArr(readIn, tree, jetName+"_tightID", tightID,   NjetName,  "I");
 
   connectBranchArr(readIn, tree, jetName+"_DeepCSVb", DeepCSVb,   NjetName,  "F");
-  connectBranchArr(readIn, tree, jetName+"_DeepCSVc", DeepCSVc,   NjetName,  "F");
-  connectBranchArr(readIn, tree, jetName+"_DeepCSVl", DeepCSVl,   NjetName,  "F");
+  // connectBranchArr(readIn, tree, jetName+"_DeepCSVc", DeepCSVc,   NjetName,  "F");
+  // connectBranchArr(readIn, tree, jetName+"_DeepCSVl", DeepCSVl,   NjetName,  "F");
   connectBranchArr(readIn, tree, jetName+"_DeepCSVbb", DeepCSVbb,   NjetName,  "F");
 
   connectBranchArr(readIn, tree, jetName+"_Bprob", probB,   NjetName,  "F");
 
-  connectBranchArr(readIn, tree, jetName+"_isTag", isTag,   NjetName,  "O");
-  connectBranchArr(readIn, tree, jetName+"_isSel", isSel,   NjetName,  "O");
+  // connectBranchArr(readIn, tree, jetName+"_isTag", isTag,   NjetName,  "O");
+  // connectBranchArr(readIn, tree, jetName+"_isSel", isSel,   NjetName,  "O");
 
   //
   //  Following only supported for reading In
