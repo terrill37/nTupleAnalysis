@@ -47,18 +47,12 @@ void trackHists::makeHists(std::string name, TFileDirectory& dir, std::string ti
 
   trackDecayLenVal_l         = dir.make<TH1F>("DecayLenVal_l"  ,    "trackDecayLenVal;trackDecayLenVal [cm];Entries", 100, -0.1,  6);
   trackDecayLenVal           = dir.make<TH1F>("DecayLenVal"    ,    "trackDecayLenVal;trackDecayLenVal [cm];Entries", 100, -0.1,  0.5);
-<<<<<<< HEAD
-  trackJetDistVal            = dir.make<TH1F>("JetDistVal"     ,    "trackJetDistVal;trackJetDistVal [cm];Entries",  100, -0.1,0.01);
-  trackPtRel                 = dir.make<TH1F>("PtRel"          ,    "trackPtRel;track p_{T} Rel [GeV];Entries", 100, -0.1, 7);
-  trackMomentum              = dir.make<TH1F>("Momentum"       ,    "trackMomentum;track momentum [GeV];Entries", 60, 0, 60);
 
-=======
   trackJetDistVal            = dir.make<TH1F>("JetDistVal"     ,    "trackJetDistVal;trackJetDistVal [cm];Entries",  100, -0.1,0.01);
   trackPtRel                 = dir.make<TH1F>("PtRel"          ,    "trackPtRel;track p_{T} Rel [GeV];Entries", 100, -0.1, 7);
   trackMomentum              = dir.make<TH1F>("Momentum"       ,    "trackMomentum;track momentum [GeV];Entries", 60, 0, 60);
   trackPt                    = dir.make<TH1F>("trackPt"             ,    "trackPt;track pt [GeV];Entries", 100, 0, 20);
   trackPt_l                  = dir.make<TH1F>("trackPt_l"           ,    "trackPt;track pt [GeV];Entries", 100, 0, 200);
->>>>>>> upstream/master
 
   Double_t binsPt[28] = {0.9, 1.116, 1.3838, 1.716, 2.1278, 2.6385, 3.2717, 4.0569, 5.0306, 6.2379, 7.735, 9.5914, 11.8933, 14.7477, 18.2872, 22.6761, 28.1183, 34.8667, 43.2347, 53.6111, 66.4777, 82.4324, 102.2162, 126.748, 157.1676, 194.8878, 241.6609, 299.6595};
   trackPt_logx               = dir.make<TH1F>("Pt_logx", "trackPt;track p_{T} [GeV];Entries", 27, binsPt);
