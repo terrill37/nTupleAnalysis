@@ -140,7 +140,7 @@ namespace nTupleAnalysis {
     std::string m_jetDetailLevel;
     static const unsigned int MAXJETS = 10000;
 
-    UInt_t nJets;
+    Int_t nJets;
 
     UChar_t cleanmask[MAXJETS];
 

@@ -40,8 +40,8 @@ namespace nTupleAnalysis {
 
     float SF = 1.0;
 
-    muon(UInt_t, muonData*); 
-    ~muon(); 
+    muon(UInt_t, muonData*);
+    ~muon();
 
     //void dump();
   };
@@ -55,8 +55,8 @@ namespace nTupleAnalysis {
     std::string m_name;
     static const unsigned int MAXMUONS = 10000;
     bool m_isMC;
-    
-    UInt_t nMuons;
+
+    Int_t nMuons;
 
     float pt [MAXMUONS];
     float eta[MAXMUONS];
@@ -77,10 +77,10 @@ namespace nTupleAnalysis {
     float pfRelIso04_all[MAXMUONS];
     float isolation_corrected[MAXMUONS];
     float isolation_trkIsoOnly[MAXMUONS];
-    
-    muonData(std::string, TTree*, bool readIn = true, bool isMC = false, std::string SFName=""); 
+
+    muonData(std::string, TTree*, bool readIn = true, bool isMC = false, std::string SFName="");
     std::vector<std::shared_ptr<muon>> getMuons(float ptMin = -1e6, float etaMax = 1e6, int tag = -1, bool isolation = false);
-    ~muonData(); 
+    ~muonData();
 
     void writeMuons(std::vector< std::shared_ptr<muon> > outputMuons) ;
     void connectBranches(bool readIn, TTree* tree);
@@ -99,4 +99,3 @@ namespace nTupleAnalysis {
 
 }
 #endif // muonData_H
-
