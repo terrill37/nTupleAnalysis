@@ -5,6 +5,7 @@ import sys
 import subprocess
 import shlex
 import optparse
+import numpy as np
 from threading import Thread
 try:
     from queue import Queue, Empty
@@ -174,3 +175,43 @@ def rmdir(directory, execute=True):
     else:
         print "#",directory,"does not exist"
 
+
+class jdl:
+    def __init__(self, CMSSW=None, EOSOUTDIR=None, TARBALL=None, cmd=None):
+        self.file = str(np.random.uniform())[2:]+".jdl"
+
+        self.CMSSW = CMSSW
+        self.EOSOUTDIR = EOSOUTDIR
+        self.TARBALL = TARBALL
+
+        self.universe = "vanilla"
+        self.Executable = "nTupleAnalysis/scripts/condor.sh"
+        self.should_transfer_files = "YES"
+        self.when_to_transfer_output = "ON_EXIT"
+        self.Output = "condor_$(Cluster)_$(Process).stdout"
+        self.Error = "condor_$(Cluster)_$(Process).stderr"
+        self.Log = "condor_$(Cluster)_$(Process).log"
+        self.Arguments = CMSSW+" "+EOSOUTDIR+" "+TARBALL+" "+cmd
+        self.Queue = "1" # no equals sign in .jdl file
+
+    def make(self):
+        attributes=["universe",
+                    "Executable",
+                    "should_transfer_files",
+                    "when_to_transfer_output",
+                    "Output",
+                    "Error",
+                    "Log",
+                    "Arguments",
+                ]
+        f=open(self.file,'w')
+        for attr in attributes:
+            f.write(attr+" = "+str(getattr(self, attr))+"\n")
+        f.write("Queue "+str(self.Queue)+"\n")    
+        f.close()
+
+    
+
+        
+        
+        
