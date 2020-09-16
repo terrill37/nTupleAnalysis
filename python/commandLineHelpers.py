@@ -1,5 +1,6 @@
 import time
 import textwrap
+from copy import copy
 import os, re
 import sys
 import subprocess
@@ -154,12 +155,18 @@ def relaunchJobs(jobs, execute=True):
     for job in jobs: newJobs.append(watch(job[0], execute))
     return newJobs
 
-def mkdir(directory, execute=True):
-    if not os.path.isdir(directory):
-        print "mkdir",directory
-        if execute: os.mkdir(directory)
+def mkdir(directory, execute=True, xrd=False, url="root://cmseos.fnal.gov/"):
+    if not xrd:
+        if not os.path.isdir(directory):
+            print "mkdir",directory
+            if execute: os.mkdir(directory)
+        else:
+            print "#",directory,"already exists"
     else:
-        print "#",directory,"already exists"
+        cmd = "xrdfs "+url+" mkdir "+directory.replace(url,'')
+        print cmd
+        if execute: os.system(cmd)
+        
 
 def rmdir(directory, execute=True):
     if not execute: 
@@ -177,14 +184,16 @@ def rmdir(directory, execute=True):
 
 
 class jdl:
-    def __init__(self, CMSSW=None, EOSOUTDIR=None, TARBALL=None, cmd=None):
-        self.file = str(np.random.uniform())[2:]+".jdl"
+    def __init__(self, CMSSW=None, EOSOUTDIR="None", TARBALL=None, cmd=None, file=None):
+        self.file = file if file else str(np.random.uniform())[2:]+".jdl"
 
         self.CMSSW = CMSSW
         self.EOSOUTDIR = EOSOUTDIR
         self.TARBALL = TARBALL
 
         self.universe = "vanilla"
+        self.DesiredOS= "SL7"
+        self.use_x509userproxy = "true"
         self.Executable = "nTupleAnalysis/scripts/condor.sh"
         self.should_transfer_files = "YES"
         self.when_to_transfer_output = "ON_EXIT"
@@ -196,6 +205,8 @@ class jdl:
 
     def make(self):
         attributes=["universe",
+                    "DesiredOS",
+                    "use_x509userproxy",
                     "Executable",
                     "should_transfer_files",
                     "when_to_transfer_output",
@@ -211,7 +222,45 @@ class jdl:
         f.close()
 
     
+class dag:
+    def __init__(self, parents=[], children=[], file=None):
+        self.file = file if file else str(np.random.uniform())[2:]+".jdl"
+        self.iP = 1
+        self.iC = 1
+        self.iG = 0
+        self.parentJobs = []
+        self.childJobs = []
+        self.generations = ['A', 'B', 'C', 'D']
+        
+        self.lines=[]
 
+    def addParent(self, JDL):
+        self.parentJobs.append( "%s%d"%(self.generations[self.iG], self.iP) )
+        self.lines.append( "JOB %s %s\n"%(self.parentJobs[-1], JDL.file) )
+        self.iP += 1
+        
+    def addParents(self, JDLs):
+        for JDL in JDLs: self.addParent(JDL)
+
+    def addChild(self, JDL):
+        self.childJobs.append( "%s%d"%(self.generations[self.iG+1], self.iC) )
+        self.lines.append( "JOB %s %s\n"%(self.childJobs[-1], JDL.file) )
+        self.iC += 1
+        
+    def addChildren(self, JDLs):
+        for JDL in JDLs: self.addChild(JDL)
+
+    def addGeneration(self):
+        self.lines.append( "PARENT "+" ".join(self.parentJobs)+" CHILD "+" ".join(self.childJobs)+"\n" )
+        self.parentJobs = copy( self.childJobs )
+        self.childJobs = []
+        self.iG += 1
+
+    def write(self):
+        f = open(self.file, 'w')
+        for line in self.lines:
+            f.write(line)
+        
         
         
         
