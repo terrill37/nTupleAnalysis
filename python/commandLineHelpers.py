@@ -26,14 +26,14 @@ def enqueue_output(out, queue, logFile):
     out.close()
 
 
-def execute(command, execute=True): # use to run command like a normal line of bash
+def execute(command, doExecute=True): # use to run command like a normal line of bash
     print command
-    if execute: os.system(command)
+    if doExecute: os.system(command)
 
 
-def watch(command, execute=True, stdout=None, doPrint=True, logFile=None): # use to run a command and keep track of the thread, ie to run something when it is done
+def watch(command, doExecute=True, stdout=None, doPrint=True, logFile=None): # use to run a command and keep track of the thread, ie to run something when it is done
     if doPrint: print command
-    if execute:
+    if doExecute:
         p = subprocess.Popen(shlex.split(command), stdout=stdout, universal_newlines=(True if stdout else False), bufsize=1, close_fds=ON_POSIX)
         if stdout:
             q = Queue()
@@ -59,7 +59,7 @@ def moveCursorDown(N=''):
     print '\r\033['+str(N)+'B',
 
 
-def babySit(commands, execute, maxAttempts=1, maxJobs=20, logFiles=None):
+def babySit(commands, doExecute, maxAttempts=1, maxJobs=20, logFiles=None):
     attempts={}
     nCommands = len(commands)
     jobs=[]
@@ -74,17 +74,17 @@ def babySit(commands, execute, maxAttempts=1, maxJobs=20, logFiles=None):
         done.append(0)
         print "# ",c
         if len(jobs)<maxJobs:
-            logs.append(open(logFiles[c],"w") if (logFiles and execute) else None)
-            jobs.append(watch(command, execute, stdout=subprocess.PIPE,logFile=logs[-1]))
+            logs.append(open(logFiles[c],"w") if (logFiles and doExecute) else None)
+            jobs.append(watch(command, doExecute, stdout=subprocess.PIPE,logFile=logs[-1]))
                 
             outs.append("LAUNCHING")
         else:
             print command
             waiting.append(command)
-            waitinglogs.append(open(logFiles[c],"w") if (logFiles and execute) else None)
+            waitinglogs.append(open(logFiles[c],"w") if (logFiles and doExecute) else None)
             outs.append("IN QUEUE")
 
-    if not execute: return
+    if not doExecute: return
     
     nDone = 0
     while nDone < nCommands:
@@ -120,11 +120,11 @@ def babySit(commands, execute, maxAttempts=1, maxJobs=20, logFiles=None):
                 attempts[jobs[j][0]] += 1
                 time.sleep(10)
                 #done=False
-                jobs[j] = watch(jobs[j][0], execute, stdout=subprocess.PIPE, logFile=logs[j])
+                jobs[j] = watch(jobs[j][0], doExecute, stdout=subprocess.PIPE, logFile=logs[j])
 
         nWaiting = len(waiting)
         for w in range(nJobs, nJobs+min(nToLaunch, nWaiting)):
-            jobs.append(watch(waiting.pop(0), execute, stdout=subprocess.PIPE, doPrint=False,logFile=waitinglogs.pop(0)))
+            jobs.append(watch(waiting.pop(0), doExecute, stdout=subprocess.PIPE, doPrint=False,logFile=waitinglogs.pop(0)))
             outs[w] = "LAUNCHING"
 
         nJobs = len(jobs)
@@ -148,28 +148,28 @@ def waitForJobs(jobs,failedJobs):
         if code: failedJobs.append(job)
     return failedJobs
 
-def relaunchJobs(jobs, execute=True):
+def relaunchJobs(jobs, doExecute=True):
     print "# "+"-"*200
     print "# RELAUNCHING JOBS"
     newJobs = []
-    for job in jobs: newJobs.append(watch(job[0], execute))
+    for job in jobs: newJobs.append(watch(job[0], doExecute))
     return newJobs
 
-def mkdir(directory, execute=True, xrd=False, url="root://cmseos.fnal.gov/"):
+
+def mkdir(directory, doExecute=True, xrd=False, url="root://cmseos.fnal.gov/"):
     if not xrd:
         if not os.path.isdir(directory):
             print "mkdir",directory
-            if execute: os.mkdir(directory)
+            if doExecute: os.mkdir(directory)
         else:
             print "#",directory,"already exists"
     else:
         cmd = "xrdfs "+url+" mkdir "+directory.replace(url,'')
-        print cmd
-        if execute: os.system(cmd)
+        execute(cmd, doExecute)
         
 
-def rmdir(directory, execute=True):
-    if not execute: 
+def rmdir(directory, doExecute=True):
+    if not doExecute: 
         print "rm -r",directory
         return
     if "*" in directory:
@@ -184,30 +184,30 @@ def rmdir(directory, execute=True):
 
 
 class jdl:
-    def __init__(self, CMSSW=None, EOSOUTDIR="None", TARBALL=None, cmd=None, file=None):
-        self.file = file if file else str(np.random.uniform())[2:]+".jdl"
+    def __init__(self, CMSSW=None, EOSOUTDIR="None", TARBALL=None, cmd=None, fileName=None, logPath = "./", logName = "condor_$(Cluster)_$(Process)"):
+        self.fileName = fileName if fileName else str(np.random.uniform())[2:]+".jdl"
 
         self.CMSSW = CMSSW
         self.EOSOUTDIR = EOSOUTDIR
         self.TARBALL = TARBALL
 
         self.universe = "vanilla"
-        self.DesiredOS= "SL7"
         self.use_x509userproxy = "true"
         self.Executable = "nTupleAnalysis/scripts/condor.sh"
+        self.x509userproxy = "x509up_forCondor"
         self.should_transfer_files = "YES"
         self.when_to_transfer_output = "ON_EXIT"
-        self.Output = "condor_$(Cluster)_$(Process).stdout"
-        self.Error = "condor_$(Cluster)_$(Process).stderr"
-        self.Log = "condor_$(Cluster)_$(Process).log"
+        self.Output = logPath+logName+".stdout"
+        self.Error = logPath+logName+".stderr"
+        self.Log = logPath+logName+".log"
         self.Arguments = CMSSW+" "+EOSOUTDIR+" "+TARBALL+" "+cmd
         self.Queue = "1" # no equals sign in .jdl file
 
     def make(self):
         attributes=["universe",
-                    "DesiredOS",
                     "use_x509userproxy",
                     "Executable",
+                    "x509userproxy",
                     "should_transfer_files",
                     "when_to_transfer_output",
                     "Output",
@@ -215,16 +215,18 @@ class jdl:
                     "Log",
                     "Arguments",
                 ]
-        f=open(self.file,'w')
+        f=open(self.fileName,'w')
         for attr in attributes:
             f.write(attr+" = "+str(getattr(self, attr))+"\n")
+
+        f.write('+DesiredOS="SL7"\n')
         f.write("Queue "+str(self.Queue)+"\n")    
         f.close()
 
     
 class dag:
-    def __init__(self, parents=[], children=[], file=None):
-        self.file = file if file else str(np.random.uniform())[2:]+".jdl"
+    def __init__(self, parents=[], children=[], fileName=None):
+        self.fileName = fileName if fileName else str(np.random.uniform())[2:]+".jdl"
         self.iP = 1
         self.iC = 1
         self.iG = 0
@@ -236,7 +238,7 @@ class dag:
 
     def addParent(self, JDL):
         self.parentJobs.append( "%s%d"%(self.generations[self.iG], self.iP) )
-        self.lines.append( "JOB %s %s\n"%(self.parentJobs[-1], JDL.file) )
+        self.lines.append( "JOB %s %s\n"%(self.parentJobs[-1], JDL.fileName) )
         self.iP += 1
         
     def addParents(self, JDLs):
@@ -244,7 +246,7 @@ class dag:
 
     def addChild(self, JDL):
         self.childJobs.append( "%s%d"%(self.generations[self.iG+1], self.iC) )
-        self.lines.append( "JOB %s %s\n"%(self.childJobs[-1], JDL.file) )
+        self.lines.append( "JOB %s %s\n"%(self.childJobs[-1], JDL.fileName) )
         self.iC += 1
         
     def addChildren(self, JDLs):
@@ -257,7 +259,7 @@ class dag:
         self.iG += 1
 
     def write(self):
-        f = open(self.file, 'w')
+        f = open(self.fileName, 'w')
         for line in self.lines:
             f.write(line)
         
