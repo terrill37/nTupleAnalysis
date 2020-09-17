@@ -59,7 +59,7 @@ def moveCursorDown(N=''):
     print '\r\033['+str(N)+'B',
 
 
-def babySit(commands, doExecute, maxAttempts=1, maxJobs=20, logFiles=None):
+def babySit(commands, doExecute, maxAttempts=1, maxJobs=3, logFiles=None):
     attempts={}
     nCommands = len(commands)
     jobs=[]
@@ -183,6 +183,13 @@ def rmdir(directory, doExecute=True):
         print "#",directory,"does not exist"
 
 
+def parseXRD(xrdFile):
+    xrdFileSplit = xrdFile.split("//")
+    url = "//".join(xrdFileSplit[0:2])+"/"
+    path = "/".join(xrdFileSplit[2:])
+    return url, path
+
+
 class jdl:
     def __init__(self, CMSSW=None, EOSOUTDIR="None", TARBALL=None, cmd=None, fileName=None, logPath = "./", logName = "condor_$(Cluster)_$(Process)"):
         self.fileName = fileName if fileName else str(np.random.uniform())[2:]+".jdl"
@@ -194,7 +201,7 @@ class jdl:
         self.universe = "vanilla"
         self.use_x509userproxy = "true"
         self.Executable = "nTupleAnalysis/scripts/condor.sh"
-        self.x509userproxy = "x509up_forCondor"
+        #self.x509userproxy = "x509up_forCondor"
         self.should_transfer_files = "YES"
         self.when_to_transfer_output = "ON_EXIT"
         self.Output = logPath+logName+".stdout"
@@ -207,7 +214,7 @@ class jdl:
         attributes=["universe",
                     "use_x509userproxy",
                     "Executable",
-                    "x509userproxy",
+                    #"x509userproxy",
                     "should_transfer_files",
                     "when_to_transfer_output",
                     "Output",
