@@ -1,4 +1,5 @@
 import os
+import subprocess
 import time
 import re
 from commandLineHelpers import *
@@ -8,23 +9,40 @@ class condor_job:
         self.schedd = schedd
         self.ID = ID
         self.done = False
+        self.line = ''
     
     def check(self):
-        tail = os.popen('condor_tail -name %s %s'%(self.schedd, self.ID)).read()
-        #split = re.split('\n\r',tail)
+        if self.done: return self.line
+        # args = ['/usr/local/bin/condor_tail','-maxbytes 256', '-name %s'%self.schedd, self.ID]
+        # res = subprocess.Popen(args, stdout=subprocess.PIPE)
+        # res.wait()
+        # if res.returncode:
+        #     self.done = True
+        #     line = '%s %10s >> %s'%(self.schedd, self.ID, 'FINISHED')
+        #     return line
+        # tail = res.stdout.read()
+
+        res = os.popen('condor_tail -maxbytes 256 -name %s %s'%(self.schedd, self.ID))
+        tail = res.read()
+        if res.close(): 
+            self.done=True
+            self.line = '%s %10s >> %s'%(self.schedd, self.ID, 'FINISHED')
+            return self.line
+
+        split = re.split('\n\r',tail)
         line = tail.encode('string-escape')
         line = line.split(r'\n')[-1]
         line = line.split(r'\r')[-1]
         line = str(line)
-        line = '%s %10s >> %s'%(self.schedd, self.ID, line)
-        return line
+        self.line = '%s %10s >> %s'%(self.schedd, self.ID, line)
+
+        return self.line
 
     def watch(self, timeout=1):
         start = time.time()
         while time.time()-start < timeout:
             line = self.check()
-            if not line:
-                self.done = True
+            if self.done:
                 break
             sys.stdout.write('\r'+line)
             sys.stdout.flush()
@@ -46,6 +64,7 @@ def get_jobs():
             ID = split[0]
             print schedd, ID
             jobs.append( condor_job(schedd, ID) )
+    print
     print '-'*20
     return jobs
 
@@ -55,7 +74,7 @@ jobs = get_jobs()
 
 nDone=0
 nJobs=len(jobs)
-while nDone < jobs:
+while nDone < nJobs:
     nDone = 0
     print "\033[K"
     for job in jobs:

@@ -15,6 +15,12 @@ except ImportError:
 
 ON_POSIX = 'posix' in sys.builtin_module_names
 
+def getCMSSW():
+    return os.getenv('CMSSW_VERSION')
+
+def getUSER():
+    return os.getenv('USER')
+
 
 def enqueue_output(out, queue, logFile):
     for line in iter(out.readline, b''):
