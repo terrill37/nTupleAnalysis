@@ -36,6 +36,7 @@ class condor_job:
         line = str(line)
         self.line = '%s %10s >> %s'%(self.schedd, self.ID, line)
 
+        time.sleep(0.1)
         return self.line
 
     def watch(self, timeout=1):
@@ -47,7 +48,6 @@ class condor_job:
             sys.stdout.write('\r'+line)
             sys.stdout.flush()
             #print split[-1]
-            time.sleep(0.1)
             
         
 def get_jobs():
@@ -60,6 +60,7 @@ def get_jobs():
         if not split: continue
         if "-- Schedd:" in line:
             schedd = split[2]
+        if "dagman" in line: continue
         if USER == split[1]:
             ID = split[0]
             print schedd, ID

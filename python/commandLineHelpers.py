@@ -163,15 +163,16 @@ def relaunchJobs(jobs, doExecute=True):
 
 
 def mkdir(directory, doExecute=True, xrd=False, url="root://cmseos.fnal.gov/"):
-    if not xrd:
+    if "root://" in directory or xrd:
+        url, path = parseXRD(directory)
+        cmd = "xrdfs "+url+" mkdir "+path
+        execute(cmd, doExecute)
+    else:
         if not os.path.isdir(directory):
             print "mkdir",directory
             if doExecute: os.mkdir(directory)
         else:
             print "#",directory,"already exists"
-    else:
-        cmd = "xrdfs "+url+" mkdir "+directory.replace(url,'')
-        execute(cmd, doExecute)
         
 
 def rmdir(directory, doExecute=True):
@@ -193,6 +194,7 @@ def parseXRD(xrdFile):
     xrdFileSplit = xrdFile.split("//")
     url = "//".join(xrdFileSplit[0:2])+"/"
     path = "/".join(xrdFileSplit[2:])
+    if path[0] != "/": path = "/"+path
     return url, path
 
 
@@ -240,40 +242,74 @@ class jdl:
 class dag:
     def __init__(self, parents=[], children=[], fileName=None):
         self.fileName = fileName if fileName else str(np.random.uniform())[2:]+".jdl"
-        self.iP = 1
-        self.iC = 1
+        # self.iP = 0
+        # self.iC = 0
+        self.iJ = 0
         self.iG = 0
-        self.parentJobs = []
-        self.childJobs = []
-        self.generations = ['A', 'B', 'C', 'D']
+        self.iGMax = 0
+        self.jobs = [[]]
+        # self.parentJobs = [[]]
+        # self.childJobs = [[]]
+        self.generations = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' #['A', 'B', 'C', 'D', 'E', 'F']
         
-        self.lines=[]
+        #self.lines=[]
+        self.jobLines=[]
+        self.genLines=[]
 
-    def addParent(self, JDL):
-        self.parentJobs.append( "%s%d"%(self.generations[self.iG], self.iP) )
-        self.lines.append( "JOB %s %s\n"%(self.parentJobs[-1], JDL.fileName) )
-        self.iP += 1
-        
-    def addParents(self, JDLs):
-        for JDL in JDLs: self.addParent(JDL)
+    def setGeneration(self, generation):
+        self.iG = generation
+        while len(self.jobs) <= self.iG:
+            self.jobs.append([])
 
-    def addChild(self, JDL):
-        self.childJobs.append( "%s%d"%(self.generations[self.iG+1], self.iC) )
-        self.lines.append( "JOB %s %s\n"%(self.childJobs[-1], JDL.fileName) )
-        self.iC += 1
+    def addJob(self, JDL):
+        self.iJ = len(self.jobs[self.iG])
+        self.jobs[self.iG].append( "%s%d"%(self.generations[self.iG], self.iJ) )
+        self.jobLines.append( "JOB %s %s\n"%(self.jobs[self.iG][self.iJ], JDL.fileName) )
+        if self.iG > self.iGMax: self.iGMax = copy( self.iG ) # keeps track of the latest non-empty generation
+    
+    def addJobs(self, JDLs):
+        for JDL in JDLs: self.addJobs(JDL)
+
+    # def addParent(self, JDL):
+    #     self.iP = len(self.parentJobs[self.iG])
+    #     self.parentJobs[self.iG].append( "%s%d"%(self.generations[self.iG], self.iP) )
+    #     self.jobLines.append( "JOB %s %s\n"%(self.parentJobs[self.iG][-1], JDL.fileName) )
         
-    def addChildren(self, JDLs):
-        for JDL in JDLs: self.addChild(JDL)
+    # def addParents(self, JDLs):
+    #     for JDL in JDLs: self.addParent(JDL)
+
+    # def addChild(self, JDL):
+    #     self.iC = len(self.childJobs[self.iG])
+    #     self.childJobs[self.iG].append( "%s%d"%(self.generations[self.iG+1], self.iC) )
+    #     self.jobLines.append( "JOB %s %s\n"%(self.childJobs[self.iG][-1], JDL.fileName) )
+        
+    # def addChildren(self, JDLs):
+    #     for JDL in JDLs: self.addChild(JDL)
 
     def addGeneration(self):
-        self.lines.append( "PARENT "+" ".join(self.parentJobs)+" CHILD "+" ".join(self.childJobs)+"\n" )
-        self.parentJobs = copy( self.childJobs )
-        self.childJobs = []
+        #self.genLines.append( "PARENT "+" ".join(self.parentJobs[self.iG])+" CHILD "+" ".join(self.childJobs[self.iG])+"\n" )
+        # try:
+        #     self.parentJobs[self.iG+1] = copy( self.childJobs[self.iG] )
+        #     self.childJobs[self.iG+1] = copy( self.childJobs[self.iG+1] )
+        # except IndexError:
+        #     self.parentJobs.append( copy( self.childJobs[self.iG] ) )
+        #     self.childJobs.append([])
         self.iG += 1
+        while len(self.jobs) <= self.iG:
+            self.jobs.append([])
 
     def write(self):
         f = open(self.fileName, 'w')
-        for line in self.lines:
+
+        for line in self.jobLines:
+            f.write(line)
+
+        for iG in range(len(self.jobs)-1):
+            if not self.jobs[iG]:   continue
+            if not self.jobs[iG+1]: continue
+            self.genLines.append( "PARENT "+" ".join(self.jobs[iG])+" CHILD "+" ".join(self.jobs[iG+1])+"\n" )
+
+        for line in self.genLines:
             f.write(line)
         
         
