@@ -256,6 +256,8 @@ class dag:
         self.jobLines=[]
         self.genLines=[]
 
+        self.written = False
+
     def setGeneration(self, generation):
         self.iG = generation
         while len(self.jobs) <= self.iG:
@@ -311,7 +313,13 @@ class dag:
 
         for line in self.genLines:
             f.write(line)
+
+        self.written = True
         
-        
+    def submit(self, doExecute=False):
+        if not self.jobLines: return
+        if not self.written: self.write()
+        cmd = "condor_submit_dag -f "+self.fileName
+        execute(cmd, doExecute)
         
         
