@@ -1,3 +1,4 @@
+from __future__ import print_function
 import time
 import textwrap
 from copy import copy
@@ -5,9 +6,9 @@ import os, re
 import sys
 import subprocess
 import shlex
+from pyxrootd import client
 import optparse
 import numpy as np
-from __future__ import print_function
 from threading import Thread
 try:
     from queue import Queue, Empty
@@ -163,7 +164,27 @@ def relaunchJobs(jobs, doExecute=True):
     return newJobs
 
 
+def parseXRD(xrdFile):
+    xrdFileSplit = xrdFile.split("//")
+    url = "//".join(xrdFileSplit[0:2])+"/"
+    path = "/".join(xrdFileSplit[2:])
+    if path[0] != "/": path = "/"+path
+    return url, path
+
+def exists(path):
+    if "root://" in path:
+        url, path = parseXRD(path)
+        fs=client.FileSystem(url)
+        return not fs.stat(path)[0]['status'] # status is 0 if file exists
+    else:
+        return os.path.exists(path)
+    
+
 def mkdir(directory, doExecute=True, xrd=False, url="root://cmseos.fnal.gov/"):
+    if exists(directory): 
+        print("#",directory,"already exists")
+        return
+        
     if "root://" in directory or xrd:
         url, path = parseXRD(directory)
         cmd = "xrdfs "+url+" mkdir "+path
@@ -172,31 +193,27 @@ def mkdir(directory, doExecute=True, xrd=False, url="root://cmseos.fnal.gov/"):
         if not os.path.isdir(directory):
             print("mkdir",directory)
             if doExecute: os.mkdir(directory)
-        else:
-            print("#",directory,"already exists")
+
+
+def mkpath(path, doExecute=True):
+    if exists(path):
+        print("#",directory,"already exists")
+        return
+        
+    url = ''
+    dirs = path.split("/")
+    thisDir = url
+    for d in dirs:
+        thisDir = thisDir+d+"/"
+        mkdir(thisDir, doExecute)
         
 
 def rmdir(directory, doExecute=True):
-    if not doExecute: 
-        print("rm -r",directory)
-        return
-    if "*" in directory:
-        execute("rm -r "+directory)
-        return
-    if os.path.isdir(directory):
-        execute("rm -r "+directory)
-    elif os.path.exists(directory):
-        execute("rm "+directory)
+    if exists(directory):
+        execute("rm -r "+directory, doExecute)
     else:
         print("#",directory,"does not exist")
 
-
-def parseXRD(xrdFile):
-    xrdFileSplit = xrdFile.split("//")
-    url = "//".join(xrdFileSplit[0:2])+"/"
-    path = "/".join(xrdFileSplit[2:])
-    if path[0] != "/": path = "/"+path
-    return url, path
 
 
 class jdl:
