@@ -197,7 +197,7 @@ def mkdir(directory, doExecute=True, xrd=False, url="root://cmseos.fnal.gov/"):
 
 def mkpath(path, doExecute=True):
     if exists(path):
-        print("#",directory,"already exists")
+        print("#",path,"already exists")
         return
         
     url = ''
