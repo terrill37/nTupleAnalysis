@@ -201,8 +201,10 @@ def mkpath(path, doExecute=True):
         return
         
     url = ''
-    dirs = path.split("/")
-    thisDir = url
+    if "root://" in path:
+        url, path = parseXRD(path)
+    dirs = [ x for x in path.split("/") if x]
+    thisDir = url+"/"
     for d in dirs:
         thisDir = thisDir+d+"/"
         mkdir(thisDir, doExecute)
@@ -213,6 +215,7 @@ def rmdir(directory, doExecute=True):
         execute("rm -r "+directory, doExecute)
     else:
         print("#",directory,"does not exist")
+
 
 
 
