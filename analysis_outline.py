@@ -61,9 +61,9 @@ def analysisStep1():
                'yourAnalysis/fileLists/signalB.txt']
     cmds = []
     for signal in signals:
-        cmd = "yourAnalysis/scripts/yourConfigScript.py -i "+signal
+        cmd = "python yourAnalysis/scripts/yourConfigScript.py -i "+signal
         if o.condor:
-            JDL = jdl(TARBALL=EOSTARBALL, cmd=cmd)
+            JDL = jdl(cmd, TARBALL=EOSTARBALL)
             DAG.addJob(JDL)
         else:
             cmds.append(cmd)
@@ -76,7 +76,7 @@ def analysisStep1():
     # An example post-processing step you might want to do is add together the output histogram files
     cmd = "hadd -f "+EOSOUTDIR+"signal/hists.root "+EOSOUTDIR+"signalA/hists.root "+EOSOUTDIR+"signalB/hists.root"
     if o.condor:
-        JDL = jdl(TARBALL=EOSTARBALL, cmd=cmd)
+        JDL = jdl(cmd, TARBALL=EOSTARBALL)
         DAG.addJob(JDL)
     else:
         execute(cmd, o.execute)

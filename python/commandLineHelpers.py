@@ -23,7 +23,9 @@ def getCMSSW():
 def getUSER():
     return os.getenv('USER')
 
-CMSSW = getCMSSW()
+DEFAULTCMSSW   = getCMSSW()
+USER           = getUSER()
+DEFAULTTARBALL = "root://cmseos.fnal.gov//store/user/"+USER+"/condor/"+DEFAULTCMSSW+".tgz"
 
 def enqueue_output(out, queue, logFile):
     for line in iter(out.readline, b''):
@@ -221,7 +223,7 @@ def rmdir(directory, doExecute=True):
 
 
 class jdl:
-    def __init__(self, CMSSW=CMSSW, EOSOUTDIR="None", TARBALL=None, cmd=None, fileName=None, logPath = "./", logName = "condor_$(Cluster)_$(Process)"):
+    def __init__(self, cmd=None, CMSSW=DEFAULTCMSSW, EOSOUTDIR="None", TARBALL=DEFAULTTARBALL, fileName=None, logPath = "./", logName = "condor_$(Cluster)_$(Process)"):
         self.fileName = fileName if fileName else str(np.random.uniform())[2:]+".jdl"
 
         self.CMSSW = CMSSW
