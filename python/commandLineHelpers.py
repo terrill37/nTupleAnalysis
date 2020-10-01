@@ -219,6 +219,7 @@ def rmdir(directory, doExecute=True):
 
 
 
+
 class jdl:
     def __init__(self, CMSSW=CMSSW, EOSOUTDIR="None", TARBALL=None, cmd=None, fileName=None, logPath = "./", logName = "condor_$(Cluster)_$(Process)"):
         self.fileName = fileName if fileName else str(np.random.uniform())[2:]+".jdl"

@@ -24,9 +24,6 @@ scramv1 b ProjectRename # this handles linking the already compiled code - do NO
 eval `scramv1 runtime -sh` # cmsenv is an alias not on the workers
 echo $CMSSW_BASE "is the CMSSW we have on the local worker node"
 #cd ${_CONDOR_SCRATCH_DIR}
-# export X509_USER_PROXY=./x509up_forCondor
-# echo "X509 user proxy"
-# echo $X509_USER_PROXY 
 pwd
 
 echo "${CMD[*]}"
@@ -42,7 +39,7 @@ if [ $EOSOUTDIR == "None" ]
 then
     echo "Done"
 else
-    ### Now that the cmsRun is over, there is one or more root files created
+    ### Now that the cmsRun is over, there is one or more root or h5 files created
     pwd
     echo "List all root files:"
     ls *.root
@@ -52,6 +49,13 @@ else
     countH5=`ls -1 *.h5 2>/dev/null | wc -l`
     echo "List all files:"
     ls -alh
+
+    if [ $countROOT == 0 ] && [ $countH5 == 0 ]
+    then
+	echo "failed to produce either *.root or *.h5"
+	echo "Throwing error"
+	exit 1
+    fi
 
     if [ $countROOT != 0 ]
     then 
@@ -89,5 +93,6 @@ else
 	    fi
 	    rm ${FILE}
 	done
-    fi 
+    fi
 fi #EOSOUTDIR?=None
+echo "Leaving condor.sh"
