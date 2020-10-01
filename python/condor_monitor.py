@@ -4,28 +4,41 @@ import time
 import re
 from commandLineHelpers import *
 
+ROWS, COLUMNS = os.popen('stty size', 'r').read().split()
+ROWS, COLUMNS = int(ROWS), int(COLUMNS)
+
 class condor_job:
     def __init__(self, schedd, ID):
         self.schedd = schedd
         self.ID = ID
         self.done = False
         self.line = ''
+        self.maxLines = 1
     
     def check(self):
         if self.done: return self.line
         args = ['condor_tail -maxbytes 1024 -name %s %s'%(self.schedd, self.ID)]
         res = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, executable='/bin/bash', universal_newlines=True)
         res.wait()
+
         if res.returncode:
             self.done = True
-            self.line = '%s %10s >> %s %d'%(self.schedd, self.ID, 'FINISHED: return code', res.returncode)
-            return self.line
+            #self.line = '%s %10s >> %s %d'%(self.schedd, self.ID, 'FINISHED: return code', res.returncode)
+            self.line += ' | FINISHED'#: return code %d'%(res.returncode)
+        else:
+            tail = res.stdout.read()
+            split = [line for line in tail.split('\n') if line]
+            try:
+                line = split[-1]
+            except IndexError:
+                line = ''
+            self.line = '%s %10s >> %s'%(self.schedd, self.ID, line)
+            time.sleep(0.1)
 
-        tail = res.stdout.read()
-        line = tail.split('\n')[-1]
-        self.line = '%s %10s >> %s'%(self.schedd, self.ID, line)
+        nLines = 1 + int(len(self.line)/COLUMNS)
+        self.maxLines = max(nLines, self.maxLines)
+        self.line += ('\n'+' '*COLUMNS)*(self.maxLines-nLines)
 
-        time.sleep(0.1)
         return self.line
 
     def watch(self, timeout=1):
@@ -45,6 +58,7 @@ def get_jobs():
     lines = q.split('\n')
     jobs = []
     for line in lines:
+        print line
         split = line.split()
         if not split: continue
         if "-- Schedd:" in line:
@@ -52,13 +66,14 @@ def get_jobs():
         if "dagman" in line: continue
         if USER == split[1]:
             ID = split[0]
-            print schedd, ID
+            #print schedd, ID
             jobs.append( condor_job(schedd, ID) )
 
+    print '-'*20
     if not jobs:
         print "No Jobs"
-    else:
-        print '-'*20
+    # else:
+    #     print '-'*20
     return jobs
 
     
@@ -70,15 +85,17 @@ while jobs:
     nJobs=len(jobs)
     while nDone < nJobs:
         nDone = 0
-        #print "\033[K"
+        nLines = 0
         for job in jobs:
             if job.done: 
                 nDone += 1
-            print "\033[K"+job.check()
-        moveCursorUp(nJobs)
-    moveCursorDown(100)
+            line = job.check()
+            nLines += job.maxLines
+            print "\033[K"+line
+        moveCursorUp(nLines)
+    moveCursorDown(ROWS)
 
     print '-'*20
-    time.sleep(1)
+    time.sleep(10)
     jobs = get_jobs()
 
