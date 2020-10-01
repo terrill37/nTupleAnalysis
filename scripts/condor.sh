@@ -24,17 +24,19 @@ scramv1 b ProjectRename # this handles linking the already compiled code - do NO
 eval `scramv1 runtime -sh` # cmsenv is an alias not on the workers
 echo $CMSSW_BASE "is the CMSSW we have on the local worker node"
 #cd ${_CONDOR_SCRATCH_DIR}
-export X509_USER_PROXY=./x509up_forCondor
-echo "X509 user proxy"
-echo $X509_USER_PROXY 
+# export X509_USER_PROXY=./x509up_forCondor
+# echo "X509 user proxy"
+# echo $X509_USER_PROXY 
 pwd
 
 echo "${CMD[*]}"
 eval "${CMD[*]}"
 CMDEXIT=$?
-
 echo
-echo "command exit code $CMDEXIT"
+if [[ $CMDEXIT -ne 0 ]]; then
+    echo "command exit code $CMDEXIT"
+    exit $CMDEXIT
+fi
 
 if [ $EOSOUTDIR == "None" ]
 then
