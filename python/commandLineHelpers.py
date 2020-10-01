@@ -23,6 +23,7 @@ def getCMSSW():
 def getUSER():
     return os.getenv('USER')
 
+CMSSW = getCMSSW()
 
 def enqueue_output(out, queue, logFile):
     for line in iter(out.readline, b''):
@@ -201,8 +202,10 @@ def mkpath(path, doExecute=True):
         return
         
     url = ''
-    dirs = path.split("/")
-    thisDir = url
+    if "root://" in path:
+        url, path = parseXRD(path)
+    dirs = [x for x in path.split("/") if x]
+    thisDir = url+'/'
     for d in dirs:
         thisDir = thisDir+d+"/"
         mkdir(thisDir, doExecute)
@@ -217,7 +220,7 @@ def rmdir(directory, doExecute=True):
 
 
 class jdl:
-    def __init__(self, CMSSW=None, EOSOUTDIR="None", TARBALL=None, cmd=None, fileName=None, logPath = "./", logName = "condor_$(Cluster)_$(Process)"):
+    def __init__(self, CMSSW=CMSSW, EOSOUTDIR="None", TARBALL=None, cmd=None, fileName=None, logPath = "./", logName = "condor_$(Cluster)_$(Process)"):
         self.fileName = fileName if fileName else str(np.random.uniform())[2:]+".jdl"
 
         self.CMSSW = CMSSW
@@ -235,6 +238,8 @@ class jdl:
         self.Log = logPath+logName+".log"
         self.Arguments = CMSSW+" "+EOSOUTDIR+" "+TARBALL+" "+cmd
         self.Queue = "1" # no equals sign in .jdl file
+
+        self.made = False
 
     def make(self):
         attributes=["universe",
@@ -255,6 +260,8 @@ class jdl:
         f.write('+DesiredOS="SL7"\n')
         f.write("Queue "+str(self.Queue)+"\n")    
         f.close()
+
+        self.made = True
 
     
 class dag:
@@ -277,6 +284,7 @@ class dag:
             self.jobs.append([])
 
     def addJob(self, JDL):
+        if not JDL.made: JDL.make()
         self.iJ = len(self.jobs[self.iG])
         self.jobs[self.iG].append( "%s%d"%(self.generations[self.iG], self.iJ) )
         self.jobLines.append( "JOB %s %s\n"%(self.jobs[self.iG][self.iJ], JDL.fileName) )
