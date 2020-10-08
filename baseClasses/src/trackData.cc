@@ -20,9 +20,14 @@ track::track(UInt_t i, trackData* data){
   e = p.E();
 
   dxy                  = data->dxy                  [i];
+  
   dz                   = data->dz                   [i];
+
   dxyError             = data->dxyError             [i];
+  
   dzError              = data->dzError              [i];
+  dzSig                = data->dzSig                [i];
+  
   sign2D               = data->sign2D               [i];
   sign3D               = data->sign3D               [i];
   length               = data->length               [i];
@@ -71,10 +76,16 @@ trackData::trackData(std::string name, TTree* tree){
 
   //inputBranch(tree, (name+"nTrack").c_str(), nTrack );    
   std::cout << "Creating trackData " << name << std::endl;
+  std::cout << "HELLO" << std::endl;
   inputBranch(tree, (name+"Track_dxy"                  ).c_str(),          dxy                   );
+  
   inputBranch(tree, (name+"Track_dz"                   ).c_str(),          dz                    );
+  
   inputBranch(tree, (name+"Track_dxyError"             ).c_str(),          dxyError              );
+  
   inputBranch(tree, (name+"Track_dzError"              ).c_str(),          dzError               );
+  inputBranch(tree, (name+"Track_dzSig"                ).c_str(),          dzSig                 );
+  
   inputBranch(tree, (name+"Track_sign2D"               ).c_str(),          sign2D                );
   inputBranch(tree, (name+"Track_sign3D"               ).c_str(),          sign3D                );
   inputBranch(tree, (name+"Track_length"               ).c_str(),          length                );

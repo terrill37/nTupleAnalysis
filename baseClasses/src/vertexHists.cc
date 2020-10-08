@@ -13,7 +13,9 @@ vertexHists::vertexHists(std::string name, fwlite::TFileService& fs, std::string
 
   x   = dir.make<TH1F>("x",   (name+"/x;   "+title+" Vertex X;   Entries").c_str(), 100,-0.01,0.01);
   y   = dir.make<TH1F>("y",   (name+"/y;   "+title+" Vertex Y;   Entries").c_str(), 100,-0.01,0.01);
+  
   z   = dir.make<TH1F>("z",   (name+"/z;   "+title+" Vertex Z;   Entries").c_str(), 100,-20,20);
+  
   ex  = dir.make<TH1F>("ex",  (name+"/ex;  "+title+" Vertex X;   Entries").c_str(), 100,-1e-5,0.001);
   ey  = dir.make<TH1F>("ey",  (name+"/ey;  "+title+" Vertex Y;   Entries").c_str(), 100,-1e-5,0.001);
   ez  = dir.make<TH1F>("ez",  (name+"/ez;  "+title+" Vertex Z;   Entries").c_str(), 100,-1e-5,0.005);
@@ -27,6 +29,7 @@ vertexHists::vertexHists(std::string name, fwlite::TFileService& fs, std::string
 void vertexHists::makeDiffHists(std::string name, fwlite::TFileService& fs, std::string title) {
   dx   = dir.make<TH1F>("dx",   (name+"/dx;   "+title+" Vertex #Delta X;   Entries").c_str(), 100,-0.005,0.005);
   dy   = dir.make<TH1F>("dy",   (name+"/dy;   "+title+" Vertex #Delta Y;   Entries").c_str(), 100,-0.005,0.005);
+  
   dz_s = dir.make<TH1F>("dz_s", (name+"/dz_s; "+title+" Vertex #Delta Z;   Entries").c_str(), 100,-0.5,0.5);
   dz   = dir.make<TH1F>("dz",   (name+"/dz;   "+title+" Vertex #Delta Z;   Entries").c_str(), 100,-2,2);
   dz_l = dir.make<TH1F>("dz_l", (name+"/dz_l; "+title+" Vertex #Delta Z;   Entries").c_str(), 100,-20,20);
@@ -96,6 +99,7 @@ void vertexHists::FillDiffHists(const std::vector<vertexPtr> &vtxs1, const std::
 
     dx       -> Fill(vtx1->x - vtx2->x   , weight);
     dy       -> Fill(vtx1->y - vtx2->y   , weight);
+    
     dz_s     -> Fill(vtx1->z - vtx2->z   , weight);
     dz       -> Fill(vtx1->z - vtx2->z   , weight);
     dz_l     -> Fill(vtx1->z - vtx2->z   , weight);

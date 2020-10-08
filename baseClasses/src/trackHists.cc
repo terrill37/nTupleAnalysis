@@ -27,8 +27,20 @@ void trackHists::makeHists(std::string name, TFileDirectory& dir, std::string ti
   
   ip2d_l = dir.make<TH1F>("ip2d_l","ip2d;IP2D [cm]",100,-0.2,0.2);
   ip2d   = dir.make<TH1F>("ip2d",  "ip2d;IP2D [cm]",100,-0.05,0.05);
+  
+  dz_s      = dir.make<TH1F>("dz_s",     "dz_s;dz_s         "     , 1000,  -0.5,   0.5);
+  dzError = dir.make<TH1F>("dzError",  "dzError;dzError"        , 1000,  -0.001, 0.1);
+  dzSig_s   = dir.make<TH1F>("dzSig_s",    "dzSig_s;dzSig_S"      , 1000,  -0.5,   0.5);
+  
+  dz_m      = dir.make<TH1F>("dz_m",      "dz_m;dz_m          "   , 10000, -5.0,   5.0);
+  //dzError_m = dir.make<TH1F>("dzError_m", "dzError_m;dzError_m"   , 10000, -0.001, 0.2);
+  dzSig_m   = dir.make<TH1F>("dzSig_m",   "dzSig_m;dzSig_m"       , 10000, -0.5,   0.5);
+  
+  dz_l      = dir.make<TH1F>("dz_l",      "dz_l;dz_l          "   , 20000, -10.0,  10.0);
+  //dzError_l = dir.make<TH1F>("dzError_l", "dzError_l;dzError_l"   , 20000, -0.001, 0.4);
+  dzSig_l   = dir.make<TH1F>("dzSig_l",   "dzSig_l;dzSig_l"       , 20000, -10.0,  10.0);
 
-            
+
   Double_t nBinsPt[11] = {0,2,4,6,8,10,15,20,30,40,60};
   ip2d_vs_pt   = dir.make<TH2F>("ip2d_vs_pt",  "ip2d_vs_pt;P_T [GeV]; IP2D [cm]",10,nBinsPt,100,-0.03,0.03);
 
@@ -53,7 +65,7 @@ void trackHists::makeHists(std::string name, TFileDirectory& dir, std::string ti
   Double_t binsPt[28] = {0.9, 1.116, 1.3838, 1.716, 2.1278, 2.6385, 3.2717, 4.0569, 5.0306, 6.2379, 7.735, 9.5914, 11.8933, 14.7477, 18.2872, 22.6761, 28.1183, 34.8667, 43.2347, 53.6111, 66.4777, 82.4324, 102.2162, 126.748, 157.1676, 194.8878, 241.6609, 299.6595};
   trackPt_logx               = dir.make<TH1F>("Pt_logx", "trackPt;track p_{T} [GeV];Entries", 27, binsPt);
   
-  trackEta                   = dir.make<TH1F>("Eta"            ,    "trackEta;track #eta;Entries", 100, -2.6, 2.6);            
+  trackEta                   = dir.make<TH1F>("Eta1"            ,    "trackEta;track #eta;Entries", 100, -2.6, 2.6);            
   trackPhi                   = dir.make<TH1F>("Phi"            ,    "trackPhi;track #phi;Entries", 100, -3.2, 3.2);            
   trackPPar                  = dir.make<TH1F>("PPar"           ,    "trackPPar;track PPar [GeV];Entries",60, 0, 60);           
   trackDeltaR                = dir.make<TH1F>("DeltaR"         ,    "trackDeltaR;track #DeltaR;Entries", 160, -0.05, 0.35);         
@@ -143,6 +155,18 @@ void trackHists::Fill(const std::shared_ptr<track> &track, float weight){
   
   ip2d_err  ->Fill(track->IP2Derr,weight);
   ip2d_err_l->Fill(track->IP2Derr,weight);
+  
+  dz_s      ->Fill(track->dz,weight);
+  dzError ->Fill(track->dzError,weight);
+  dzSig_s   ->Fill(track->dz / track->dzError, weight);
+
+  dz_m      ->Fill(track->dz,weight);
+  //dzError_m ->Fill(track->dzError,weight);
+  dzSig_m   ->Fill(track->dz / track->dzError, weight);
+
+  dz_l      ->Fill(track->dz,weight);
+  //dzError_l ->Fill(track->dzError,weight);
+  dzSig_l   ->Fill(track->dz / track->dzError, weight);
 
   float pt = track->p.Pt();
   float eta = track->p.Eta();
