@@ -67,6 +67,10 @@ namespace nTupleAnalysis {
     TH1F* trkTag_trackEta           ;       
     TH1F* trkTag_trackEta_l           ;       
     TH1F* trkTag_trackPhi           ;       
+    
+    //TH1F* trkTag_dz ;
+    //TH1F* trkTag_dzSig ;
+
     TH1F* trkTag_trackPtRel      ; 
     TH1F* trkTag_trackDeltaR        ;       
     TH1F* trkTag_trackDeltaR_l        ;       

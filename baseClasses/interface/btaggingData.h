@@ -21,10 +21,13 @@ namespace nTupleAnalysis {
 
     float x                 ;
     float y                 ;
+    
     float z                 ;
+    
     float ex                ;    
     float ey                ;
     float ez                ;
+    
     float chi2              ;
     float ndf               ;
     float flight            ;
@@ -68,6 +71,10 @@ namespace nTupleAnalysis {
     float pt;
     float trackEta	   ;
     float trackPhi	   ;
+    
+    //float dz           ;
+    //float dzSig        ;
+    
     float m;
     float e;
     TLorentzVector p;
@@ -206,6 +213,10 @@ namespace nTupleAnalysis {
     float trackMomentum	    [MAXNTRK];
     float trackEta	    [MAXNTRK];
     float trackPhi	    [MAXNTRK];
+    
+    //float dz            [MAXNTRK];
+    //float dzSig         [MAXNTRK];
+    
     float trackPtRel	    [MAXNTRK];
     float trackPPar	    [MAXNTRK];
     float trackEtaRel	    [MAXNTRK];

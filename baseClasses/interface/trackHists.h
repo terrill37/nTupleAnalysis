@@ -28,7 +28,18 @@ namespace nTupleAnalysis {
     TH1F* ip2d_l ;
     TH1F* ip2d   ;
     
+    TH1F* dz_s;
+    TH1F* dzError;
+    TH1F* dzSig_s;
     
+    TH1F* dz_m;
+    //TH1F* dzError_m;
+    TH1F* dzSig_m;
+
+    TH1F* dz_l;
+    //TH1F* dzError_l;
+    TH1F* dzSig_l;
+
     TH2F* ip2d_vs_pt;
 
     TH2F* ip2d_vs_eta;

@@ -25,9 +25,14 @@ namespace nTupleAnalysis {
     TLorentzVector p;
 
     float dxy                  ;
+    
     float dz                   ;
+
     float dxyError             ;
+    
     float dzError              ;
+    float dzSig                ;
+
     int   sign2D               ;
     int   sign3D               ;
     float length               ;
@@ -95,9 +100,14 @@ namespace nTupleAnalysis {
 
     //int   nTrack;
     float dxy                   [MAXNTRKS];
+    
     float dz                    [MAXNTRKS];
+    
     float dxyError              [MAXNTRKS];
+    
     float dzError               [MAXNTRKS];
+    float dzSig                 [MAXNTRKS];
+
     int   sign2D                [MAXNTRKS];
     int   sign3D                [MAXNTRKS];
     float length                [MAXNTRKS];

@@ -22,7 +22,9 @@ namespace nTupleAnalysis {
 
     TH1F* x     ;
     TH1F* y     ;
+    
     TH1F* z     ;
+    
     TH1F* ex    ;
     TH1F* ey    ;
     TH1F* ez    ;
@@ -36,8 +38,11 @@ namespace nTupleAnalysis {
     TH1F*  dx   ;
     TH1F*  dy   ;
     TH1F*  dz_s ;
+    
     TH1F*  dz   ;
     TH1F*  dz_l ;
+    TH1F*  dzSig;
+
     TH1F*  dex   ;
     TH1F*  dey   ;
     TH1F*  dez   ;
