@@ -1,7 +1,4 @@
-// Uncomment for SLC6
-// #define NTUPLEANALYSIS_SLC6 1
-
-#if defined NTUPLEANALYSIS_SLC6
+#if SLC6 == 1 //Defined in nTupleAnalysis/baseClasses/BuildFile.xml
 
 #include "nTupleAnalysis/baseClasses/interface/myParameterSetReader.h"
 #include "FWCore/PythonParameterSet/interface/PythonProcessDesc.h"

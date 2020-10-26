@@ -1,7 +1,5 @@
-// Uncomment for SLC6
-// #define NTUPLEANALYSIS_SLC6 1
+#if SLC6 == 1 //Defined in nTupleAnalysis/baseClasses/BuildFile.xml
 
-#if defined NTUPLEANALYSIS_SLC6
 
 #include "nTupleAnalysis/baseClasses/interface/myMakeParameterSets.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
