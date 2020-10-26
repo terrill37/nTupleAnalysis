@@ -23,6 +23,10 @@ jetHists::jetHists(std::string _name, fwlite::TFileService& fs, std::string _tit
     deepCSV_l   = dir.make<TH1F>("DeepCSV_l",   (name+"/DeepCSV_l; "   +title+" DeepCSV; Entries").c_str(), 120,-0.2,1.2);
     deepCSVb_l  = dir.make<TH1F>("DeepCSVb_l",   (name+"/DeepCSVb_l; "   +title+" DeepCSVb; Entries").c_str(), 120,-0.2,1.2);
     deepCSVbb_l = dir.make<TH1F>("DeepCSVbb_l",   (name+"/DeepCSVbb_l; "   +title+" DeepCSVbb; Entries").c_str(), 120,-0.2,1.2);
+    deepJet_l   = dir.make<TH1F>("DeepJet_l",   (name+"/DeepJet_l; "   +title+" DeepJet; Entries").c_str(), 120,-0.2,1.2);
+    deepJetb_l  = dir.make<TH1F>("DeepJetb_l",   (name+"/DeepJetb_l; "   +title+" DeepJetb; Entries").c_str(), 120,-0.2,1.2);
+    deepJetbb_l = dir.make<TH1F>("DeepJetbb_l",   (name+"/DeepJetbb_l; "   +title+" DeepJetbb; Entries").c_str(), 120,-0.2,1.2);
+    deepJetlepb_l = dir.make<TH1F>("DeepJetlepb_l",   (name+"/DeepJetlepb_l; "   +title+" DeepJetlepb; Entries").c_str(), 120,-0.2,1.2);
     SoftMu      = dir.make<TH1F>("SoftMu",      (name+"/SoftMu; "    +title+" SoftMu; Entries").c_str(), 120,-0.2,1.2);
     nSoftMu     = dir.make<TH1F>("nSoftMu",     (name+"/nSoftMu;    " +title+" Number of Soft Mu.; Entries").c_str(),  11,-0.5,10.5);
     SoftEl      = dir.make<TH1F>("SoftEl",      (name+"/SoftEl; "    +title+" SoftEl; Entries").c_str(), 120,-0.2,1.2);
@@ -39,6 +43,7 @@ jetHists::jetHists(std::string _name, fwlite::TFileService& fs, std::string _tit
       matched_dR       = dir.make<TH1F>("matched_dR",      (name+"/matched_dR      ;#DeltaR(Online,Offline);;Entries"   ).c_str()  ,100, 0,0.45);
       matched_dcsv     = dir.make<TH1F>("matched_dcsv",    (name+"/matched_dcsv;CSV-CSV^{matched};Entries"              ).c_str()  ,100,-1,1);
       matched_dDeepcsv = dir.make<TH1F>("matched_dDeepcsv",(name+"/matched_dDeepcsv;DeepCSV-DeepCSV^{matched};Entries"  ).c_str()  ,100,-1,1);
+      matched_dDeepjet = dir.make<TH1F>("matched_dDeepjet",(name+"/matched_dDeepjet;Deepjet-DeepJet^{matched};Entries"  ).c_str()  ,100,-1,1);
       matched_dprobB = dir.make<TH1F>("matched_dprobB",(name+"/matched_dprobB;probB-probB^{matched};Entries"  ).c_str()  ,100,-1,1);
     }
 
@@ -109,6 +114,14 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
   deepCSV_l  ->Fill(jet->DeepCSV    ,weight);
   deepCSVb_l  ->Fill(jet->DeepCSVb    ,weight);
   deepCSVbb_l  ->Fill(jet->DeepCSVbb    ,weight);
+
+  if(jet->DeepJet<=1.000001){
+      deepJet_l  ->Fill(jet->DeepJet    ,weight);
+      deepJetb_l  ->Fill(jet->DeepJetB    ,weight);
+      deepJetbb_l  ->Fill(jet->DeepJetBB    ,weight);
+      deepJetlepb_l  ->Fill(jet->DeepJetLEPB    ,weight);
+      // deepJetbb_l  ->Fill(jet->deepFlavBb    ,weight);
+    }
 
   SoftMu     ->Fill(jet->SoftMu     ,weight);
   nSoftMu    ->Fill(jet->nSM        ,weight);
@@ -206,6 +219,7 @@ void jetHists::Fill(const std::shared_ptr<jet> &jet, float weight){
       matched_dR       ->Fill(jet->p.DeltaR(matchedJet->p),weight);
       matched_dcsv     ->Fill(jet->CSVv2 - matchedJet->CSVv2,weight);
       matched_dDeepcsv ->Fill(jet->DeepCSV - matchedJet->DeepCSV,weight);
+      matched_dDeepjet ->Fill(jet->DeepJet - matchedJet->DeepJet,weight);
       matched_dprobB ->Fill(jet->probB - matchedJet->probB,weight);
     }
   }

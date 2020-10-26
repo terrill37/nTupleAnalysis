@@ -33,12 +33,27 @@ jet::jet(UInt_t i, jetData* data){
 
   deepB     = data->deepB[i];
   CSVv2     = data->CSVv2[i];
-  deepFlavB = data->deepFlavB[i];
-  probB = data->probB[i];
-  float deepFlavB_alt = data->deepFlavourB[i] + data->deepFlavourBB[i] + data->deepFlavourLEPB[i];
-  if(deepFlavB == 0)
-    deepFlavB = deepFlavB_alt;
+  // deepFlavB = data->deepFlavB[i];
+  // deepFlavB = data->deepFlavourB[i];
+  // probB = data->probB[i];
+  // float deepFlavB_alt = data->deepFlavourB[i] + data->deepFlavourBB[i] + data->deepFlavourLEPB[i];
+  // if(deepFlavB == 0)
+  //   deepFlavB = deepFlavB_alt;
 
+
+  DeepJetB = data->deepFlavourB[i];
+  DeepJetBB = data->deepFlavourBB[i];
+  DeepJetLEPB = data->deepFlavourLEPB[i];
+  DeepJet = DeepJetB+DeepJetBB+DeepJetLEPB;
+
+  if(DeepJetB < 0)
+    DeepJetB = -0.1;
+  if(DeepJetBB < 0)
+    DeepJetBB = -0.1;
+  if(DeepJetLEPB < 0)
+    DeepJetLEPB = -0.1;
+  if(DeepJet < 0)
+    DeepJet = -0.1;
 
   // Normalizize the underflow
   if(CSVv2 < 0)
@@ -509,6 +524,10 @@ void jetData::writeJets(std::vector< std::shared_ptr<jet> > outputJets){
     this->deepB[i]	      = thisJet->deepB   ;
     this->CSVv2[i]	      = thisJet->CSVv2   ;
     this->deepFlavB[i]        = thisJet->deepFlavB;
+    this->DeepJetB[i]        = thisJet->DeepJetB;
+    this->DeepJetBB[i]        = thisJet->DeepJetBB;
+    this->DeepJetLEPB[i]        = thisJet->DeepJetLEPB;
+    this->DeepJet[i]        = thisJet->DeepJet;
     this->probB[i]        = thisJet->probB;
 
     this->puId[i] = thisJet->puId;

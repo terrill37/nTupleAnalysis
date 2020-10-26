@@ -33,6 +33,10 @@ namespace nTupleAnalysis {
     TH1F*   deepCSV_l    ;
     TH1F*   deepCSVb_l    ;
     TH1F*   deepCSVbb_l    ;
+    TH1F*   deepJet_l    ;
+    TH1F*   deepJetb_l    ;
+    TH1F*   deepJetbb_l    ;
+    TH1F*   deepJetlepb_l    ;
 
     TH1F*   SoftMu     ;
     TH1F*   nSoftMu        ;
@@ -56,6 +60,7 @@ namespace nTupleAnalysis {
     TH1F* matched_dR       ;
     TH1F* matched_dcsv     ;
     TH1F* matched_dDeepcsv ;
+    TH1F* matched_dDeepjet ;
     TH1F* matched_dprobB ;
 
     TH1F* matched_dRAll    = NULL ;
