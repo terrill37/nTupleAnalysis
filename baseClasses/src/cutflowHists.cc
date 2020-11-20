@@ -13,6 +13,8 @@ cutflowHists::cutflowHists(std::string name, fwlite::TFileService& fs) {
   weighted = dir.make<TH1F>("weighted", (name+"/weighted; ;Entries").c_str(),  1,1,2);
   weighted->SetCanExtend(1);
   weighted->GetXaxis()->FindBin("all");
+
+//  test = dir.make<TH1F>("test", (name+"/test; ;Entries").c_str(), 1, 1, 2);
 } 
 
 void cutflowHists::Fill(std::string cut, float weight){

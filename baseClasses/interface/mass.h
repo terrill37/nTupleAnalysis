@@ -21,6 +21,7 @@ namespace nTupleAnalysis {
     mass(std::string, fwlite::TFileService&);
     void Fill(const std::shared_ptr<jet>&, float);
     void FillMass(const float);
+    void FillHt(const float);
     //void AddCut(std::string cut);
     ~mass(); 
 
