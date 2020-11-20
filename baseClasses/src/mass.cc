@@ -24,7 +24,7 @@ void mass::FillMass(const float mass_val){
   return;
 }
 
-void mass::FillHt(const float mass_val){
+void mass::FillHt(const float Ht_val){
     Ht -> Fill(Ht_val);
     return;
 }
