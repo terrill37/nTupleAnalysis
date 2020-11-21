@@ -16,12 +16,17 @@ namespace nTupleAnalysis {
     
     TH1F* DeepCSV;
     TH1F* invariant_mass;
-    TH1F* Ht; 
+    TH1F* Ht;
+    TH1F* pt_1;
+    TH1F* pt_2;
+    TH1F* pt_3;
+    TH1F* pt_4;
 
     mass(std::string, fwlite::TFileService&);
     void Fill(const std::shared_ptr<jet>&, float);
     void FillMass(const float);
     void FillHt(const float);
+    void Fillpts(std::vector<float>);
     //void AddCut(std::string cut);
     ~mass(); 
 
