@@ -16,7 +16,7 @@ namespace nTupleAnalysis {
     TH1F* full;
     TH1F* pt_all;
     TH1F* pt_cut;
-    TH1F* pt_inital;
+    TH1F* pt_initial;
 
     //TH1F* cutL1;
 

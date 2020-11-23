@@ -9,7 +9,7 @@ triggers::triggers(std::string name, fwlite::TFileService& fs) {
   full = dir.make<TH1F>("full", (name+"/test; ;Entries").c_str(), 64, 0, 64);
   pt_all = dir.make<TH1F>("pt_all", (name+"/test; Entries").c_str(), 100, 0, 1000);
   pt_cut = dir.make<TH1F>("pt_cut", (name+"/test; Entries").c_str(), 100, 0, 1000);
-  pt_inital = dir.make<TH1F>("pt_initial", (name+"/test; Entries").c_str(), 100, 0, 1000); 
+  pt_initial = dir.make<TH1F>("pt_initial", (name+"/test; Entries").c_str(), 100, 0, 1000); 
  
  // cutL1  = dir.make<TH1F>("cutL1", (name+"/test; ;Entries").c_str(), 64, 0, 64);
 }
