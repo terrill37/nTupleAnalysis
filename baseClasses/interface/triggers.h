@@ -14,6 +14,10 @@ namespace nTupleAnalysis {
     TFileDirectory dir;
     
     TH1F* full;
+    TH1F* pt_all;
+    TH1F* pt_cut;
+
+
     //TH1F* cutL1;
 
     triggers(std::string, fwlite::TFileService&);
