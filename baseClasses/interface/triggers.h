@@ -16,7 +16,7 @@ namespace nTupleAnalysis {
     TH1F* full;
     TH1F* pt_all;
     TH1F* pt_cut;
-
+    TH1F* pt_inital;
 
     //TH1F* cutL1;
 
@@ -25,6 +25,7 @@ namespace nTupleAnalysis {
     void AddCut(std::string cut);
     void Fillpt_all(float);
     void Fillpt_cut(float);
+    void Fillpt_initial(float);
     ~triggers(); 
 
   };
