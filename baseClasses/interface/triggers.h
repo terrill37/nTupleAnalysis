@@ -19,6 +19,8 @@ namespace nTupleAnalysis {
     triggers(std::string, fwlite::TFileService&);
     void Fill(long unsigned int);
     void AddCut(std::string cut);
+    void Fillpt_all(float);
+    void Fillpt_cut(float);
     ~triggers(); 
 
   };
