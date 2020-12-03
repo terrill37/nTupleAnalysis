@@ -21,6 +21,12 @@ namespace nTupleAnalysis {
     TH1F* pt_2;
     TH1F* pt_3;
     TH1F* pt_4;
+    
+    TH1F* pt_1_cut;
+    TH1F* pt_2_cut;
+    TH1F* pt_3_cut;
+    TH1F* pt_4_cut;
+   
 
     mass(std::string, fwlite::TFileService&);
     void Fill(const std::shared_ptr<jet>&, float);

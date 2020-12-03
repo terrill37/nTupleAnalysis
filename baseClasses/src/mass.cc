@@ -12,7 +12,13 @@ mass::mass(std::string name, fwlite::TFileService& fs) {
   pt_1 = dir.make<TH1F>("pt_1", (name+"/pt_1; ;Entries").c_str(), 100, 0, 1000);
   pt_2 = dir.make<TH1F>("pt_2", (name+"/pt_2; ;Entries").c_str(), 100, 0, 1000);
   pt_3 = dir.make<TH1F>("pt_3", (name+"/pt_3; ;Entries").c_str(), 100, 0, 1000);
-  pt_4 = dir.make<TH1F>("pt_4", (name+"/pt_4; ;Entries").c_str(), 100, 0, 1000);
+  pt_4 = dir.make<TH1F>("pt_4", (name+"/pt_4; ;Entries").c_str(), 50, 0, 500);
+
+  pt_1_cut = dir.make<TH1F>("pt_1_cut", (name+"/pt_1_cut; ;Entries").c_str(), 100, 0, 1000);
+  pt_2_cut = dir.make<TH1F>("pt_2_cut", (name+"/pt_2_cut; ;Entries").c_str(), 100, 0, 1000);
+  pt_3_cut = dir.make<TH1F>("pt_3_cut", (name+"/pt_3_cut; ;Entries").c_str(), 100, 0, 1000);
+  pt_4_cut = dir.make<TH1F>("pt_4_cut", (name+"/pt_4_cut; ;Entries").c_str(), 50, 0, 500);
+
 }
 
 
@@ -38,6 +44,19 @@ void mass::Fillpts(std::vector<float> pts){
     pt_2 -> Fill(pts.at(1));
     pt_3 -> Fill(pts.at(2));
     pt_4 -> Fill(pts.at(3));
+    
+    pt_4_cut -> Fill(pts.at(3));
+    if(pts.at(3)>0){
+        pt_3_cut -> Fill(pts.at(2));
+
+        if(pts.at(2)>0){
+            pt_2_cut -> Fill(pts.at(1));
+
+            if(pts.at(0)>0){
+                pt_1_cut -> Fill(pts.at(0));
+            }
+        }
+    }
     return;
 }
 
