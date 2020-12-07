@@ -4,12 +4,14 @@
 
 using namespace nTupleAnalysis;
 
-truthData::truthData(TChain* t, bool d){
+truthData::truthData(TChain* t, bool d, std::string truthName){
   tree  = t;
   debug = d;
-
-  truthParticles  = new truthParticle("GenPart",  tree, true);
+  
+  truthParticles  = new truthParticle(truthName,  tree, true);
+  
 } 
+
 
 void truthData::update(){
   if(debug) std::cout<<"Reset truthData"<<std::endl;
