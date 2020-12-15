@@ -217,8 +217,31 @@ jet::jet(UInt_t i, jetData* data){
       }
     }
   }
+  //if(debug) cout<<data->m_loadGenJets<<endl;
+  if(data->m_loadGenJets){ 
+    genJet_p = TLorentzVector();
+    genJet_p.SetPtEtaPhiM(data->GenJet_pt[i],
+                          data->GenJet_eta[i],
+                          data->GenJet_phi[i],
+                          data->GenJet_m[i]);
+    //flavour     = data->flavour[i];
+    //cout<<data->isB[i]<<endl;
+    if(data->isB[i] || data->isBB[i] || data->isGBB[i]){
+      //  cout<<"is B"<<endl;
+        flavour = 5;
+    }
 
+    else if(data->isC[i] || data->isGCC[i] || data->isCC[i]){
+        //cout<<"is C"<<endl;
+        flavour = 4;
+    }
 
+    else{
+        //cout<<"is undefined"<<endl;
+        flavour = 0;
+    }
+
+  }
 
   if(data->m_isMC && data->m_btagCalibrationTool){
     SF = data->getSF(eta, pt, DeepCSV, hadronFlavour);
@@ -670,8 +693,32 @@ void jetData::connectBranches(bool readIn, TTree* tree, std::string JECSyst){
       if(nFirstTrkTagVarCode != -1 && nLastTrkTagVarCode != -1){
 	btagData->initTrkTagVar(m_prefix, tree);
       }
+    
     }
+    if(m_jetDetailLevel.find("GenJet") != std::string::npos){
+      m_loadGenJets = true;
+                                   //jetName+
+      connectBranchArr(readIn, tree, jetName+"_GenJet_pt" ,   GenJet_pt,  NjetName,  "F");
+      connectBranchArr(readIn, tree, jetName+"_GenJet_eta",   GenJet_eta, NjetName,  "F");
+      connectBranchArr(readIn, tree, jetName+"_GenJet_phi",   GenJet_phi, NjetName,  "F");
+      connectBranchArr(readIn, tree, jetName+"_GenJet_mass",  GenJet_m,   NjetName,  "F");
+      
+      connectBranchArr(readIn, tree,jetName+ "_isB",         isB,        NjetName, "I");
+      connectBranchArr(readIn, tree,jetName+ "_isGBB",       isGBB,      NjetName, "I");
+      connectBranchArr(readIn, tree,jetName+ "_isBB",        isBB,       NjetName, "I");
+      connectBranchArr(readIn, tree,jetName+ "_isC",         isC,        NjetName, "I");
+      connectBranchArr(readIn, tree,jetName+ "_isGCC",       isGCC,      NjetName, "I");
+      connectBranchArr(readIn, tree,jetName+ "_isCC",        isCC,       NjetName, "I");
+      connectBranchArr(readIn, tree,jetName+ "_isTau",       isTau,      NjetName, "I");
+      connectBranchArr(readIn, tree,jetName+ "_isG",         isG,        NjetName, "I");
+      connectBranchArr(readIn, tree,jetName+ "_isUndefined", isUndefined,NjetName, "I");
+      connectBranchArr(readIn, tree,jetName+ "_isUD",        isUD,       NjetName, "I");
+      connectBranchArr(readIn, tree,jetName+ "_isS",         isS,        NjetName, "I");
+
+    }
+
   }
+
 
 
   return ;

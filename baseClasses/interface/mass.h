@@ -14,7 +14,7 @@ namespace nTupleAnalysis {
   public:
     TFileDirectory dir;
     
-    TH1F* DeepCSV;
+    TH1F* flavour;
     TH1F* invariant_mass;
     TH1F* Ht;
     TH1F* pt_1;
@@ -29,7 +29,7 @@ namespace nTupleAnalysis {
    
 
     mass(std::string, fwlite::TFileService&);
-    void Fill(const std::shared_ptr<particle>&, float);
+    void Fill(const std::shared_ptr<jet>&, float);
     void FillMass(const float);
     void FillHt(const float);
     void Fillpts(std::vector<float>);

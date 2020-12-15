@@ -6,7 +6,7 @@ using namespace nTupleAnalysis;
 mass::mass(std::string name, fwlite::TFileService& fs) {
 
   dir = fs.mkdir(name);
-  DeepCSV = dir.make<TH1F>("deepCSV", (name+"/deepCSV; ;Entries").c_str(), 120, -0.2, 1.2);
+  flavour = dir.make<TH1F>("flavour", (name+"/flavour; ;Entries").c_str(), 6, 0, 6);
   invariant_mass    = dir.make<TH1F>("mass", (name+"/mass; ;Entries").c_str(), 100, 0, 1000);
   Ht  = dir.make<TH1F>("Ht", (name+"/Ht; ;Entries").c_str(), 100, 0, 1000);
   pt_1 = dir.make<TH1F>("pt_1", (name+"/pt_1; ;Entries").c_str(), 100, 0, 1000);
@@ -23,7 +23,8 @@ mass::mass(std::string name, fwlite::TFileService& fs) {
 
 
 void mass::Fill(const std::shared_ptr<jet> &jet, float weight){
-  DeepCSV  ->Fill(jet->DeepCSV, weight);
+  
+  flavour  ->Fill(jet->flavour, weight);
 
   return;
 }

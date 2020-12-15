@@ -38,6 +38,8 @@ void truthParticle::connectBranches(bool readIn, TTree* tree){
 
   std::string truthName =  m_name;
   std::string NTruthName = "n"+m_name;
+  
+  std::cout<<"truthName: "<<m_name<<std::endl;
 
   if(connectBranch(readIn, tree, NTruthName, nTruth, "i" ) == -1){
     connectBranch(readIn, tree, NTruthName+"s", nTruth, "i"); 
@@ -45,7 +47,6 @@ void truthParticle::connectBranches(bool readIn, TTree* tree){
 
   if(connectBranchArr(readIn, tree, truthName+"_pt"  , pt  , NTruthName, "F") == -1){
     connectBranchArr(readIn, tree, truthName+"_pT", pt, NTruthName, "F");
-    //std::cout<<"HELLO WORLD"<<std::endl;
   }
 
   connectBranchArr(readIn, tree, truthName+"_eta" , eta , NTruthName, "F");  
