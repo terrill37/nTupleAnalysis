@@ -26,7 +26,7 @@ namespace nTupleAnalysis {
     void Fill(long unsigned int);
     void AddTrig(std::string cut);
     void Fill_trigCount(std::string);
-    void Fill_trigCount2(std::string);
+//    void Fill_trigCount2(std::string);
     void Fillpt_all(float);
     void Fillpt_cut(float);
     void Fillpt_initial(float);

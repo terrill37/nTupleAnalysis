@@ -47,13 +47,13 @@ void mass::Fillpts(std::vector<float> pts){
     pt_4 -> Fill(pts.at(3));
     
     pt_4_cut -> Fill(pts.at(3));
-    if(pts.at(3)>0){
+    if(pts.at(3)>200){
         pt_3_cut -> Fill(pts.at(2));
 
-        if(pts.at(2)>0){
+        if(pts.at(2)>100){
             pt_2_cut -> Fill(pts.at(1));
 
-            if(pts.at(0)>0){
+            if(pts.at(1)>0){
                 pt_1_cut -> Fill(pts.at(0));
             }
         }

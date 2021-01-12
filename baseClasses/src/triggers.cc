@@ -8,7 +8,7 @@ triggers::triggers(std::string name, fwlite::TFileService& fs) {
   dir = fs.mkdir(name);
   full = dir.make<TH1F>("full", (name+"/test; ;Entries").c_str(), 64, 0, 64);
   trig_count = dir.make<TH1F>("trig_count", (name+"/trig_count; ;Entries").c_str(), 1, 1, 2);
-  trig_count2= dir.make<TH1F>("trig_count2", (name+"/trig_count2; ;Entries").c_str(), 1, 1, 2);
+  //trig_count2= dir.make<TH1F>("trig_count2", (name+"/trig_count2; ;Entries").c_str(), 1, 1, 2);
   pt_all = dir.make<TH1F>("pt_all", (name+"/test; Entries").c_str(), 100, 0, 1000);
   pt_cut = dir.make<TH1F>("pt_cut", (name+"/test; Entries").c_str(), 100, 0, 1000);
   pt_initial = dir.make<TH1F>("pt_initial", (name+"/test; Entries").c_str(), 100, 0, 1000); 
@@ -26,7 +26,7 @@ void triggers::Fill(long unsigned int cut){
 
 void triggers::AddTrig(std::string cut){
   trig_count ->GetXaxis()->FindBin(cut.c_str());
-  trig_count2 ->GetXaxis()->FindBin(cut.c_str()); 
+ // trig_count2 ->GetXaxis()->FindBin(cut.c_str()); 
   return;
 }
 
@@ -36,10 +36,10 @@ void triggers::Fill_trigCount(std::string cut){
   return;
 }
 
-void triggers::Fill_trigCount2(std::string cut){
+/*void triggers::Fill_trigCount2(std::string cut){
   trig_count2 ->Fill(cut.c_str(), 1);
   return;
-}
+}*/
 
 void triggers::Fillpt_all(float pt){
   pt_all->Fill(pt);
