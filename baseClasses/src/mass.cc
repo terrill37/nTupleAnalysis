@@ -41,6 +41,9 @@ void mass::FillHt(const float Ht_val){
 }
 
 void mass::Fillpts(std::vector<float> pts){
+    //std::cout<<"pt size: "<<pts.size()<<std::endl;
+    while(pts.size()<4) pts.push_back(-1);
+    
     pt_1 -> Fill(pts.at(0));
     pt_2 -> Fill(pts.at(1));
     pt_3 -> Fill(pts.at(2));
